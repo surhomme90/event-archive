@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>오현우 · 행사 현장 운영 아카이브</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root{
+    --bg:#14151A;
+    --surface:#1B1D24;
+    --surface2:#20222B;
+    --ink:#F2F1ED;
+    --muted:#9497A6;
+    --line:#31333D;
+    --yellow:#F5C518;
+    --orange:#FF5A36;
+    --exhibition:#B48CFF;
+    --popup:#F5C518;
+    --fair:#5B9EFF;
+    --festival:#FF6FA8;
+    --sports:#4ADE80;
+    --ceremony:#FF8A3D;
+    --business:#2DD4BF;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      repeating-linear-gradient(135deg, rgba(255,255,255,0.015) 0 2px, transparent 2px 26px),
+      var(--bg);
+    color:var(--ink);
+    font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',-apple-system,BlinkMacSystemFont,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:36px 20px 80px;}
+
+  /* ===== HEADER ===== */
+  header{
+    border:1px solid var(--line);
+    background:var(--surface);
+    padding:26px 28px;
+    position:relative;
+    overflow:hidden;
+    margin-bottom:22px;
+  }
+  header::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      repeating-linear-gradient(90deg, var(--yellow) 0 22px, transparent 22px 44px);
+    height:8px; top:0; left:0; right:0;
+    opacity:.85;
+  }
+  .eyebrow{
+    display:flex; align-items:center; gap:10px;
+    font-family:ui-monospace,'SF Mono',Consolas,monospace;
+    font-size:12px; letter-spacing:.18em; color:var(--yellow);
+    text-transform:uppercase; margin-top:10px;
+  }
+  .eyebrow .tag{
+    border:1px solid var(--yellow); padding:2px 8px; border-radius:2px;
+  }
+  h1{
+    font-size:clamp(28px,4vw,42px);
+    margin:10px 0 6px;
+    letter-spacing:-0.01em;
+    font-weight:800;
+  }
+  header p.sub{color:var(--muted); margin:0; font-size:14.5px; line-height:1.6;}
+  .stat-row{display:flex; gap:0; margin-top:20px; border-top:1px solid var(--line); flex-wrap:wrap;}
+  .stat{
+    flex:1; min-width:120px; padding:14px 18px; border-right:1px solid var(--line);
+  }
+  .stat:last-child{border-right:none;}
+  .stat .num{font-size:24px; font-weight:800; font-family:ui-monospace,monospace; color:var(--yellow);}
+  .stat .lbl{font-size:11.5px; color:var(--muted); margin-top:2px;}
+
+  /* ===== NAV ===== */
+  nav.tabs{
+    display:flex; gap:2px; margin-bottom:24px; flex-wrap:wrap;
+    border:1px solid var(--line); background:var(--surface);
+  }
+  nav.tabs button{
+    flex:1; min-width:140px;
+    background:transparent; border:none; color:var(--muted);
+    font-family:inherit; font-size:14px; font-weight:700;
+    padding:14px 10px; cursor:pointer;
+    border-right:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    transition:.15s;
+  }
+  nav.tabs button:last-child{border-right:none;}
+  nav.tabs button .no{
+    font-family:ui-monospace,monospace; font-size:11px; color:var(--muted);
+    border:1px solid currentColor; border-radius:2px; padding:1px 5px;
+  }
+  nav.tabs button.active{background:var(--yellow); color:#14151A;}
+  nav.tabs button.active .no{border-color:#14151A;}
+  nav.tabs button:hover:not(.active){color:var(--ink); background:var(--surface2);}
+
+  section.view{display:none;}
+  section.view.active{display:block; animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+  .panel-title{
+    display:flex; align-items:baseline; gap:10px; margin-bottom:16px;
+  }
+  .panel-title h2{font-size:20px; margin:0; font-weight:800;}
+  .panel-title span{font-size:12px; color:var(--muted); font-family:ui-monospace,monospace;}
+
+  /* legend */
+  .legend{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px;}
+  .legend .chip{
+    display:flex; align-items:center; gap:6px;
+    border:1px solid var(--line); padding:5px 10px; border-radius:20px;
+    font-size:12px; color:var(--muted); background:var(--surface);
+    cursor:pointer; user-select:none;
+  }
+  .legend .chip.on{color:var(--ink); border-color:currentColor;}
+  .legend .dot{width:8px; height:8px; border-radius:50%; flex:none;}
+
+  /* ===== CALENDAR ===== */
+  .cal-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr));
+    gap:14px;
+  }
+  .month-card{
+    border:1px solid var(--line); background:var(--surface); padding:14px;
+  }
+  .month-card h3{
+    margin:0 0 10px; font-size:14px; font-family:ui-monospace,monospace;
+    color:var(--yellow); letter-spacing:.04em;
+  }
+  .dow{display:grid; grid-template-columns:repeat(7,1fr); gap:3px; margin-bottom:4px;}
+  .dow span{font-size:10px; color:var(--muted); text-align:center;}
+  .days{display:grid; grid-template-columns:repeat(7,1fr); gap:3px;}
+  .day{
+    aspect-ratio:1; border-radius:3px; background:var(--surface2);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-size:10px; color:var(--muted); position:relative; cursor:default;
+  }
+  .day.empty{background:transparent;}
+  .day.has-event{cursor:pointer; color:var(--ink);}
+  .day .dotsrow{display:flex; gap:2px; position:absolute; bottom:3px;}
+  .day .dotsrow i{width:4px; height:4px; border-radius:50%;}
+  .day.selected{outline:2px solid var(--yellow); outline-offset:-2px;}
+
+  .day-detail{
+    margin-top:22px; border:1px dashed var(--line); padding:16px; background:var(--surface); min-height:60px;
+  }
+  .day-detail .hint{color:var(--muted); font-size:13px;}
+
+  /* ===== BADGE CARD (signature element) ===== */
+  .badge{
+    position:relative;
+    border:1px solid var(--line);
+    background:var(--surface2);
+    padding:16px 16px 14px 16px;
+    margin-bottom:10px;
+    border-left:4px solid var(--cat, var(--yellow));
+  }
+  .badge::before{
+    content:"";
+    position:absolute; left:-4.5px; top:14px;
+    width:9px; height:9px; border-radius:50%;
+    background:var(--bg); border:1px solid var(--line);
+  }
+  .badge .top{display:flex; justify-content:space-between; gap:10px; align-items:flex-start;}
+  .badge .name{font-weight:800; font-size:15px;}
+  .badge .cat-tag{
+    font-size:10.5px; font-family:ui-monospace,monospace; padding:2px 7px;
+    border-radius:20px; white-space:nowrap; color:#14151A; background:var(--cat, var(--yellow)); font-weight:700;
+  }
+  .badge .meta{color:var(--muted); font-size:12.5px; margin-top:6px; line-height:1.7;}
+  .badge .meta b{color:var(--ink); font-weight:600;}
+  .badge ul.tasks{margin:8px 0 0; padding-left:16px; color:var(--muted); font-size:12.5px; line-height:1.7;}
+
+  /* ===== COMPANY VIEW ===== */
+  .company-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:16px;}
+  .company-card{border:1px solid var(--line); background:var(--surface); padding:18px;}
+  .company-card .chead{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;}
+  .company-card h3{margin:0; font-size:17px; font-weight:800;}
+  .company-card .nums{display:flex; gap:16px; margin:10px 0 12px;}
+  .company-card .nums div{font-family:ui-monospace,monospace;}
+  .company-card .nums .n{font-size:22px; font-weight:800; color:var(--yellow);}
+  .company-card .nums .l{font-size:10.5px; color:var(--muted);}
+  .company-card .bar{height:6px; background:var(--surface2); border-radius:4px; overflow:hidden; margin-bottom:12px;}
+  .company-card .bar i{display:block; height:100%; background:var(--yellow);}
+  .company-card .events{display:flex; flex-wrap:wrap; gap:6px;}
+  .company-card .events span{
+    font-size:11.5px; border:1px solid var(--line); padding:4px 8px; border-radius:20px; color:var(--muted);
+  }
+
+  /* ===== CATEGORY VIEW ===== */
+  .cat-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(360px,1fr)); gap:16px;}
+  .cat-card{border:1px solid var(--line); background:var(--surface); padding:0; overflow:hidden;}
+  .cat-card .chead{
+    padding:14px 18px; display:flex; justify-content:space-between; align-items:center;
+    background:var(--surface2); border-bottom:1px solid var(--line);
+  }
+  .cat-card .chead h3{margin:0; font-size:15px; display:flex; align-items:center; gap:8px;}
+  .cat-card .chead .count{font-family:ui-monospace,monospace; color:var(--muted); font-size:12px;}
+  .cat-card .body{padding:14px 18px; max-height:340px; overflow-y:auto;}
+  .cat-card .body .row{
+    display:flex; justify-content:space-between; gap:10px; padding:8px 0; border-bottom:1px solid var(--line); font-size:12.8px;
+  }
+  .cat-card .body .row:last-child{border-bottom:none;}
+  .cat-card .body .row .rn{font-weight:600;}
+  .cat-card .body .row .rc{color:var(--muted); font-size:11.5px; white-space:nowrap;}
+
+  /* ===== MAP VIEW ===== */
+  .map-wrap{display:grid; grid-template-columns:1.5fr 1fr; gap:16px;}
+  @media (max-width:820px){.map-wrap{grid-template-columns:1fr;}}
+  .map-box{border:1px solid var(--line); background:var(--surface); padding:12px;}
+  /* Leaflet vector SVG와 충돌하던 구형 약식지도 SVG 규칙 제거 */
+  .event-pin-wrap{background:transparent!important;border:0!important;}
+  .event-pin{
+    width:30px;height:30px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--pin,#F5C518);color:#14151A;
+    border:3px solid rgba(255,255,255,.96);
+    box-shadow:0 0 0 2px rgba(20,21,26,.92),0 5px 16px rgba(0,0,0,.62);
+    font:900 10px ui-monospace,monospace;
+    transition:transform .15s ease,filter .15s ease;
+  }
+  .event-pin:hover{transform:scale(1.12);filter:brightness(1.08);}
+  .event-pin.single::after{content:"";width:7px;height:7px;border-radius:50%;background:#14151A;}
+  .map-summary{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0 14px;}
+  .map-summary .ms{border:1px solid var(--line);background:var(--surface2);padding:12px;}
+  .map-summary .ms b{display:block;color:var(--yellow);font:800 22px ui-monospace,monospace;}
+  .map-summary .ms span{font-size:10.5px;color:var(--muted);}
+  .map-place-list{border-top:1px solid var(--line);margin-top:10px;}
+  .map-place-list .mpr{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);font-size:11.5px;}
+  .map-place-list .mpr span:last-child{color:var(--muted);font-family:ui-monospace,monospace;}
+  .map-note{font-size:11px; color:var(--muted); margin-top:8px; font-family:ui-monospace,monospace;}
+  .map-detail{border:1px solid var(--line); background:var(--surface); padding:16px; max-height:560px; overflow-y:auto;}
+  .map-detail h3{margin:0 0 10px; font-size:15px;}
+  .map-detail .hint{color:var(--muted); font-size:13px;}
+
+  footer{margin-top:40px; text-align:center; color:var(--muted); font-size:11.5px; font-family:ui-monospace,monospace;}
+
+  /* ===== V2: FILTERS / OVERVIEW / DETAIL ===== */
+  .filterbar{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr)) 1.6fr;gap:8px;margin:0 0 24px;}
+  .filterbar select,.filterbar input{width:100%;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:10px 11px;border-radius:2px;font-family:inherit;font-size:12px;outline:none;}
+  .filterbar select:focus,.filterbar input:focus{border-color:var(--yellow);}
+  .filterbar input::placeholder{color:#737685;}
+  .overview-grid{display:grid;grid-template-columns:1.4fr .8fr;gap:16px;margin-bottom:18px;}
+  .current-card,.overview-side,.overview-block{border:1px solid var(--line);background:var(--surface);}
+  .current-card{padding:22px;position:relative;overflow:hidden;min-height:300px;display:flex;flex-direction:column;justify-content:space-between;}
+  .current-card:before{content:"CURRENT";position:absolute;right:-12px;top:30px;font-family:ui-monospace,monospace;font-size:64px;font-weight:900;color:rgba(245,197,24,.045);letter-spacing:-.08em;}
+  .current-card .status{font:700 11px ui-monospace,monospace;color:var(--yellow);letter-spacing:.14em;}
+  .current-card h2{font-size:clamp(25px,4vw,43px);line-height:1.08;margin:18px 0 10px;max-width:760px;}
+  .current-card .where{color:var(--muted);font-size:13px;line-height:1.7;}
+  .role-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px;}
+  .role-tag{border:1px solid var(--line);padding:5px 8px;border-radius:20px;font:11px ui-monospace,monospace;color:var(--muted);background:var(--surface2);}
+  .overview-side{padding:18px;}
+  .overview-side h3,.overview-block h3{font-size:13px;margin:0 0 12px;font-family:ui-monospace,monospace;color:var(--yellow);letter-spacing:.05em;}
+  .recent-row{display:grid;grid-template-columns:72px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--line);cursor:pointer;}
+  .recent-row:hover .rr-name{color:var(--yellow);}.rr-date{font:11px ui-monospace,monospace;color:var(--muted);}.rr-name{font-size:12px;font-weight:700;line-height:1.4;}
+  .overview-lower{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .overview-block{padding:18px;}
+  .mini-bar-row{display:grid;grid-template-columns:110px 1fr 28px;gap:10px;align-items:center;padding:7px 0;font-size:11.5px;}
+  .mini-bar{height:6px;background:var(--surface2);overflow:hidden;}.mini-bar i{display:block;height:100%;background:var(--cat);}
+  .overview-note{margin-top:12px;padding:10px 12px;border:1px dashed var(--line);color:var(--muted);font-size:11px;line-height:1.6;}
+  .badge{cursor:pointer;}.badge:hover{border-color:#4a4d5a;}
+  .badge .workdays{display:inline-block;margin-left:6px;color:var(--yellow);font-family:ui-monospace,monospace;font-size:10.5px;}
+  .company-card .nums .n.missing{font-size:13px;color:var(--muted);padding-top:6px;}
+  #leafletMap{height:560px;background:#171821;}
+  .leaflet-container{font-family:inherit;background:#171821;}
+  .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--surface);color:var(--ink);border:1px solid var(--line);box-shadow:none;}
+  .leaflet-popup-content{margin:12px 14px;}.leaflet-popup-content button{display:block;width:100%;text-align:left;border:0;background:transparent;color:var(--ink);padding:7px 0;border-top:1px solid var(--line);cursor:pointer;}.leaflet-popup-content button:hover{color:var(--yellow);}
+  .loc-approx{color:var(--yellow);font:10px ui-monospace,monospace;}
+  .drawer-back{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:90;opacity:0;pointer-events:none;transition:.18s;}.drawer-back.open{opacity:1;pointer-events:auto;}
+  .drawer{position:fixed;right:0;top:0;bottom:0;width:min(520px,100%);background:var(--surface);border-left:1px solid var(--line);z-index:100;transform:translateX(100%);transition:.2s;overflow-y:auto;padding:24px;}.drawer.open{transform:none;}
+  .drawer-close{float:right;width:38px;height:38px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font-size:20px;cursor:pointer;}.drawer .dk{font:11px ui-monospace,monospace;color:var(--yellow);letter-spacing:.12em;padding-top:56px;}.drawer h2{font-size:30px;line-height:1.12;margin:10px 0;}.drawer .dm{color:var(--muted);font-size:12.5px;line-height:1.7;}.drawer section{display:block;border-top:1px solid var(--line);margin-top:22px;padding-top:13px;}.drawer section h4{font:11px ui-monospace,monospace;color:var(--muted);letter-spacing:.08em;margin:0 0 10px;}.drawer ul{padding-left:18px;color:var(--muted);font-size:13px;line-height:1.7;}
+  .accuracy-note{margin-top:10px;font-size:10.5px;color:var(--muted);font-family:ui-monospace,monospace;}
+  @media(max-width:900px){.filterbar{grid-template-columns:1fr 1fr}.filterbar input{grid-column:1/-1}.overview-grid,.overview-lower{grid-template-columns:1fr}}
+  @media(max-width:560px){.filterbar{grid-template-columns:1fr 1fr}.overview-lower{grid-template-columns:1fr}.mini-bar-row{grid-template-columns:92px 1fr 24px}#leafletMap{height:500px}}
+
+  /* ===== V4: HERO / PROFILE ===== */
+  header.hero{
+    padding:0;
+    background:linear-gradient(180deg,rgba(32,34,43,.92),rgba(27,29,36,.98));
+  }
+  header.hero::before{height:8px;}
+  .hero-inner{padding:30px 30px 26px;}
+  .hero-topline{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding-top:8px;margin-bottom:24px;
+  }
+  .hero-topline .eyebrow{margin:0;}
+  .archive-range{
+    color:var(--muted);font:11px ui-monospace,'SF Mono',Consolas,monospace;
+    letter-spacing:.12em;white-space:nowrap;
+  }
+  .hero-grid{
+    display:grid;grid-template-columns:minmax(0,1.55fr) minmax(290px,.7fr);
+    gap:28px;align-items:stretch;
+  }
+  .hero-role{
+    color:var(--yellow);font:700 11px ui-monospace,'SF Mono',Consolas,monospace;
+    letter-spacing:.17em;margin-bottom:13px;
+  }
+  .hero-copy h1{
+    font-size:clamp(37px,6.2vw,76px);line-height:1.03;
+    letter-spacing:-.055em;margin:0;max-width:790px;font-weight:850;
+  }
+  .hero-copy h1 span{color:var(--yellow);}
+  .hero-lead{
+    max-width:650px;margin:24px 0 0;font-size:15px;line-height:1.8;color:var(--ink);
+    word-break:keep-all;
+  }
+  .hero-desc{
+    max-width:650px;margin:8px 0 0;font-size:13px;line-height:1.75;color:var(--muted);
+    word-break:keep-all;
+  }
+  .hero-cta{
+    display:inline-flex;align-items:center;gap:9px;margin-top:24px;
+    border:1px solid var(--yellow);background:transparent;color:var(--yellow);
+    padding:10px 13px;text-decoration:none;
+    font:800 11px ui-monospace,'SF Mono',Consolas,monospace;letter-spacing:.08em;
+    transition:.15s;
+  }
+  .hero-cta:hover{background:var(--yellow);color:var(--bg);}
+  .hero-current{
+    border:1px solid var(--line);background:rgba(20,21,26,.58);
+    padding:18px;position:relative;min-height:100%;
+    display:flex;flex-direction:column;justify-content:space-between;
+  }
+  .hero-current::after{
+    content:"LIVE";position:absolute;right:14px;bottom:8px;
+    color:rgba(245,197,24,.055);font:900 58px ui-monospace,monospace;letter-spacing:-.08em;
+    pointer-events:none;
+  }
+  .current-label{
+    display:flex;align-items:center;gap:8px;color:var(--yellow);
+    font:800 10px ui-monospace,monospace;letter-spacing:.13em;
+  }
+  .live-pulse{
+    width:8px;height:8px;border-radius:50%;background:var(--yellow);
+    box-shadow:0 0 0 0 rgba(245,197,24,.35);animation:livePulse 1.9s infinite;
+  }
+  @keyframes livePulse{
+    0%{box-shadow:0 0 0 0 rgba(245,197,24,.35)}
+    70%{box-shadow:0 0 0 8px rgba(245,197,24,0)}
+    100%{box-shadow:0 0 0 0 rgba(245,197,24,0)}
+  }
+  .hero-current h2{
+    margin:18px 0 8px;font-size:clamp(20px,2.5vw,30px);line-height:1.12;
+    letter-spacing:-.035em;position:relative;z-index:1;
+  }
+  .current-meta{color:var(--muted);font-size:12px;line-height:1.75;position:relative;z-index:1;}
+  .current-meta b{color:var(--ink);}
+  .current-schedule{
+    border-top:1px solid var(--line);margin-top:17px;padding-top:13px;
+    color:var(--ink);font:700 10.5px ui-monospace,monospace;letter-spacing:.08em;
+    position:relative;z-index:1;
+  }
+  .hero .stat-row{margin-top:28px;}
+  .hero .stat{padding:16px 18px;}
+  .hero .stat .num{font-size:clamp(28px,3.7vw,43px);}
+  .hero .stat .lbl{
+    text-transform:uppercase;font-family:ui-monospace,monospace;letter-spacing:.05em;
+  }
+  .profile-head{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    margin-top:22px;padding-top:16px;border-top:1px solid var(--line);
+  }
+  .profile-head .ph-label{
+    color:var(--yellow);font:800 10.5px ui-monospace,monospace;letter-spacing:.15em;
+  }
+  .profile-head .ph-role{
+    color:var(--muted);font:700 10.5px ui-monospace,monospace;letter-spacing:.11em;
+  }
+  .profile-grid{
+    display:grid;grid-template-columns:.82fr .82fr 1.35fr 1.55fr;
+    border:1px solid var(--line);border-bottom:0;margin-top:10px;
+  }
+  .profile-item{
+    min-width:0;padding:14px 15px 15px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+    background:rgba(20,21,26,.38);
+  }
+  .profile-item:last-child{border-right:0;}
+  .profile-item .pl{
+    color:var(--muted);font:700 9.5px ui-monospace,monospace;letter-spacing:.12em;
+    margin-bottom:7px;
+  }
+  .profile-item .pv{font-size:12px;font-weight:700;line-height:1.65;word-break:keep-all;}
+  .profile-item .pv.soft{color:#c7c8cf;font-weight:600;}
+  #archiveStart{scroll-margin-top:18px;}
+  @media(max-width:900px){
+    .hero-grid{grid-template-columns:1fr;}
+    .hero-current{min-height:230px;}
+    .profile-grid{grid-template-columns:1fr 1fr;}
+    .profile-item:nth-child(2){border-right:0;}
+  }
+  @media(max-width:560px){
+    .hero-inner{padding:25px 18px 20px;}
+    .hero-topline{align-items:flex-start;}
+    .archive-range{font-size:9.5px;}
+    .hero-copy h1{font-size:clamp(35px,12vw,53px);}
+    .hero-lead{font-size:14px;}
+    .profile-grid{grid-template-columns:1fr;}
+    .profile-item{border-right:0;}
+    .hero .stat{min-width:50%;}
+  }
+
+  /* ===== V4.2: MOBILE EXPERIENCE ===== */
+  html,body{overflow-x:hidden;}
+  .hero-copy,.hero-current,.profile-item,.current-card,.overview-side,.overview-block{min-width:0;}
+  .eyebrow-title{min-width:0;}
+  .hero-br{display:block;}
+  .stat .lbl span,.stat .lbl small{display:block;}
+  .stat .lbl small{
+    margin-top:3px;color:var(--muted);font-size:10px;font-family:inherit;
+    text-transform:none;letter-spacing:0;font-weight:600;
+  }
+
+  @media(max-width:640px){
+    /* Page rhythm */
+    .wrap{padding:14px 12px 56px;}
+    header{margin-bottom:16px;}
+    header.hero{border-left-color:#393b46;border-right-color:#393b46;}
+    .hero-inner{padding:22px 18px 20px;}
+
+    /* Header identity: stack instead of squeezing */
+    .hero-topline{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:9px;
+      margin-bottom:18px;
+      padding-top:7px;
+    }
+    .hero-topline .eyebrow{
+      display:grid;
+      grid-template-columns:max-content minmax(0,1fr);
+      align-items:center;
+      gap:10px;
+      margin:0;
+      font-size:10.5px;
+      letter-spacing:.07em;
+      line-height:1.35;
+    }
+    .eyebrow .tag{
+      padding:4px 8px;
+      line-height:1.2;
+      letter-spacing:.14em;
+    }
+    .eyebrow-title{
+      word-break:keep-all;
+      overflow-wrap:normal;
+    }
+    .archive-range{
+      font-size:9.5px;
+      letter-spacing:.1em;
+      white-space:normal;
+      line-height:1.35;
+    }
+
+    /* Hero copy */
+    .hero-grid{grid-template-columns:1fr;gap:18px;}
+    .hero-role{
+      font-size:9.5px;
+      line-height:1.55;
+      letter-spacing:.11em;
+      margin-bottom:10px;
+      word-break:normal;
+    }
+    .hero-copy h1{
+      font-size:clamp(30px,8.7vw,35px);
+      line-height:1.09;
+      letter-spacing:-.035em;
+      word-break:keep-all;
+      overflow-wrap:normal;
+    }
+    .hero-br{display:none;}
+    .hero-lead{
+      margin-top:18px;
+      font-size:13.5px;
+      line-height:1.72;
+      word-break:keep-all;
+    }
+    .hero-desc{
+      margin-top:8px;
+      font-size:12px;
+      line-height:1.7;
+      word-break:keep-all;
+    }
+    .hero-cta{
+      margin-top:20px;
+      padding:10px 12px;
+      font-size:10.5px;
+      letter-spacing:.07em;
+    }
+
+    /* Current-site card */
+    .hero-current{
+      min-height:0;
+      padding:16px;
+    }
+    .hero-current::after{
+      right:10px;bottom:2px;font-size:45px;
+    }
+    .current-label{
+      font-size:9.5px;
+      letter-spacing:.1em;
+      line-height:1.4;
+    }
+    .hero-current h2{
+      margin:14px 0 7px;
+      font-size:21px;
+      line-height:1.17;
+      letter-spacing:-.025em;
+      word-break:keep-all;
+    }
+    .current-meta{
+      font-size:11.5px;
+      line-height:1.65;
+      word-break:keep-all;
+    }
+    .current-schedule{
+      margin-top:14px;
+      padding-top:11px;
+      font-size:9.5px;
+      letter-spacing:.055em;
+      white-space:normal;
+    }
+
+    /* Stats: fixed 2 x 2 with controlled bilingual labels */
+    .hero .stat-row{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      margin-top:18px;
+    }
+    .hero .stat{
+      min-width:0;
+      padding:14px 12px 13px;
+      border-right:1px solid var(--line);
+    }
+    .hero .stat:nth-child(2n){border-right:0;}
+    .hero .stat:nth-child(-n+2){border-bottom:1px solid var(--line);}
+    .hero .stat .num{
+      font-size:30px;
+      line-height:1;
+    }
+    .hero .stat .lbl{
+      margin-top:7px;
+      line-height:1.25;
+    }
+    .hero .stat .lbl span{
+      font-size:8.7px;
+      letter-spacing:.07em;
+      white-space:nowrap;
+    }
+    .hero .stat .lbl small{
+      margin-top:4px;
+      font-size:10.5px;
+      line-height:1.2;
+      white-space:nowrap;
+    }
+
+    /* Profile */
+    .profile-head{
+      align-items:flex-start;
+      gap:10px;
+      margin-top:18px;
+      padding-top:14px;
+    }
+    .profile-head .ph-label{font-size:9.5px;}
+    .profile-head .ph-role{
+      font-size:8.9px;
+      line-height:1.4;
+      letter-spacing:.08em;
+      text-align:right;
+      word-break:keep-all;
+    }
+    .profile-grid{
+      grid-template-columns:1fr;
+      margin-top:9px;
+    }
+    .profile-item{
+      padding:13px 14px 14px;
+      border-right:0;
+    }
+    .profile-item .pl{
+      font-size:9px;
+      margin-bottom:6px;
+    }
+    .profile-item .pv{
+      font-size:12.5px;
+      line-height:1.62;
+    }
+
+    /* Navigation: Overview full row, remaining 4 as 2 x 2 */
+    nav.tabs{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:1px;
+      margin-bottom:18px;
+      background:var(--line);
+      border:1px solid var(--line);
+    }
+    nav.tabs button{
+      min-width:0;
+      width:100%;
+      flex:none;
+      padding:12px 7px;
+      border:0;
+      background:var(--surface);
+      font-size:12.5px;
+      line-height:1.25;
+      gap:7px;
+      white-space:nowrap;
+    }
+    nav.tabs button:first-child{grid-column:1/-1;}
+    nav.tabs button .no{
+      font-size:9.5px;
+      padding:1px 5px;
+    }
+    nav.tabs button.active{background:var(--yellow);}
+
+    /* Filters */
+    .filterbar{
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:7px;
+      margin-bottom:20px;
+    }
+    .filterbar select,.filterbar input{
+      min-width:0;
+      padding:10px 9px;
+      font-size:11.5px;
+      line-height:1.3;
+    }
+    .filterbar input{
+      grid-column:1/-1;
+      min-height:44px;
+    }
+
+    /* Section headings */
+    .panel-title{
+      flex-wrap:wrap;
+      align-items:baseline;
+      gap:5px 9px;
+      margin-bottom:13px;
+    }
+    .panel-title h2{
+      font-size:19px;
+      line-height:1.25;
+    }
+    .panel-title span{
+      font-size:10.5px;
+      line-height:1.4;
+    }
+
+    /* Overview */
+    .overview-grid,.overview-lower{grid-template-columns:1fr;gap:12px;}
+    .current-card{
+      min-height:220px;
+      padding:17px;
+    }
+    .current-card:before{
+      font-size:46px;
+      right:-8px;
+      top:22px;
+    }
+    .current-card .status{
+      font-size:9.5px;
+      letter-spacing:.11em;
+    }
+    .current-card h2{
+      font-size:23px;
+      line-height:1.15;
+      margin:14px 0 8px;
+      word-break:keep-all;
+    }
+    .current-card .where{
+      font-size:11.5px;
+      line-height:1.65;
+    }
+    .role-tags{gap:5px;margin-top:14px;}
+    .role-tag{font-size:9.5px;padding:4px 7px;}
+    .overview-side,.overview-block{padding:15px;}
+    .recent-row{
+      grid-template-columns:64px minmax(0,1fr);
+      gap:8px;
+      padding:9px 0;
+    }
+    .rr-date{font-size:9.7px;}
+    .rr-name{font-size:11.5px;line-height:1.4;word-break:keep-all;}
+    .mini-bar-row{
+      grid-template-columns:86px minmax(0,1fr) 22px;
+      gap:8px;
+      font-size:10.5px;
+    }
+    .overview-note{font-size:10.5px;}
+
+    /* Calendar and archive cards: never force desktop minimum widths */
+    .cal-grid,.company-grid,.cat-grid{
+      grid-template-columns:minmax(0,1fr);
+      gap:12px;
+    }
+    .month-card{padding:12px;}
+    .month-card h3{font-size:13px;}
+    .dow span{font-size:9px;}
+    .day{font-size:9.5px;}
+
+    /* Event badge */
+    .day-detail{padding:12px;margin-top:16px;}
+    .badge{
+      padding:13px 13px 12px;
+      margin-bottom:8px;
+    }
+    .badge .top{
+      flex-wrap:wrap;
+      align-items:flex-start;
+      gap:7px;
+    }
+    .badge .name{
+      min-width:0;
+      font-size:14px;
+      line-height:1.35;
+      word-break:keep-all;
+    }
+    .badge .cat-tag{
+      font-size:9.3px;
+      padding:2px 6px;
+    }
+    .badge .meta{
+      font-size:11.3px;
+      line-height:1.62;
+      word-break:break-word;
+    }
+    .badge ul.tasks{
+      font-size:11.3px;
+      line-height:1.62;
+      padding-left:15px;
+    }
+
+    /* Agency view */
+    .company-card{padding:15px;}
+    .company-card h3{font-size:16px;}
+    .company-card .nums{gap:14px;}
+    .company-card .nums .n{font-size:20px;}
+    .company-card .events span{
+      font-size:10.5px;
+      line-height:1.35;
+      white-space:normal;
+    }
+
+    /* Category view */
+    .cat-card .chead{padding:12px 14px;}
+    .cat-card .chead h3{font-size:14px;}
+    .cat-card .body{
+      padding:10px 14px;
+      max-height:none;
+    }
+    .cat-card .body .row{
+      display:grid;
+      grid-template-columns:minmax(0,1fr);
+      gap:3px;
+      padding:9px 0;
+      font-size:11.7px;
+    }
+    .cat-card .body .row .rn{
+      line-height:1.4;
+      word-break:keep-all;
+    }
+    .cat-card .body .row .rc{
+      font-size:10.3px;
+      white-space:normal;
+      line-height:1.4;
+    }
+
+    /* Map */
+    .map-wrap{grid-template-columns:1fr;gap:12px;}
+    .map-box{padding:8px;}
+    #leafletMap{height:410px;}
+    .map-detail{
+      padding:14px;
+      max-height:430px;
+      overflow-y:auto;
+    }
+    .map-detail h3{font-size:14px;}
+    .map-detail .hint{font-size:11.5px;line-height:1.55;}
+    .map-summary{gap:7px;margin:10px 0 12px;}
+    .map-summary .ms{padding:10px;}
+    .map-summary .ms b{font-size:19px;}
+    .map-summary .ms span{font-size:9.5px;}
+    .map-place-list .mpr{
+      font-size:10.5px;
+      line-height:1.4;
+      gap:10px;
+    }
+
+    /* Drawer */
+    .drawer{padding:18px;}
+    .drawer .dk{padding-top:50px;font-size:10px;}
+    .drawer h2{
+      font-size:24px;
+      line-height:1.17;
+      word-break:keep-all;
+    }
+    .drawer .dm{font-size:11.5px;}
+    .drawer ul{font-size:11.8px;}
+  }
+
+  @media(max-width:380px){
+    .wrap{padding-left:10px;padding-right:10px;}
+    .hero-inner{padding-left:15px;padding-right:15px;}
+    .hero-copy h1{font-size:29px;}
+    .hero-role{font-size:9px;letter-spacing:.09em;}
+    nav.tabs button{font-size:11.8px;}
+    .profile-head{display:grid;grid-template-columns:1fr;}
+    .profile-head .ph-role{text-align:left;}
+  }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="hero-topline">
+        <div class="eyebrow"><span class="tag">SITE LOG</span><span class="eyebrow-title">현장기록 · 행사 경력 아카이브</span></div>
+        <div class="archive-range">ARCHIVE 2025 — PRESENT</div>
+      </div>
+
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="hero-role">OH HYUNWOO · EVENT FIELD OPERATIONS ARCHIVE</div>
+          <h1>사람이 모이는 현장에서, <br class="hero-br"><span>흐름을 운영합니다.</span></h1>
+          <p class="hero-lead">다양한 행사 현장에서 관람객과 공간, 프로그램이 원활하게 연결되도록 운영해왔습니다.</p>
+          <p class="hero-desc">이 아카이브는 그 현장들을 시간 · 업체 · 카테고리 · 장소의 관점으로 기록합니다.</p>
+          <a class="hero-cta" href="#archiveStart">VIEW ARCHIVE <span>↓</span></a>
+        </div>
+
+        <aside class="hero-current" id="heroCurrent" aria-label="현재 진행 현장"></aside>
+      </div>
+
+      <div class="stat-row" id="heroStatRow"></div>
+
+      <div class="profile-head">
+        <div class="ph-label">PROFILE</div>
+        <div class="ph-role">오현우 · EVENT FIELD OPERATOR</div>
+      </div>
+      <div class="profile-grid">
+        <div class="profile-item">
+          <div class="pl">FIELD</div>
+          <div class="pv">행사 · 전시 현장 운영</div>
+        </div>
+        <div class="profile-item">
+          <div class="pl">EXPERIENCE</div>
+          <div class="pv">2025.10 — 현재</div>
+        </div>
+        <div class="profile-item">
+          <div class="pl">MAIN FIELDS</div>
+          <div class="pv soft">전시 · 팝업 · 박람회 · 컨퍼런스<br>페스티벌 · 스포츠 · 문화행사</div>
+        </div>
+        <div class="profile-item">
+          <div class="pl">ROLE</div>
+          <div class="pv soft">현장 운영 · 관람객 응대 · 동선 관리<br>프로모션 · 전시 관리 · 세팅 및 철수</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div id="archiveStart"></div>
+  <nav class="tabs">
+    <button class="active" data-view="overview"><span class="no">00</span> Overview</button>
+    <button data-view="calendar"><span class="no">01</span> 캘린더형</button>
+    <button data-view="company"><span class="no">02</span> 업체별</button>
+    <button data-view="category"><span class="no">03</span> 카테고리별</button>
+    <button data-view="map"><span class="no">04</span> 지도형</button>
+  </nav>
+
+  <div class="filterbar">
+    <select id="filterYear"><option value="all">전체 연도</option><option value="2026">2026</option><option value="2025">2025</option></select>
+    <select id="filterCompany"><option value="all">전체 업체</option></select>
+    <select id="filterCategory"><option value="all">전체 카테고리</option></select>
+    <select id="filterRole"><option value="all">전체 업무 태그</option></select>
+    <input id="filterSearch" type="search" placeholder="행사명 · 장소 · 주소 · 업무 검색">
+  </div>
+
+  <!-- ================= OVERVIEW ================= -->
+  <section class="view active" id="view-overview">
+    <div class="panel-title"><h2>Overview</h2><span>현장 운영 기록 요약</span></div>
+    <div id="overviewContent"></div>
+  </section>
+
+  <!-- ================= CALENDAR ================= -->
+  <section class="view" id="view-calendar">
+    <div class="panel-title"><h2>캘린더형 아카이브</h2><span>실제 근무일 기준 · 2025.10 – 2026.08</span></div>
+    <div class="legend" id="legendCal"></div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="day-detail" id="dayDetail"><div class="hint">날짜를 클릭하면 그날의 현장 기록이 여기에 표시됩니다.</div></div>
+  </section>
+
+  <!-- ================= COMPANY ================= -->
+  <section class="view" id="view-company">
+    <div class="panel-title"><h2>업체별 아카이브</h2><span>회사명 · 참여 횟수 · 실제 근무일</span></div>
+    <div class="company-grid" id="companyGrid"></div>
+  </section>
+
+  <!-- ================= CATEGORY ================= -->
+  <section class="view" id="view-category">
+    <div class="panel-title"><h2>카테고리별 아카이브</h2><span>전시 · 팝업 · 박람회 · 컨퍼런스 · 페스티벌 · 스포츠 · 기념식</span></div>
+    <div class="cat-grid" id="catGrid"></div>
+  </section>
+
+  <!-- ================= MAP ================= -->
+  <section class="view" id="view-map">
+    <div class="panel-title"><h2>지도형 아카이브</h2><span>실제 지도 · 정확 주소 기반 기록</span></div>
+    <div class="map-wrap">
+      <div class="map-box">
+        <div id="leafletMap"></div>
+        <div class="map-note">※ 모든 기록에 제공된 정확 주소를 저장했습니다. 일부 지도 핀 좌표는 시각화를 위한 근사값이며, 상세 패널의 주소를 기준으로 확인하세요. 원 크기 = 동일 위치의 현장 기록 수</div>
+      </div>
+      <div class="map-detail" id="mapDetail"><div class="hint">지도 핀을 클릭하면 해당 장소의 현장 기록이 표시됩니다.</div></div>
+    </div>
+  </section>
+
+  <footer>ARCHIVE v4.2 — MOBILE OPTIMIZED / OH HYUNWOO / FIELD LOG</footer>
+</div>
+<div class="drawer-back" id="drawerBack"></div><aside class="drawer" id="drawer"><button class="drawer-close" id="drawerClose">×</button><div id="drawerContent"></div></aside>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+/* 이름을 공개하고 싶을 때 PROFILE_NAME에 입력할 수 있도록 비워 두었습니다. */
+const PROFILE_NAME = '오현우';
+const CAT = {
+  exhibition:{label:'전시', color:'var(--exhibition)'},
+  popup:{label:'팝업·프로모션', color:'var(--popup)'},
+  fair:{label:'박람회·엑스포', color:'var(--fair)'},
+  business:{label:'컨퍼런스·비즈니스', color:'var(--business)'},
+  festival:{label:'페스티벌·문화', color:'var(--festival)'},
+  sports:{label:'스포츠·야외', color:'var(--sports)'},
+  ceremony:{label:'기념식·시상식', color:'var(--ceremony)'},
+};
+
+const EVENTS = [{"name":"뱅크시 특별전 BANKSY : Still Here","venue":"ALT.1 더현대서울 현대백화점","company":"아튠즈","cat":"exhibition","start":"2026-07-22","end":null,"schedule":"월·화·수·목·금요일 근무","actualWorkDays":null,"roleTags":["전시운영","관람객응대","동선관리","안전관리","작품관리"],"tasks":["관람객 동선 유도 및 내부 관리","전시장 안전, 작품 관리","전시운영 관련 제반 현장 업무 일체"],"address":"서울 영등포구 여의대로 108, 6층","lat":37.5259,"lng":126.9284,"coordAccuracy":"approx","workWeekdays":[1,2,3,4,5],"mapLabel":"더현대 서울 ALT.1"},{"name":"2026 일본유학박람회","venue":"코엑스 컨퍼런스룸 E","company":"빅터시스템","cat":"fair","start":"2026-08-23","end":"2026-08-23","actualWorkDays":1,"roleTags":["관람객응대","동선관리"],"tasks":["관람객 안내 및 동선 관리"],"address":"서울 강남구 영동대로 513, 3층","lat":37.5117,"lng":127.0592,"coordAccuracy":"venue","mapLabel":"코엑스"},{"name":"워터밤 속초 2026","venue":"한화리조트 설악 쏘라노","company":"STN","cat":"festival","start":"2026-08-22","end":"2026-08-22","actualWorkDays":1,"roleTags":["운영","물품보관"],"tasks":["물품보관소 운영"],"address":"강원 속초시 미시령로2983번길 111","lat":38.207,"lng":128.526,"coordAccuracy":"approx","mapLabel":"한화리조트 설악 쏘라노"},{"name":"2026 강변 모기장영화관","venue":"노들섬","company":"스탭원라인","cat":"festival","start":"2026-08-16","end":"2026-08-16","actualWorkDays":1,"roleTags":["세팅","운영","철수"],"tasks":["모기장영화관 세팅 및 운영","종료 후 철수"],"address":"서울 용산구 양녕로 445","lat":37.517,"lng":126.9587,"coordAccuracy":"venue","mapLabel":"노들섬"},{"name":"FC서울 푸드파크","venue":"FC서울푸드파크","company":"아라세이브","cat":"sports","start":"2026-08-15","end":"2026-08-15","actualWorkDays":1,"roleTags":["세팅","운영","철수"],"tasks":["푸드파크 세팅 및 운영","종료 후 철수"],"address":"서울 마포구 성산동 산53-27","lat":37.5683,"lng":126.8973,"coordAccuracy":"approx","mapLabel":"FC서울푸드파크"},{"name":"쉬엄쉬엄모닝 : 광진교","venue":"광나루자전거공원","company":"코드나잇","cat":"sports","start":"2026-08-02","end":"2026-08-02","actualWorkDays":1,"roleTags":["세팅","운영","철수","마라톤"],"tasks":["마라톤 세팅 및 운영","종료 후 철수"],"address":"서울 강동구 선사로 83-19","lat":37.5464,"lng":127.1207,"coordAccuracy":"approx","mapLabel":"광나루자전거공원"},{"name":"쉬엄쉬엄모닝 : 서울광장","venue":"서울광장","company":"코드나잇","cat":"sports","start":"2026-07-26","end":"2026-07-26","actualWorkDays":1,"roleTags":["세팅","운영","철수","마라톤"],"tasks":["마라톤 세팅 및 운영","종료 후 철수"],"address":"서울 중구 을지로 12","lat":37.5656,"lng":126.978,"coordAccuracy":"venue","mapLabel":"서울광장"},{"name":"캐릭터 라이선싱 페어 2026","venue":"코엑스 Hall A&B1","company":"아튠즈","cat":"fair","start":"2026-07-16","end":"2026-07-19","actualWorkDays":4,"roleTags":["프로모션","이벤트진행","관람객응대"],"tasks":["뱅크시 특별전 홍보 및 이벤트 진행"],"address":"서울 강남구 영동대로 513","lat":37.5117,"lng":127.0592,"coordAccuracy":"venue","mapLabel":"코엑스"},{"name":"쉬엄쉬엄모닝 : 여의도공원","venue":"여의도공원 문화의 마당","company":"코드나잇","cat":"sports","start":"2026-07-12","end":"2026-07-12","actualWorkDays":1,"roleTags":["세팅","운영","철수","마라톤"],"tasks":["마라톤 세팅 및 운영","종료 후 철수"],"address":"서울 영등포구 여의공원로 68","lat":37.5263,"lng":126.922,"coordAccuracy":"venue","mapLabel":"여의도공원 문화의 마당"},{"name":"2026 산업안전보건의 달","venue":"킨텍스 제2전시장","company":"빅터시스템","cat":"fair","start":"2026-07-07","end":"2026-07-09","actualWorkDays":3,"roleTags":["세미나운영","발표대회","운영지원"],"tasks":["4층 안전보건세미나·우수사례발표대회 운영 지원"],"address":"경기 고양시 일산서구 킨텍스로 217-59, 1층","lat":37.6678,"lng":126.7455,"coordAccuracy":"venue","mapLabel":"킨텍스 제2전시장"},{"name":"더리브 센트럴 착공식","venue":"마석역 더리브센트럴","company":"세움엔터","cat":"ceremony","start":"2026-07-04","end":"2026-07-04","actualWorkDays":1,"roleTags":["주차안내","운영지원","의전"],"tasks":["방문차량 주차 안내","착공식 운영 지원"],"address":"경기 남양주시 화도읍 마석우리 36-2","lat":37.6527,"lng":127.311,"coordAccuracy":"approx","mapLabel":"마석역 더리브센트럴"},{"name":"서울도시건축전시관","venue":"서울도시건축전시관","company":"빅터시스템","cat":"exhibition","start":"2026-06-30","end":"2026-07-02","actualWorkDays":3,"roleTags":["전시관리","순찰","관람객응대"],"tasks":["전시장 내부 전시관리 및 순찰","관람객 응대"],"address":"서울 중구 세종대로 119","lat":37.5663,"lng":126.9768,"coordAccuracy":"venue","mapLabel":"서울도시건축전시관"},{"name":"포켓몬스터 30주년 메가페스타 메타몽 놀이터 팝업","venue":"성수동","company":"에이전시더탑","cat":"popup","start":"2026-06-01","end":"2026-06-21","actualWorkDays":21,"roleTags":["팝업운영","관람객응대","야외운영"],"tasks":["외부놀이터 운영 및 관람객 안내"],"address":"서울 성동구 성수이로7가길 9","lat":37.5417,"lng":127.056,"coordAccuracy":"approx","mapLabel":"성수동"},{"name":"현대모비스 오로르x모나미 팝업","venue":"스타필드 수원","company":"빅터시스템","cat":"popup","start":"2026-05-01","end":"2026-05-31","actualWorkDays":31,"roleTags":["모객","고객응대","프로모션","현장관리"],"tasks":["모객, 고객 응대, 프로모션 안내 및 현장 관리"],"address":"경기 수원시 장안구 수성로 175","lat":37.2859,"lng":126.9927,"coordAccuracy":"venue","mapLabel":"스타필드 수원"},{"name":"쉬엄쉬엄모닝 : 잠수교","venue":"반포 한강공원","company":"코드나잇","cat":"sports","start":"2026-04-26","end":"2026-04-26","actualWorkDays":1,"roleTags":["세팅","운영","철수","마라톤"],"tasks":["마라톤 세팅 및 운영","종료 후 철수"],"address":"서울 서초구 신반포로11길 40","lat":37.5104,"lng":126.995,"coordAccuracy":"approx","mapLabel":"반포 한강공원"},{"name":"코리아 나라장터 엑스포 2026","venue":"킨텍스 제1전시장","company":"빅터시스템","cat":"fair","start":"2026-03-24","end":"2026-03-27","actualWorkDays":4,"roleTags":["상담회","세미나운영","현장관리"],"tasks":["2층 동시행사(상담회·세미나) 운영 및 현장 관리"],"address":"경기 고양시 일산서구 킨텍스로 217-60","lat":37.6689,"lng":126.745,"coordAccuracy":"venue","mapLabel":"킨텍스 제1전시장"},{"name":"제25회 세계 보안 엑스포","venue":"킨텍스 제1전시장","company":"빅터시스템","cat":"fair","start":"2026-03-18","end":"2026-03-20","actualWorkDays":3,"roleTags":["부스운영","참관객응대","운영지원"],"tasks":["전시 부스 운영 지원 및 참관객 응대"],"address":"경기 고양시 일산서구 킨텍스로 217-60","lat":37.6689,"lng":126.745,"coordAccuracy":"venue","mapLabel":"킨텍스 제1전시장"},{"name":"K-디지털헬스케어 얼라이언스 출범식","venue":"글래드 여의도","company":"빅터시스템","cat":"business","start":"2026-03-17","end":"2026-03-17","actualWorkDays":1,"roleTags":["등록데스크","기업응대","운영지원"],"tasks":["참여 기업 등록 확인 및 출범식 운영 지원"],"address":"서울 영등포구 의사당대로 16","lat":37.5287,"lng":126.9176,"coordAccuracy":"venue","mapLabel":"글래드 여의도"},{"name":"크런키 스트레스 타파 학원 팝업","venue":"대치동","company":"빅터시스템","cat":"popup","start":"2026-02-23","end":"2026-03-09","actualWorkDays":15,"roleTags":["체험프로그램","고객응대","브랜드프로모션"],"tasks":["체험형 프로그램 운영 및 고객 응대를 통해 브랜드 경험형 프로모션 진행"],"address":"서울특별시 강남구 역삼로 466","lat":37.4933,"lng":127.0565,"coordAccuracy":"approx","mapLabel":"대치동"},{"name":"2026 F/W서울패션위크 트레이드쇼","venue":"동대문디자인플라자 디자인랩","company":"빅터시스템","cat":"fair","start":"2026-02-04","end":"2026-02-07","actualWorkDays":4,"roleTags":["바이어응대","브랜드매칭","운영지원"],"tasks":["바이어/브랜드 매칭 현장 운영 지원"],"address":"서울특별시 중구 을지로 281","lat":37.5665,"lng":127.0092,"coordAccuracy":"venue","mapLabel":"동대문디자인플라자 디자인랩"},{"name":"신한카드 MY DISCOUNT PLAN 팝업","venue":"교보문고 광화문점","company":"빅터시스템","cat":"popup","start":"2026-01-12","end":"2026-01-25","actualWorkDays":14,"roleTags":["모객","고객응대","프로모션"],"tasks":["모객, 고객 응대 및 프로모션 안내"],"address":"서울특별시 종로구 종로 1 교보생명빌딩 지하1층","lat":37.5706,"lng":126.9773,"coordAccuracy":"venue","mapLabel":"교보문고 광화문점"},{"name":"JK FINANCIAL 시상식","venue":"메이필드호텔","company":"쏭에이전시","cat":"ceremony","start":"2026-01-09","end":"2026-01-09","actualWorkDays":1,"roleTags":["세팅","시상식운영","운영지원"],"tasks":["시상식 세팅 및 운영 지원"],"address":"서울 강서구 방화대로 94","lat":37.5482,"lng":126.8184,"coordAccuracy":"approx","mapLabel":"메이필드호텔"},{"name":"서울라이트 광화문","venue":"광화문광장","company":"빅터시스템","cat":"festival","start":"2025-12-23","end":"2026-01-04","actualWorkDays":13,"roleTags":["현장운영","관람객응대"],"tasks":["현장 운영 및 관람객 안내"],"address":"서울 종로구 세종대로 175","lat":37.5725,"lng":126.9769,"coordAccuracy":"venue","mapLabel":"광화문광장"},{"name":"HOLIDAY with MINITEEN 팝업","venue":"성수동","company":"빅터시스템","cat":"popup","start":"2025-12-08","end":"2025-12-22","actualWorkDays":15,"roleTags":["굿즈물류","고객응대","IP행사"],"tasks":["캐릭터 IP 기반 굿즈 물류 관리 및 고객 응대"],"address":"서울특별시 성동구 성수이로20길 57","lat":37.543,"lng":127.065,"coordAccuracy":"approx","mapLabel":"성수동"},{"name":"Anime x Game Festival 2025","venue":"킨텍스 제1전시장","company":"빅터시스템","cat":"fair","start":"2025-12-06","end":"2025-12-07","actualWorkDays":2,"roleTags":["리프레시존","부스운영","고객응대"],"tasks":["갤럭시 스토어 리프레시존 운영"],"address":"경기 고양시 일산서구 킨텍스로 217-60","lat":37.6689,"lng":126.745,"coordAccuracy":"venue","mapLabel":"킨텍스 제1전시장"},{"name":"문화역서울284 기획전시 : 백년과 하루","venue":"문화역서울284","company":"빅터시스템","cat":"exhibition","start":"2025-10-14","end":"2025-11-30","actualWorkDays":42,"roleTags":["동선안내","체험안내","전시설명","관람객응대"],"tasks":["관람객 동선 안내","스탬프 엽서 만들기 안내","간단한 전시 설명 및 관람객 응대"],"address":"서울 중구 통일로 1","lat":37.5559,"lng":126.971,"coordAccuracy":"venue","schedule":"화·수·목·금·토·일요일 근무","workWeekdays":[0,2,3,4,5,6],"mapLabel":"문화역서울284"}];
+
+
+const TODAY = new Date(); TODAY.setHours(0,0,0,0);
+function d(s){ return new Date(s+'T00:00:00'); }
+function daysInclusive(a,b){ return Math.round((b-a)/86400000)+1; }
+function scheduledDaysInclusive(a,b,weekdays){let n=0,cur=new Date(a);while(cur<=b){if(weekdays.includes(cur.getDay()))n++;cur.setDate(cur.getDate()+1);}return n;}
+EVENTS.forEach((e,i)=>{e.id='event-'+i;e.ongoing=!e.end;e._start=d(e.start);e._end=e.end?d(e.end):TODAY;e.dur=daysInclusive(e._start,e._end);e.roleTags=e.roleTags||[];if(e.actualWorkDays==null&&e.ongoing&&e.workWeekdays){e.actualWorkDays=scheduledDaysInclusive(e._start,e._end,e.workWeekdays);e.workDaysCalculated=true;}});
+const companies=[...new Set(EVENTS.map(e=>e.company))].sort((a,b)=>a.localeCompare(b,'ko'));
+const roleTags=[...new Set(EVENTS.flatMap(e=>e.roleTags))].sort((a,b)=>a.localeCompare(b,'ko'));
+const catKeys=Object.keys(CAT);
+function cssColor(cat){return getComputedStyle(document.documentElement).getPropertyValue(CAT[cat].color.replace('var(','').replace(')','')).trim()||'#F5C518';}
+function fmtDate(s){return s.replaceAll('-','.');}
+function rangeText(e){const base=e.ongoing?`${fmtDate(e.start)} ~ 현재`:(e.start===e.end?fmtDate(e.start):`${fmtDate(e.start)} ~ ${fmtDate(e.end)}`);return base+(e.schedule?' · '+e.schedule:'');}
+function filteredEvents(){const y=document.getElementById('filterYear').value,c=document.getElementById('filterCompany').value,cat=document.getElementById('filterCategory').value,role=document.getElementById('filterRole').value,q=document.getElementById('filterSearch').value.trim().toLowerCase();return EVENTS.filter(e=>{if(y!=='all' && !(e._start.getFullYear()<=+y && e._end.getFullYear()>=+y))return false;if(c!=='all'&&e.company!==c)return false;if(cat!=='all'&&e.cat!==cat)return false;if(role!=='all'&&!e.roleTags.includes(role))return false;if(q){const hay=[e.name,e.venue,e.address,e.company,CAT[e.cat].label,...e.tasks,...e.roleTags].join(' ').toLowerCase();if(!hay.includes(q))return false;}return true;}).sort((a,b)=>b._start-a._start);}
+function populateFilters(){const fc=document.getElementById('filterCompany'),fcat=document.getElementById('filterCategory'),fr=document.getElementById('filterRole');companies.forEach(x=>fc.insertAdjacentHTML('beforeend',`<option>${x}</option>`));catKeys.forEach(k=>fcat.insertAdjacentHTML('beforeend',`<option value="${k}">${CAT[k].label}</option>`));roleTags.forEach(x=>fr.insertAdjacentHTML('beforeend',`<option>${x}</option>`));}
+function renderHeaderStats(){
+  const list=EVENTS;
+  const workDays=list.filter(e=>e.actualWorkDays!=null).reduce((s,e)=>s+e.actualWorkDays,0);
+  const companies=new Set(list.map(e=>e.company)).size;
+  const locations=new Set(list.map(e=>e.address)).size;
+  document.getElementById('heroStatRow').innerHTML=`
+    <div class="stat"><div class="num">${list.length}</div><div class="lbl"><span>FIELD RECORDS</span><small>현장 기록</small></div></div>
+    <div class="stat"><div class="num">${workDays}</div><div class="lbl"><span>WORK DAYS</span><small>실근무일</small></div></div>
+    <div class="stat"><div class="num">${companies}</div><div class="lbl"><span>AGENCIES</span><small>협업 업체</small></div></div>
+    <div class="stat"><div class="num">${locations}</div><div class="lbl"><span>LOCATIONS</span><small>행사 장소</small></div></div>`;
+}
+function weekdayLabel(e){
+  if(!e.workWeekdays||!e.workWeekdays.length)return e.schedule||'';
+  const en=['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  return e.workWeekdays.map(x=>en[x]).join(' · ');
+}
+function renderHeroCurrent(){
+  const cur=EVENTS.find(e=>e.ongoing);
+  const box=document.getElementById('heroCurrent');
+  if(!cur){
+    const latest=[...EVENTS].sort((a,b)=>b._start-a._start)[0];
+    box.innerHTML=`<div><div class="current-label">LATEST SITE</div><h2>${latest.name}</h2><div class="current-meta"><b>${latest.venue}</b><br>${latest.company}<br>${rangeText(latest)}</div></div><div class="current-schedule">LATEST FIELD RECORD</div>`;
+    box.onclick=()=>openEvent(latest.id);
+    box.style.cursor='pointer';
+    return;
+  }
+  box.innerHTML=`
+    <div>
+      <div class="current-label"><span class="live-pulse"></span>CURRENTLY ON SITE · LIVE</div>
+      <h2>${cur.name}</h2>
+      <div class="current-meta"><b>${cur.venue}</b><br>${cur.company}<br>${fmtDate(cur.start)} — PRESENT · 실근무 ${cur.actualWorkDays}일</div>
+    </div>
+    <div class="current-schedule">${weekdayLabel(cur)}</div>`;
+  box.onclick=()=>openEvent(cur.id);
+  box.style.cursor='pointer';
+}
+function badgeHTML(e){const work=e.actualWorkDays!=null?`${e.actualWorkDays}일${e.workDaysCalculated?'*':''}`:'집계 중';return `<div class="badge" style="--cat:${CAT[e.cat].color}" data-event="${e.id}"><div class="top"><div class="name">${e.name}</div><div class="cat-tag">${CAT[e.cat].label}</div></div><div class="meta"><b>${e.company}</b> · ${e.venue}<br><span class="addr">${e.address}</span><br>${rangeText(e)} · 행사기간 ${e.dur}일 <span class="workdays">실근무 ${work}</span></div><div class="role-tags">${e.roleTags.slice(0,5).map(t=>`<span class="role-tag">${t}</span>`).join('')}</div><ul class="tasks">${e.tasks.map(t=>`<li>${t}</li>`).join('')}</ul></div>`;}
+function renderOverview(){const list=filteredEvents(),cur=list.find(e=>e.ongoing),recent=list.filter(e=>!e.ongoing).slice(0,5);const cats={};list.forEach(e=>cats[e.cat]=(cats[e.cat]||0)+1);const maxCat=Math.max(1,...Object.values(cats));const ag={};list.forEach(e=>ag[e.company]=(ag[e.company]||0)+1);const topAg=Object.entries(ag).sort((a,b)=>b[1]-a[1]).slice(0,6);document.getElementById('overviewContent').innerHTML=`<div class="overview-grid">${cur?`<div class="current-card" data-event="${cur.id}"><div><div class="status">● ONGOING FIELD</div><h2>${cur.name}</h2><div class="where">${cur.company} · ${cur.venue}<br>${rangeText(cur)}</div></div><div class="role-tags">${cur.roleTags.map(t=>`<span class="role-tag">${t}</span>`).join('')}</div></div>`:`<div class="current-card"><div class="status">NO ONGOING FIELD</div><h2>현재 진행 중인 기록이 없습니다.</h2></div>`}<div class="overview-side"><h3>LATEST LOGS</h3>${recent.map(e=>`<div class="recent-row" data-event="${e.id}"><span class="rr-date">${fmtDate(e.start).slice(5)}</span><span class="rr-name">${e.name}</span></div>`).join('')}</div></div><div class="overview-lower"><div class="overview-block"><h3>CATEGORY MIX</h3>${Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,n])=>`<div class="mini-bar-row" style="--cat:${CAT[k].color}"><span>${CAT[k].label}</span><div class="mini-bar"><i style="width:${n/maxCat*100}%"></i></div><b>${n}</b></div>`).join('')}</div><div class="overview-block"><h3>REPEAT AGENCIES</h3>${topAg.map(([n,c])=>`<div class="mini-bar-row" style="--cat:var(--yellow)"><span>${n}</span><div class="mini-bar"><i style="width:${c/topAg[0][1]*100}%"></i></div><b>${c}</b></div>`).join('')}<div class="overview-note">실근무일은 제공된 실제 근무일 기준입니다. BANKSY 전시는 월~금 근무 조건을 바탕으로 현재일까지 자동 집계하며, 진행 중인 기록은 페이지를 여는 날짜에 맞춰 갱신됩니다.</div></div></div>`;bindEventOpeners();}
+const MONTHS=[];(function(){let y=2025,m=10;const ty=TODAY.getFullYear(),tm=TODAY.getMonth()+1;while(y<ty||(y===ty&&m<=tm)){MONTHS.push({y,m});m++;if(m>12){m=1;y++;}}})();const DOW=['일','월','화','수','목','금','토'];
+function renderLegend(){const box=document.getElementById('legendCal');box.innerHTML='';catKeys.forEach(k=>{const chip=document.createElement('div');chip.className='chip on';chip.dataset.cat=k;chip.style.color=CAT[k].color;chip.innerHTML=`<span class="dot" style="background:${CAT[k].color}"></span>${CAT[k].label}`;chip.onclick=()=>{chip.classList.toggle('on');renderCalendar();};box.appendChild(chip);});}
+function activeCats(){return [...document.querySelectorAll('#legendCal .chip.on')].map(c=>c.dataset.cat);}
+function eventsOnDate(dt,list){return list.filter(e=>dt>=e._start&&dt<=e._end&&(!e.workWeekdays||e.workWeekdays.includes(dt.getDay())));}
+function renderCalendar(){const list=filteredEvents(),grid=document.getElementById('calGrid'),cats=activeCats();grid.innerHTML='';MONTHS.forEach(({y,m})=>{if(document.getElementById('filterYear').value!=='all'&&+document.getElementById('filterYear').value!==y)return;const card=document.createElement('div');card.className='month-card';const first=new Date(y,m-1,1),startDow=first.getDay(),lastDate=new Date(y,m,0).getDate();let h=`<h3>${y}년 ${m}월</h3><div class="dow">${DOW.map(x=>`<span>${x}</span>`).join('')}</div><div class="days">`;for(let i=0;i<startDow;i++)h+='<div class="day empty"></div>';for(let day=1;day<=lastDate;day++){const dt=new Date(y,m-1,day),evs=eventsOnDate(dt,list).filter(e=>cats.includes(e.cat)),iso=`${y}-${String(m).padStart(2,'0')}-${String(day).padStart(2,'0')}`;h+=`<div class="day ${evs.length?'has-event':''}" data-date="${iso}">${day}<span class="dotsrow">${evs.slice(0,4).map(e=>`<i style="background:${CAT[e.cat].color}"></i>`).join('')}</span></div>`;}h+='</div>';card.innerHTML=h;grid.appendChild(card);});grid.querySelectorAll('.day.has-event').forEach(el=>el.onclick=()=>{grid.querySelectorAll('.day.selected').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');showDayDetail(el.dataset.date);});}
+function showDayDetail(iso){const evs=eventsOnDate(d(iso),filteredEvents());document.getElementById('dayDetail').innerHTML=evs.length?`<div style="font-family:ui-monospace,monospace;color:var(--muted);font-size:12px;margin-bottom:10px;">${iso} 현장 기록 · ${evs.length}건</div>${evs.map(badgeHTML).join('')}`:'<div class="hint">해당 날짜의 기록이 없습니다.</div>';bindEventOpeners();}
+function renderCompany(){const list=filteredEvents(),grid=document.getElementById('companyGrid'),map={};list.forEach(e=>{map[e.company]=map[e.company]||{count:0,knownDays:0,unknownCount:0,names:[]};map[e.company].count++;if(e.actualWorkDays!=null)map[e.company].knownDays+=e.actualWorkDays;else map[e.company].unknownCount++;map[e.company].names.push(e);});const entries=Object.entries(map).sort((a,b)=>b[1].count-a[1].count),max=Math.max(1,...entries.map(x=>x[1].count));grid.innerHTML=entries.map(([name,v])=>`<div class="company-card"><div class="chead"><h3>${name}</h3></div><div class="nums"><div><div class="n">${v.count}</div><div class="l">참여 횟수</div></div><div><div class="n">${v.knownDays}${v.unknownCount?'+':''}일</div><div class="l">실근무일${v.unknownCount?' · 진행중 포함':''}</div></div></div><div class="bar"><i style="width:${v.count/max*100}%"></i></div><div class="events">${v.names.map(e=>`<span data-event="${e.id}">${e.name}</span>`).join('')}</div></div>`).join('');bindEventOpeners();}
+function renderCategory(){const list=filteredEvents(),grid=document.getElementById('catGrid');grid.innerHTML=catKeys.map(k=>{const es=list.filter(e=>e.cat===k).sort((a,b)=>b._start-a._start);if(!es.length)return'';return `<div class="cat-card" style="border-top:3px solid ${CAT[k].color}"><div class="chead"><h3><span class="dot" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${CAT[k].color}"></span>${CAT[k].label}</h3><span class="count">${es.length}건</span></div><div class="body">${es.map(e=>`<div class="row" data-event="${e.id}"><span class="rn">${e.name}</span><span class="rc">${e.company}</span></div>`).join('')}</div></div>`;}).join('');bindEventOpeners();}
+let leafletMap=null,markerLayer=null;
+function renderMap(){
+  const list=filteredEvents();
+  if(!leafletMap){
+    leafletMap=L.map('leafletMap',{zoomControl:true,preferCanvas:false}).setView([37.55,126.98],9);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors &copy; CARTO'}).addTo(leafletMap);
+    markerLayer=L.layerGroup().addTo(leafletMap);
+  }
+  markerLayer.clearLayers();
+  const byPoint={};
+  list.forEach(e=>{const key=`${e.lat.toFixed(4)},${e.lng.toFixed(4)}`;(byPoint[key]=byPoint[key]||[]).push(e);});
+  const pts=[];
+  Object.values(byPoint).forEach(es=>{
+    const e0=es[0],cats={};
+    es.forEach(e=>cats[e.cat]=(cats[e.cat]||0)+1);
+    const dom=Object.entries(cats).sort((a,b)=>b[1]-a[1])[0][0];
+    const color=cssColor(dom);
+    const label=es.length>1?String(es.length):'';
+    const icon=L.divIcon({
+      className:'event-pin-wrap',
+      html:`<div class="event-pin ${es.length===1?'single':''}" style="--pin:${color}" title="${e0.mapLabel||e0.venue}">${label}</div>`,
+      iconSize:[30,30],iconAnchor:[15,15],popupAnchor:[0,-16]
+    });
+    const mk=L.marker([e0.lat,e0.lng],{icon,keyboard:true,title:e0.mapLabel||e0.venue});
+    mk.bindPopup(`<b>${e0.mapLabel||e0.venue}</b> · ${es.length}건${e0.coordAccuracy!=='venue'?'<br><span class="loc-approx">핀 좌표 근사</span>':''}${es.map(e=>`<button onclick="openEvent('${e.id}')"><b>${e.name}</b><br><small>${e.venue}<br>${e.address}</small></button>`).join('')}`);
+    mk.on('click',()=>showMapDetail([...es]));
+    mk.addTo(markerLayer);pts.push([e0.lat,e0.lng]);
+  });
+  const places=Object.values(byPoint).sort((a,b)=>b.length-a.length);
+  document.getElementById('mapDetail').innerHTML=list.length?`
+    <h3>현장 위치 요약</h3>
+    <div class="map-summary"><div class="ms"><b>${places.length}</b><span>행사 장소</span></div><div class="ms"><b>${list.length}</b><span>현장 기록</span></div></div>
+    <div class="hint">지도 위 컬러 핀을 클릭하면 해당 장소의 상세 기록이 표시됩니다. 숫자가 있는 핀은 같은 좌표에 여러 기록이 있다는 뜻입니다.</div>
+    <div class="map-place-list">${places.map(es=>`<div class="mpr"><span>${es[0].mapLabel||es[0].venue}</span><span>${es.length}건</span></div>`).join('')}</div>`:'<div class="hint">현재 필터 조건에 맞는 지도 기록이 없습니다.</div>';
+  if(pts.length)leafletMap.fitBounds(pts,{padding:[34,34],maxZoom:13});
+  setTimeout(()=>leafletMap.invalidateSize(),120);
+}
+function showMapDetail(es){const e0=es[0],approx=es.some(e=>e.coordAccuracy!=='venue');document.getElementById('mapDetail').innerHTML=`<h3>${e0.mapLabel||e0.venue} · ${es.length}건</h3>${approx?'<div class="accuracy-note">※ 상세 주소는 제공된 정확 주소이며, 일부 지도 핀 좌표는 시각화를 위한 근사값입니다.</div>':''}${es.sort((a,b)=>b._start-a._start).map(badgeHTML).join('')}`;bindEventOpeners();}
+function openEvent(id){const e=EVENTS.find(x=>x.id===id);if(!e)return;const work=e.actualWorkDays!=null?e.actualWorkDays+'일'+(e.workDaysCalculated?' · 근무요일 기준 자동집계':''):'집계 중';document.getElementById('drawerContent').innerHTML=`<div class="dk">${CAT[e.cat].label} · ${e.company}</div><h2>${e.name}</h2><div class="dm">${rangeText(e)}<br>${e.venue}</div><div class="role-tags">${e.roleTags.map(t=>`<span class="role-tag">${t}</span>`).join('')}</div><section><h4>ROLE / DUTIES</h4><ul>${e.tasks.map(t=>`<li>${t}</li>`).join('')}</ul></section><section><h4>WORK PERIOD</h4><div class="dm">행사 기간 <b style="color:var(--ink)">${e.dur}일</b><br>실제 근무일 <b style="color:var(--yellow)">${work}</b>${e.schedule?'<br>근무 조건 '+e.schedule:''}</div><div class="overview-note">실근무일은 제공된 기록값을 사용하며 행사 전체 기간과 별도로 관리합니다.${e.workDaysCalculated?' 진행 중인 BANKSY 전시는 입력한 근무요일을 기준으로 현재일까지 자동 계산합니다.':''}</div></section><section><h4>LOCATION</h4><div class="dm"><b style="color:var(--ink)">${e.venue}</b><br>${e.address}</div>${e.coordAccuracy!=='venue'?'<div class="overview-note">상세 주소는 제공된 정확 주소입니다. 지도 핀 좌표는 시각화를 위한 근사값일 수 있습니다.</div>':''}</section>`;document.getElementById('drawer').classList.add('open');document.getElementById('drawerBack').classList.add('open');}
+window.openEvent=openEvent;
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('drawerBack').classList.remove('open');}
+function bindEventOpeners(){document.querySelectorAll('[data-event]').forEach(el=>{el.onclick=(ev)=>{ev.stopPropagation();openEvent(el.dataset.event);};});}
+function renderAll(){renderHeaderStats();renderHeroCurrent();renderOverview();renderCalendar();renderCompany();renderCategory();if(document.getElementById('view-map').classList.contains('active'))renderMap();}
+function switchView(btn){document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));document.querySelectorAll('section.view').forEach(s=>s.classList.remove('active'));btn.classList.add('active');document.getElementById('view-'+btn.dataset.view).classList.add('active');if(btn.dataset.view==='map')renderMap();}
+populateFilters();renderLegend();document.querySelectorAll('nav.tabs button').forEach(btn=>btn.addEventListener('click',()=>switchView(btn)));['filterYear','filterCompany','filterCategory','filterRole'].forEach(id=>document.getElementById(id).addEventListener('change',renderAll));document.getElementById('filterSearch').addEventListener('input',renderAll);document.getElementById('drawerClose').onclick=closeDrawer;document.getElementById('drawerBack').onclick=closeDrawer;document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer();});renderAll();
+
+</script>
+</body>
+</html>
