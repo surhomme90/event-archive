@@ -370,6 +370,7 @@
     letter-spacing:-.035em;position:relative;z-index:1;
   }
   .current-meta{color:var(--muted);font-size:12px;line-height:1.75;position:relative;z-index:1;}
+  .current-meta span{display:block;}
   .current-meta b{color:var(--ink);}
   .current-schedule{
     border-top:1px solid var(--line);margin-top:17px;padding-top:13px;
@@ -848,6 +849,320 @@
     }
   }
 
+  /* ===== V4.6: MOBILE-FIRST INTERACTION LAYER ===== */
+
+  /* Desktop-compatible structures */
+  .filter-options,.mobile-filter-row{display:contents;}
+  .filter-toggle,.map-mode-toggle,.accordion-toggle{display:none;}
+  .active-filter-chips{display:none;}
+  .calendar-hint{
+    margin-top:12px;color:var(--muted);font-size:11px;line-height:1.5;
+    font-family:ui-monospace,monospace;
+  }
+  .month-inline-detail{display:none;}
+  .month-inline-detail.open{
+    display:block;margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);
+  }
+  .accordion-body{display:flex;}
+  .cat-card .accordion-body{display:block;}
+  .map-place-list .mpr{
+    width:100%;border:0;background:transparent;color:var(--ink);
+    font-family:inherit;text-align:left;cursor:pointer;
+  }
+  .map-place-list .mpr:hover{color:var(--yellow);}
+  .map-back-list{
+    border:1px solid var(--line);background:var(--surface2);color:var(--muted);
+    padding:7px 9px;margin:0 0 12px;font:700 10px ui-monospace,monospace;
+    cursor:pointer;
+  }
+  .map-back-list:hover{color:var(--yellow);border-color:var(--yellow);}
+
+  @media(max-width:640px){
+    body.modal-open{overflow:hidden;}
+    .wrap{
+      padding-bottom:calc(56px + env(safe-area-inset-bottom));
+    }
+
+    /* 01. Hero: compact summary rather than a second full card */
+    .hero-grid{gap:14px;}
+    .hero-summary{
+      font-size:13.5px;
+      line-height:1.62;
+      margin-top:15px;
+    }
+    .hero-cta{margin-top:16px;}
+    .hero-current{
+      display:grid;
+      grid-template-columns:minmax(0,1fr);
+      gap:7px;
+      min-height:0;
+      padding:12px 13px;
+      border-left:3px solid var(--yellow);
+    }
+    .hero-current::after{font-size:34px;right:7px;bottom:-2px;}
+    .current-label{font-size:9px;letter-spacing:.09em;}
+    .hero-current h2{
+      margin:8px 0 5px;
+      font-size:17px;
+      line-height:1.2;
+    }
+    .current-meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:2px 8px;
+      font-size:12.2px;
+      line-height:1.45;
+    }
+    .current-meta span{display:inline-flex;min-width:0;}
+    .current-meta .current-period{
+      flex-basis:100%;
+      color:var(--muted);
+      font-size:11.2px;
+    }
+    .current-schedule{display:none;}
+
+    /* 02. Typography: readable content stays larger; labels stay compact */
+    .badge .meta,.badge ul.tasks{font-size:12.5px;line-height:1.62;}
+    .badge .name{font-size:14.5px;}
+    .company-card .events span{font-size:11.7px;line-height:1.45;}
+    .cat-card .body .row{font-size:12.5px;}
+    .cat-card .body .row .rc{font-size:11.3px;}
+    .map-detail .hint{font-size:12.3px;}
+    .map-place-list .mpr{font-size:12.3px;line-height:1.45;}
+    .drawer .dm,.drawer ul{font-size:12.7px;line-height:1.65;}
+
+    /* 03. Filters: search always visible, options collapse */
+    .filterbar{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-bottom:18px;
+    }
+    .mobile-filter-row{
+      order:1;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:7px;
+    }
+    .mobile-filter-row input{
+      grid-column:auto;
+      min-height:44px;
+      font-size:12px;
+      padding:10px 11px;
+    }
+    .filter-toggle{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      min-height:44px;
+      padding:0 11px;
+      border:1px solid var(--line);
+      background:var(--surface);
+      color:var(--muted);
+      font:800 10px ui-monospace,monospace;
+      letter-spacing:.07em;
+      cursor:pointer;
+    }
+    .filter-toggle.has-active{border-color:var(--yellow);color:var(--yellow);}
+    .filter-count{
+      display:inline-grid;place-items:center;
+      min-width:18px;height:18px;padding:0 4px;
+      border-radius:20px;background:var(--surface2);
+      color:var(--ink);font-size:9px;
+    }
+    .filter-chevron{font-size:14px;transition:transform .15s;}
+    .filter-toggle[aria-expanded="true"] .filter-chevron{transform:rotate(180deg);}
+    .filter-options{
+      order:2;
+      display:none;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:7px;
+    }
+    .filter-options.open{display:grid;}
+    .filter-options select{
+      min-width:0;
+      min-height:42px;
+      font-size:11.7px;
+      padding:9px 8px;
+    }
+    .active-filter-chips{
+      order:3;
+      display:flex;
+      gap:6px;
+      overflow-x:auto;
+      scrollbar-width:none;
+      padding-bottom:1px;
+      -webkit-overflow-scrolling:touch;
+    }
+    .active-filter-chips:empty{display:none;}
+    .active-filter-chips::-webkit-scrollbar{display:none;}
+    .filter-chip{
+      flex:none;
+      max-width:220px;
+      border:1px solid var(--line);
+      background:var(--surface2);
+      color:var(--muted);
+      padding:6px 9px;
+      border-radius:20px;
+      font-size:10.5px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      cursor:pointer;
+    }
+    .filter-chip::after{content:"  ×";color:var(--yellow);}
+
+    /* 04. Calendar: selected date expands directly inside its month */
+    .calendar-hint{font-size:10.5px;margin-top:10px;}
+    .month-inline-detail.open{
+      margin:11px -2px 0;
+      padding:12px 2px 0;
+    }
+    .month-inline-detail .detail-date{
+      color:var(--yellow);
+      font:700 10px ui-monospace,monospace;
+      margin-bottom:9px;
+      letter-spacing:.04em;
+    }
+
+    /* 05. Category legend: one horizontal row */
+    .legend{
+      flex-wrap:nowrap;
+      overflow-x:auto;
+      gap:7px;
+      margin:0 -12px 16px;
+      padding:0 12px 3px;
+      scrollbar-width:none;
+      -webkit-overflow-scrolling:touch;
+    }
+    .legend::-webkit-scrollbar{display:none;}
+    .legend .chip{flex:none;white-space:nowrap;}
+
+    /* Profile becomes a compact 2 x 2 information matrix */
+    .profile-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .profile-item{
+      padding:11px 12px 12px;
+      border-right:1px solid var(--line);
+    }
+    .profile-item:nth-child(2n){border-right:0;}
+    .profile-item .pl{font-size:8.5px;margin-bottom:5px;}
+    .profile-item .pv{
+      font-size:11.7px;
+      line-height:1.5;
+    }
+    .profile-item .pv br{display:none;}
+
+    /* 06. Agency / category cards: summary first, details on demand */
+    .accordion-toggle{
+      display:flex;
+      width:100%;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-top:11px;
+      padding:10px 0 2px;
+      border:0;
+      border-top:1px solid var(--line);
+      background:transparent;
+      color:var(--muted);
+      font:700 10.5px ui-monospace,monospace;
+      cursor:pointer;
+      text-align:left;
+    }
+    .accordion-toggle .acc-arrow{transition:transform .15s;color:var(--yellow);}
+    .accordion-card .accordion-body{display:none;}
+    .accordion-card.expanded .accordion-body{display:flex;}
+    .cat-card.accordion-card.expanded .accordion-body{display:block;}
+    .accordion-card.expanded .accordion-toggle .acc-arrow{transform:rotate(180deg);}
+    .company-card .events{margin-top:8px;}
+    .cat-card .body{max-height:none;}
+
+    /* 07. Map: choose MAP or LIST instead of stacking both */
+    .map-mode-toggle{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      margin-bottom:9px;
+      border:1px solid var(--line);
+      background:var(--surface);
+    }
+    .map-mode-toggle button{
+      min-height:40px;
+      border:0;
+      background:transparent;
+      color:var(--muted);
+      font:800 10.5px ui-monospace,monospace;
+      letter-spacing:.08em;
+      cursor:pointer;
+    }
+    .map-mode-toggle button+button{border-left:1px solid var(--line);}
+    .map-mode-toggle button.active{background:var(--yellow);color:var(--bg);}
+    .map-wrap{display:block;}
+    .map-wrap[data-mode="map"] .map-detail{display:none;}
+    .map-wrap[data-mode="list"] .map-box{display:none;}
+    #leafletMap{height:min(58vh,420px);min-height:330px;}
+    .map-detail{
+      max-height:none;
+      overflow:visible;
+      padding:14px;
+    }
+    .map-place-list .mpr{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      min-height:43px;
+      padding:9px 0;
+    }
+
+    /* 08. Event detail becomes a native-feeling bottom sheet */
+    .drawer{
+      left:0;
+      right:0;
+      top:auto;
+      bottom:0;
+      width:100%;
+      height:min(88dvh,760px);
+      border-left:0;
+      border-top:1px solid var(--line);
+      border-radius:16px 16px 0 0;
+      transform:translateY(104%);
+      transition:transform .24s ease;
+      padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+      overscroll-behavior:contain;
+      -webkit-overflow-scrolling:touch;
+    }
+    .drawer.open{transform:translateY(0);}
+    .drawer::before{
+      content:"";
+      display:block;
+      width:42px;height:4px;
+      border-radius:4px;
+      background:#5a5d68;
+      margin:0 auto 8px;
+    }
+    .drawer-close{
+      position:sticky;
+      top:0;
+      z-index:3;
+      float:right;
+      width:40px;height:40px;
+      background:var(--surface2);
+    }
+    .drawer .dk{padding-top:46px;font-size:9.5px;}
+    .drawer h2{font-size:23px;line-height:1.18;}
+
+    /* Touch targets */
+    nav.tabs button,.legend .chip,.hero-cta{min-height:42px;}
+  }
+
+  @media(max-width:360px){
+    .profile-grid{grid-template-columns:1fr;}
+    .profile-item{border-right:0;}
+    .mobile-filter-row{grid-template-columns:1fr;}
+    .filter-toggle{width:100%;}
+    .hero-copy h1{font-size:28px;}
+  }
+
 </style>
 </head>
 <body>
@@ -863,7 +1178,7 @@
       <div class="hero-grid">
         <div class="hero-copy">
           <div class="hero-role">OH HYUNWOO · EVENT FIELD OPERATIONS ARCHIVE</div>
-          <h1>사람이 모이는 현장에서, <br class="hero-br"><span>흐름을 운영합니다.</span></h1>
+          <h1>사람이 모이는 현장에서,<br class="hero-br"><span>흐름을 운영합니다.</span></h1>
           <p class="hero-lead hero-summary">다양한 행사 현장에서 쌓아온 운영 경험을 시간 · 업체 · 카테고리 · 장소로 기록합니다.</p>
           <a class="hero-cta" href="#archiveStart">VIEW ARCHIVE <span>↓</span></a>
         </div>
@@ -908,11 +1223,19 @@
   </nav>
 
   <div class="filterbar">
-    <select id="filterYear"><option value="all">전체 연도</option><option value="2026">2026</option><option value="2025">2025</option></select>
-    <select id="filterCompany"><option value="all">전체 업체</option></select>
-    <select id="filterCategory"><option value="all">전체 카테고리</option></select>
-    <select id="filterRole"><option value="all">전체 업무 태그</option></select>
-    <input id="filterSearch" type="search" placeholder="행사명 · 장소 · 주소 · 업무 검색">
+    <div class="filter-options" id="filterOptions">
+      <select id="filterYear"><option value="all">전체 연도</option><option value="2026">2026</option><option value="2025">2025</option></select>
+      <select id="filterCompany"><option value="all">전체 업체</option></select>
+      <select id="filterCategory"><option value="all">전체 카테고리</option></select>
+      <select id="filterRole"><option value="all">전체 업무 태그</option></select>
+    </div>
+    <div class="mobile-filter-row">
+      <input id="filterSearch" type="search" placeholder="행사명 · 장소 · 주소 · 업무 검색">
+      <button type="button" class="filter-toggle" id="filterToggle" aria-expanded="false" aria-controls="filterOptions">
+        FILTER <span class="filter-count" id="filterCount">0</span><span class="filter-chevron">⌄</span>
+      </button>
+    </div>
+    <div class="active-filter-chips" id="activeFilterChips" aria-live="polite"></div>
   </div>
 
   <!-- ================= OVERVIEW ================= -->
@@ -923,10 +1246,10 @@
 
   <!-- ================= CALENDAR ================= -->
   <section class="view" id="view-calendar">
-    <div class="panel-title"><h2>캘린더형 아카이브</h2><span>실제 근무일 기준 · 2025.10 – 2026.08</span></div>
+    <div class="panel-title"><h2>캘린더형 아카이브</h2><span>최신 월부터 · 실제 근무일 기준</span></div>
     <div class="legend" id="legendCal"></div>
     <div class="cal-grid" id="calGrid"></div>
-    <div class="day-detail" id="dayDetail"><div class="hint">날짜를 클릭하면 그날의 현장 기록이 여기에 표시됩니다.</div></div>
+    <div class="calendar-hint">날짜를 선택하면 해당 월 카드 안에서 현장 기록이 바로 펼쳐집니다.</div>
   </section>
 
   <!-- ================= COMPANY ================= -->
@@ -944,7 +1267,11 @@
   <!-- ================= MAP ================= -->
   <section class="view" id="view-map">
     <div class="panel-title"><h2>지도형 아카이브</h2><span>실제 지도 · 정확 주소 기반 기록</span></div>
-    <div class="map-wrap">
+    <div class="map-mode-toggle" id="mapModeToggle" aria-label="지도 보기 방식">
+      <button type="button" class="active" data-map-mode="map">MAP</button>
+      <button type="button" data-map-mode="list">LIST</button>
+    </div>
+    <div class="map-wrap" id="mapWrap" data-mode="map">
       <div class="map-box">
         <div id="leafletMap"></div>
         <div class="map-note">※ 모든 기록에 제공된 정확 주소를 저장했습니다. 일부 지도 핀 좌표는 시각화를 위한 근사값이며, 상세 패널의 주소를 기준으로 확인하세요. 원 크기 = 동일 위치의 현장 기록 수</div>
@@ -953,7 +1280,7 @@
     </div>
   </section>
 
-  <footer>ARCHIVE v4.5 — SHORT HERO COPY / LATEST-FIRST CALENDAR / OH HYUNWOO</footer>
+  <footer>ARCHIVE v4.6 — MOBILE-FIRST UX / INLINE CALENDAR / MAP-LIST / BOTTOM SHEET</footer>
 </div>
 <div class="drawer-back" id="drawerBack"></div><aside class="drawer" id="drawer"><button class="drawer-close" id="drawerClose">×</button><div id="drawerContent"></div></aside>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -982,6 +1309,68 @@ EVENTS.forEach((e,i)=>{e.id='event-'+i;e.ongoing=!e.end;e._start=d(e.start);e._e
 const companies=[...new Set(EVENTS.map(e=>e.company))].sort((a,b)=>a.localeCompare(b,'ko'));
 const roleTags=[...new Set(EVENTS.flatMap(e=>e.roleTags))].sort((a,b)=>a.localeCompare(b,'ko'));
 const catKeys=Object.keys(CAT);
+const isMobile=()=>window.matchMedia('(max-width: 640px)').matches;
+function escapeHTML(v){return String(v).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));}
+function filterLabel(id,value){
+  if(id==='filterYear')return value;
+  if(id==='filterCompany')return value;
+  if(id==='filterCategory')return CAT[value]?.label||value;
+  if(id==='filterRole')return value;
+  if(id==='filterSearch')return `검색 · ${value}`;
+  return value;
+}
+function updateFilterUI(){
+  const defs=[
+    ['filterYear','all'],
+    ['filterCompany','all'],
+    ['filterCategory','all'],
+    ['filterRole','all'],
+    ['filterSearch','']
+  ];
+  const active=defs.map(([id,empty])=>{
+    const el=document.getElementById(id),value=el.value.trim();
+    return value!==empty?{id,value}:null;
+  }).filter(Boolean);
+  const count=document.getElementById('filterCount');
+  const toggle=document.getElementById('filterToggle');
+  const chips=document.getElementById('activeFilterChips');
+  if(count)count.textContent=active.length;
+  if(toggle)toggle.classList.toggle('has-active',active.length>0);
+  if(chips){
+    chips.innerHTML=active.map(x=>`<button type="button" class="filter-chip" data-reset-filter="${x.id}" title="필터 해제">${escapeHTML(filterLabel(x.id,x.value))}</button>`).join('');
+    chips.querySelectorAll('[data-reset-filter]').forEach(btn=>btn.onclick=()=>{
+      const id=btn.dataset.resetFilter,el=document.getElementById(id);
+      el.value=id==='filterSearch'?'':'all';
+      renderAll();
+    });
+  }
+}
+function toggleMobileFilters(){
+  const box=document.getElementById('filterOptions'),btn=document.getElementById('filterToggle');
+  const open=!box.classList.contains('open');
+  box.classList.toggle('open',open);
+  btn.setAttribute('aria-expanded',String(open));
+}
+function bindAccordions(){
+  document.querySelectorAll('.accordion-toggle').forEach(btn=>{
+    btn.onclick=()=>{
+      const card=btn.closest('.accordion-card');
+      const open=!card.classList.contains('expanded');
+      card.classList.toggle('expanded',open);
+      btn.setAttribute('aria-expanded',String(open));
+    };
+  });
+}
+function setMapMode(mode){
+  const wrap=document.getElementById('mapWrap');
+  if(!wrap)return;
+  wrap.dataset.mode=mode;
+  document.querySelectorAll('#mapModeToggle [data-map-mode]').forEach(btn=>{
+    btn.classList.toggle('active',btn.dataset.mapMode===mode);
+  });
+  if(mode==='map'&&leafletMap)setTimeout(()=>leafletMap.invalidateSize(),80);
+}
+
 function cssColor(cat){return getComputedStyle(document.documentElement).getPropertyValue(CAT[cat].color.replace('var(','').replace(')','')).trim()||'#F5C518';}
 function fmtDate(s){return s.replaceAll('-','.');}
 function rangeText(e){const base=e.ongoing?`${fmtDate(e.start)} ~ 현재`:(e.start===e.end?fmtDate(e.start):`${fmtDate(e.start)} ~ ${fmtDate(e.end)}`);return base+(e.schedule?' · '+e.schedule:'');}
@@ -1008,7 +1397,17 @@ function renderHeroCurrent(){
   const box=document.getElementById('heroCurrent');
   if(!cur){
     const latest=[...EVENTS].sort((a,b)=>b._start-a._start)[0];
-    box.innerHTML=`<div><div class="current-label">LATEST SITE</div><h2>${latest.name}</h2><div class="current-meta"><b>${latest.venue}</b><br>${latest.company}<br>${rangeText(latest)}</div></div><div class="current-schedule">LATEST FIELD RECORD</div>`;
+    box.innerHTML=`
+      <div>
+        <div class="current-label">LATEST SITE</div>
+        <h2>${latest.name}</h2>
+        <div class="current-meta">
+          <span class="current-venue"><b>${latest.venue}</b></span>
+          <span class="current-company">${latest.company}</span>
+          <span class="current-period">${rangeText(latest)}</span>
+        </div>
+      </div>
+      <div class="current-schedule">LATEST FIELD RECORD</div>`;
     box.onclick=()=>openEvent(latest.id);
     box.style.cursor='pointer';
     return;
@@ -1017,7 +1416,11 @@ function renderHeroCurrent(){
     <div>
       <div class="current-label"><span class="live-pulse"></span>CURRENTLY ON SITE · LIVE</div>
       <h2>${cur.name}</h2>
-      <div class="current-meta"><b>${cur.venue}</b><br>${cur.company}<br>${fmtDate(cur.start)} — PRESENT · 실근무 ${cur.actualWorkDays}일</div>
+      <div class="current-meta">
+        <span class="current-venue"><b>${cur.venue}</b></span>
+        <span class="current-company">${cur.company}</span>
+        <span class="current-period">${fmtDate(cur.start)} — PRESENT · 실근무 ${cur.actualWorkDays}일</span>
+      </div>
     </div>
     <div class="current-schedule">${weekdayLabel(cur)}</div>`;
   box.onclick=()=>openEvent(cur.id);
@@ -1029,10 +1432,93 @@ const MONTHS=[];(function(){let y=2025,m=10;const ty=TODAY.getFullYear(),tm=TODA
 function renderLegend(){const box=document.getElementById('legendCal');box.innerHTML='';catKeys.forEach(k=>{const chip=document.createElement('div');chip.className='chip on';chip.dataset.cat=k;chip.style.color=CAT[k].color;chip.innerHTML=`<span class="dot" style="background:${CAT[k].color}"></span>${CAT[k].label}`;chip.onclick=()=>{chip.classList.toggle('on');renderCalendar();};box.appendChild(chip);});}
 function activeCats(){return [...document.querySelectorAll('#legendCal .chip.on')].map(c=>c.dataset.cat);}
 function eventsOnDate(dt,list){return list.filter(e=>dt>=e._start&&dt<=e._end&&(!e.workWeekdays||e.workWeekdays.includes(dt.getDay())));}
-function renderCalendar(){const list=filteredEvents(),grid=document.getElementById('calGrid'),cats=activeCats();grid.innerHTML='';const yearFilter=document.getElementById('filterYear').value;const visibleMonths=[...MONTHS].filter(({y})=>yearFilter==='all'||+yearFilter===y).reverse();visibleMonths.forEach(({y,m},monthIndex)=>{const card=document.createElement('div');card.className='month-card';const first=new Date(y,m-1,1),startDow=first.getDay(),lastDate=new Date(y,m,0).getDate();const latest=monthIndex===0;let h=`<div class="month-head"><h3>${y}년 ${m}월</h3>${latest?'<span class="latest-month-badge">LATEST</span>':''}</div><div class="dow">${DOW.map(x=>`<span>${x}</span>`).join('')}</div><div class="days">`;for(let i=0;i<startDow;i++)h+='<div class="day empty"></div>';for(let day=1;day<=lastDate;day++){const dt=new Date(y,m-1,day),evs=eventsOnDate(dt,list).filter(e=>cats.includes(e.cat)),iso=`${y}-${String(m).padStart(2,'0')}-${String(day).padStart(2,'0')}`;h+=`<div class="day ${evs.length?'has-event':''}" data-date="${iso}">${day}<span class="dotsrow">${evs.slice(0,4).map(e=>`<i style="background:${CAT[e.cat].color}"></i>`).join('')}</span></div>`;}h+='</div>';card.innerHTML=h;grid.appendChild(card);});grid.querySelectorAll('.day.has-event').forEach(el=>el.onclick=()=>{grid.querySelectorAll('.day.selected').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');showDayDetail(el.dataset.date);});}
-function showDayDetail(iso){const evs=eventsOnDate(d(iso),filteredEvents());document.getElementById('dayDetail').innerHTML=evs.length?`<div style="font-family:ui-monospace,monospace;color:var(--muted);font-size:12px;margin-bottom:10px;">${iso} 현장 기록 · ${evs.length}건</div>${evs.map(badgeHTML).join('')}`:'<div class="hint">해당 날짜의 기록이 없습니다.</div>';bindEventOpeners();}
-function renderCompany(){const list=filteredEvents(),grid=document.getElementById('companyGrid'),map={};list.forEach(e=>{map[e.company]=map[e.company]||{count:0,knownDays:0,unknownCount:0,names:[]};map[e.company].count++;if(e.actualWorkDays!=null)map[e.company].knownDays+=e.actualWorkDays;else map[e.company].unknownCount++;map[e.company].names.push(e);});const entries=Object.entries(map).sort((a,b)=>b[1].count-a[1].count),max=Math.max(1,...entries.map(x=>x[1].count));grid.innerHTML=entries.map(([name,v])=>`<div class="company-card"><div class="chead"><h3>${name}</h3></div><div class="nums"><div><div class="n">${v.count}</div><div class="l">참여 횟수</div></div><div><div class="n">${v.knownDays}${v.unknownCount?'+':''}일</div><div class="l">실근무일${v.unknownCount?' · 진행중 포함':''}</div></div></div><div class="bar"><i style="width:${v.count/max*100}%"></i></div><div class="events">${v.names.map(e=>`<span data-event="${e.id}">${e.name}</span>`).join('')}</div></div>`).join('');bindEventOpeners();}
-function renderCategory(){const list=filteredEvents(),grid=document.getElementById('catGrid');grid.innerHTML=catKeys.map(k=>{const es=list.filter(e=>e.cat===k).sort((a,b)=>b._start-a._start);if(!es.length)return'';return `<div class="cat-card" style="border-top:3px solid ${CAT[k].color}"><div class="chead"><h3><span class="dot" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${CAT[k].color}"></span>${CAT[k].label}</h3><span class="count">${es.length}건</span></div><div class="body">${es.map(e=>`<div class="row" data-event="${e.id}"><span class="rn">${e.name}</span><span class="rc">${e.company}</span></div>`).join('')}</div></div>`;}).join('');bindEventOpeners();}
+function renderCalendar(){
+  const list=filteredEvents(),grid=document.getElementById('calGrid'),cats=activeCats();
+  grid.innerHTML='';
+  const yearFilter=document.getElementById('filterYear').value;
+  const visibleMonths=[...MONTHS].filter(({y})=>yearFilter==='all'||+yearFilter===y).reverse();
+  visibleMonths.forEach(({y,m},monthIndex)=>{
+    const card=document.createElement('div');
+    card.className='month-card';
+    const first=new Date(y,m-1,1),startDow=first.getDay(),lastDate=new Date(y,m,0).getDate();
+    const latest=monthIndex===0;
+    let h=`<div class="month-head"><h3>${y}년 ${m}월</h3>${latest?'<span class="latest-month-badge">LATEST</span>':''}</div><div class="dow">${DOW.map(x=>`<span>${x}</span>`).join('')}</div><div class="days">`;
+    for(let i=0;i<startDow;i++)h+='<div class="day empty"></div>';
+    for(let day=1;day<=lastDate;day++){
+      const dt=new Date(y,m-1,day),evs=eventsOnDate(dt,list).filter(e=>cats.includes(e.cat));
+      const iso=`${y}-${String(m).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      h+=`<div class="day ${evs.length?'has-event':''}" data-date="${iso}">${day}<span class="dotsrow">${evs.slice(0,4).map(e=>`<i style="background:${CAT[e.cat].color}"></i>`).join('')}</span></div>`;
+    }
+    h+=`</div><div class="month-inline-detail" aria-live="polite"></div>`;
+    card.innerHTML=h;
+    grid.appendChild(card);
+  });
+  grid.querySelectorAll('.day.has-event').forEach(el=>el.onclick=()=>{
+    grid.querySelectorAll('.day.selected').forEach(x=>x.classList.remove('selected'));
+    el.classList.add('selected');
+    showDayDetail(el.dataset.date,el.closest('.month-card'));
+  });
+}
+function showDayDetail(iso,card){
+  const evs=eventsOnDate(d(iso),filteredEvents());
+  document.querySelectorAll('.month-inline-detail.open').forEach(box=>{
+    if(box!==card.querySelector('.month-inline-detail')){
+      box.classList.remove('open');
+      box.innerHTML='';
+      box.closest('.month-card')?.classList.remove('detail-open');
+    }
+  });
+  const box=card.querySelector('.month-inline-detail');
+  box.innerHTML=evs.length
+    ?`<div class="detail-date">${iso} · 현장 기록 ${evs.length}건</div>${evs.map(badgeHTML).join('')}`
+    :'<div class="hint">해당 날짜의 기록이 없습니다.</div>';
+  box.classList.add('open');
+  card.classList.add('detail-open');
+  bindEventOpeners();
+  if(isMobile())setTimeout(()=>box.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+}
+function renderCompany(){
+  const list=filteredEvents(),grid=document.getElementById('companyGrid'),map={};
+  list.forEach(e=>{
+    map[e.company]=map[e.company]||{count:0,knownDays:0,unknownCount:0,names:[]};
+    map[e.company].count++;
+    if(e.actualWorkDays!=null)map[e.company].knownDays+=e.actualWorkDays;
+    else map[e.company].unknownCount++;
+    map[e.company].names.push(e);
+  });
+  const entries=Object.entries(map).sort((a,b)=>b[1].count-a[1].count),max=Math.max(1,...entries.map(x=>x[1].count));
+  grid.innerHTML=entries.map(([name,v])=>`
+    <div class="company-card accordion-card">
+      <div class="chead"><h3>${name}</h3></div>
+      <div class="nums">
+        <div><div class="n">${v.count}</div><div class="l">참여 횟수</div></div>
+        <div><div class="n">${v.knownDays}${v.unknownCount?'+':''}일</div><div class="l">실근무일${v.unknownCount?' · 진행중 포함':''}</div></div>
+      </div>
+      <div class="bar"><i style="width:${v.count/max*100}%"></i></div>
+      <button type="button" class="accordion-toggle" aria-expanded="false">
+        <span>기록 ${v.count}건 보기</span><span class="acc-arrow">⌄</span>
+      </button>
+      <div class="events accordion-body">${v.names.map(e=>`<span data-event="${e.id}">${e.name}</span>`).join('')}</div>
+    </div>`).join('');
+  bindAccordions();
+  bindEventOpeners();
+}
+function renderCategory(){
+  const list=filteredEvents(),grid=document.getElementById('catGrid');
+  grid.innerHTML=catKeys.map(k=>{
+    const es=list.filter(e=>e.cat===k).sort((a,b)=>b._start-a._start);
+    if(!es.length)return'';
+    return `<div class="cat-card accordion-card" style="border-top:3px solid ${CAT[k].color}">
+      <div class="chead"><h3><span class="dot" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${CAT[k].color}"></span>${CAT[k].label}</h3><span class="count">${es.length}건</span></div>
+      <button type="button" class="accordion-toggle" aria-expanded="false">
+        <span>기록 ${es.length}건 보기</span><span class="acc-arrow">⌄</span>
+      </button>
+      <div class="body accordion-body">${es.map(e=>`<div class="row" data-event="${e.id}"><span class="rn">${e.name}</span><span class="rc">${e.company}</span></div>`).join('')}</div>
+    </div>`;
+  }).join('');
+  bindAccordions();
+  bindEventOpeners();
+}
 let leafletMap=null,markerLayer=null;
 function renderMap(){
   const list=filteredEvents();
@@ -1045,7 +1531,7 @@ function renderMap(){
   const byPoint={};
   list.forEach(e=>{const key=`${e.lat.toFixed(4)},${e.lng.toFixed(4)}`;(byPoint[key]=byPoint[key]||[]).push(e);});
   const pts=[];
-  Object.values(byPoint).forEach(es=>{
+  Object.entries(byPoint).forEach(([key,es])=>{
     const e0=es[0],cats={};
     es.forEach(e=>cats[e.cat]=(cats[e.cat]||0)+1);
     const dom=Object.entries(cats).sort((a,b)=>b[1]-a[1])[0][0];
@@ -1058,26 +1544,55 @@ function renderMap(){
     });
     const mk=L.marker([e0.lat,e0.lng],{icon,keyboard:true,title:e0.mapLabel||e0.venue});
     mk.bindPopup(`<b>${e0.mapLabel||e0.venue}</b> · ${es.length}건${e0.coordAccuracy!=='venue'?'<br><span class="loc-approx">핀 좌표 근사</span>':''}${es.map(e=>`<button onclick="openEvent('${e.id}')"><b>${e.name}</b><br><small>${e.venue}<br>${e.address}</small></button>`).join('')}`);
-    mk.on('click',()=>showMapDetail([...es]));
+    mk.on('click',()=>{
+      showMapDetail([...es]);
+      if(isMobile())setMapMode('list');
+    });
     mk.addTo(markerLayer);pts.push([e0.lat,e0.lng]);
   });
-  const places=Object.values(byPoint).sort((a,b)=>b.length-a.length);
-  document.getElementById('mapDetail').innerHTML=list.length?`
-    <h3>현장 위치 요약</h3>
-    <div class="map-summary"><div class="ms"><b>${places.length}</b><span>행사 장소</span></div><div class="ms"><b>${list.length}</b><span>현장 기록</span></div></div>
-    <div class="hint">지도 위 컬러 핀을 클릭하면 해당 장소의 상세 기록이 표시됩니다. 숫자가 있는 핀은 같은 좌표에 여러 기록이 있다는 뜻입니다.</div>
-    <div class="map-place-list">${places.map(es=>`<div class="mpr"><span>${es[0].mapLabel||es[0].venue}</span><span>${es.length}건</span></div>`).join('')}</div>`:'<div class="hint">현재 필터 조건에 맞는 지도 기록이 없습니다.</div>';
+  renderMapSummary(byPoint,list);
   if(pts.length)leafletMap.fitBounds(pts,{padding:[34,34],maxZoom:13});
   setTimeout(()=>leafletMap.invalidateSize(),120);
 }
-function showMapDetail(es){const e0=es[0],approx=es.some(e=>e.coordAccuracy!=='venue');document.getElementById('mapDetail').innerHTML=`<h3>${e0.mapLabel||e0.venue} · ${es.length}건</h3>${approx?'<div class="accuracy-note">※ 상세 주소는 제공된 정확 주소이며, 일부 지도 핀 좌표는 시각화를 위한 근사값입니다.</div>':''}${es.sort((a,b)=>b._start-a._start).map(badgeHTML).join('')}`;bindEventOpeners();}
-function openEvent(id){const e=EVENTS.find(x=>x.id===id);if(!e)return;const work=e.actualWorkDays!=null?e.actualWorkDays+'일'+(e.workDaysCalculated?' · 근무요일 기준 자동집계':''):'집계 중';document.getElementById('drawerContent').innerHTML=`<div class="dk">${CAT[e.cat].label} · ${e.company}</div><h2>${e.name}</h2><div class="dm">${rangeText(e)}<br>${e.venue}</div><div class="role-tags">${e.roleTags.map(t=>`<span class="role-tag">${t}</span>`).join('')}</div><section><h4>ROLE / DUTIES</h4><ul>${e.tasks.map(t=>`<li>${t}</li>`).join('')}</ul></section><section><h4>WORK PERIOD</h4><div class="dm">행사 기간 <b style="color:var(--ink)">${e.dur}일</b><br>실제 근무일 <b style="color:var(--yellow)">${work}</b>${e.schedule?'<br>근무 조건 '+e.schedule:''}</div><div class="overview-note">실근무일은 제공된 기록값을 사용하며 행사 전체 기간과 별도로 관리합니다.${e.workDaysCalculated?' 진행 중인 BANKSY 전시는 입력한 근무요일을 기준으로 현재일까지 자동 계산합니다.':''}</div></section><section><h4>LOCATION</h4><div class="dm"><b style="color:var(--ink)">${e.venue}</b><br>${e.address}</div>${e.coordAccuracy!=='venue'?'<div class="overview-note">상세 주소는 제공된 정확 주소입니다. 지도 핀 좌표는 시각화를 위한 근사값일 수 있습니다.</div>':''}</section>`;document.getElementById('drawer').classList.add('open');document.getElementById('drawerBack').classList.add('open');}
+function renderMapSummary(byPoint,list){
+  const places=Object.entries(byPoint).sort((a,b)=>b[1].length-a[1].length);
+  const detail=document.getElementById('mapDetail');
+  detail.innerHTML=list.length?`
+    <h3>현장 위치 요약</h3>
+    <div class="map-summary"><div class="ms"><b>${places.length}</b><span>행사 장소</span></div><div class="ms"><b>${list.length}</b><span>현장 기록</span></div></div>
+    <div class="hint">장소를 선택하면 해당 위치의 현장 기록을 확인할 수 있습니다.</div>
+    <div class="map-place-list">${places.map(([key,es])=>`<button type="button" class="mpr" data-map-key="${key}"><span>${es[0].mapLabel||es[0].venue}</span><span>${es.length}건</span></button>`).join('')}</div>`
+    :'<div class="hint">현재 필터 조건에 맞는 지도 기록이 없습니다.</div>';
+  detail.querySelectorAll('[data-map-key]').forEach(btn=>btn.onclick=()=>showMapDetail([...(byPoint[btn.dataset.mapKey]||[])]));
+}
+function showMapDetail(es){
+  if(!es.length)return;
+  const e0=es[0],approx=es.some(e=>e.coordAccuracy!=='venue');
+  document.getElementById('mapDetail').innerHTML=`
+    <button type="button" class="map-back-list" id="mapBackList">← 전체 장소</button>
+    <h3>${e0.mapLabel||e0.venue} · ${es.length}건</h3>
+    ${approx?'<div class="accuracy-note">※ 상세 주소는 제공된 정확 주소이며, 일부 지도 핀 좌표는 시각화를 위한 근사값입니다.</div>':''}
+    ${es.sort((a,b)=>b._start-a._start).map(badgeHTML).join('')}`;
+  document.getElementById('mapBackList').onclick=()=>renderMap();
+  bindEventOpeners();
+}
+function openEvent(id){const e=EVENTS.find(x=>x.id===id);if(!e)return;const work=e.actualWorkDays!=null?e.actualWorkDays+'일'+(e.workDaysCalculated?' · 근무요일 기준 자동집계':''):'집계 중';document.getElementById('drawerContent').innerHTML=`<div class="dk">${CAT[e.cat].label} · ${e.company}</div><h2>${e.name}</h2><div class="dm">${rangeText(e)}<br>${e.venue}</div><div class="role-tags">${e.roleTags.map(t=>`<span class="role-tag">${t}</span>`).join('')}</div><section><h4>ROLE / DUTIES</h4><ul>${e.tasks.map(t=>`<li>${t}</li>`).join('')}</ul></section><section><h4>WORK PERIOD</h4><div class="dm">행사 기간 <b style="color:var(--ink)">${e.dur}일</b><br>실제 근무일 <b style="color:var(--yellow)">${work}</b>${e.schedule?'<br>근무 조건 '+e.schedule:''}</div><div class="overview-note">실근무일은 제공된 기록값을 사용하며 행사 전체 기간과 별도로 관리합니다.${e.workDaysCalculated?' 진행 중인 BANKSY 전시는 입력한 근무요일을 기준으로 현재일까지 자동 계산합니다.':''}</div></section><section><h4>LOCATION</h4><div class="dm"><b style="color:var(--ink)">${e.venue}</b><br>${e.address}</div>${e.coordAccuracy!=='venue'?'<div class="overview-note">상세 주소는 제공된 정확 주소입니다. 지도 핀 좌표는 시각화를 위한 근사값일 수 있습니다.</div>':''}</section>`;document.getElementById('drawer').classList.add('open');document.getElementById('drawerBack').classList.add('open');document.body.classList.add('modal-open');}
 window.openEvent=openEvent;
-function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('drawerBack').classList.remove('open');}
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('drawerBack').classList.remove('open');document.body.classList.remove('modal-open');}
 function bindEventOpeners(){document.querySelectorAll('[data-event]').forEach(el=>{el.onclick=(ev)=>{ev.stopPropagation();openEvent(el.dataset.event);};});}
-function renderAll(){renderHeaderStats();renderHeroCurrent();renderOverview();renderCalendar();renderCompany();renderCategory();if(document.getElementById('view-map').classList.contains('active'))renderMap();}
+function renderAll(){renderHeaderStats();renderHeroCurrent();renderOverview();renderCalendar();renderCompany();renderCategory();updateFilterUI();if(document.getElementById('view-map').classList.contains('active'))renderMap();}
 function switchView(btn){document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));document.querySelectorAll('section.view').forEach(s=>s.classList.remove('active'));btn.classList.add('active');document.getElementById('view-'+btn.dataset.view).classList.add('active');if(btn.dataset.view==='map')renderMap();}
-populateFilters();renderLegend();document.querySelectorAll('nav.tabs button').forEach(btn=>btn.addEventListener('click',()=>switchView(btn)));['filterYear','filterCompany','filterCategory','filterRole'].forEach(id=>document.getElementById(id).addEventListener('change',renderAll));document.getElementById('filterSearch').addEventListener('input',renderAll);document.getElementById('drawerClose').onclick=closeDrawer;document.getElementById('drawerBack').onclick=closeDrawer;document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer();});renderAll();
+populateFilters();
+renderLegend();
+document.querySelectorAll('nav.tabs button').forEach(btn=>btn.addEventListener('click',()=>switchView(btn)));
+['filterYear','filterCompany','filterCategory','filterRole'].forEach(id=>document.getElementById(id).addEventListener('change',renderAll));
+document.getElementById('filterSearch').addEventListener('input',renderAll);
+document.getElementById('filterToggle').onclick=toggleMobileFilters;
+document.querySelectorAll('#mapModeToggle [data-map-mode]').forEach(btn=>btn.onclick=()=>setMapMode(btn.dataset.mapMode));
+document.getElementById('drawerClose').onclick=closeDrawer;
+document.getElementById('drawerBack').onclick=closeDrawer;
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer();});
+renderAll();
 
 </script>
 </body>
