@@ -1019,11 +1019,39 @@
       margin:11px -2px 0;
       padding:12px 2px 0;
     }
+    .month-inline-detail .detail-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:9px;
+    }
     .month-inline-detail .detail-date{
       color:var(--yellow);
       font:700 10px ui-monospace,monospace;
-      margin-bottom:9px;
+      margin:0;
       letter-spacing:.04em;
+    }
+    .month-detail-close{
+      flex:none;
+      display:inline-grid;
+      place-items:center;
+      width:32px;
+      height:32px;
+      padding:0;
+      border:1px solid var(--line);
+      background:var(--surface2);
+      color:var(--yellow);
+      font:800 18px/1 ui-monospace,monospace;
+      cursor:pointer;
+      transition:.15s;
+    }
+    .month-detail-close:hover,
+    .month-detail-close:focus-visible{
+      border-color:var(--yellow);
+      background:var(--yellow);
+      color:var(--bg);
+      outline:none;
     }
 
     /* 05. Category legend: one horizontal row */
@@ -1070,7 +1098,16 @@
       cursor:pointer;
       text-align:left;
     }
-    .accordion-toggle .acc-arrow{transition:transform .15s;color:var(--yellow);}
+    .accordion-toggle .acc-arrow{
+      flex:none;
+      transition:transform .15s;
+      color:var(--yellow);
+    }
+    .cat-card .accordion-toggle{
+      width:calc(100% - 28px);
+      margin:11px 14px 0;
+      padding:10px 0 2px;
+    }
     .accordion-card .accordion-body{display:none;}
     .accordion-card.expanded .accordion-body{display:flex;}
     .cat-card.accordion-card.expanded .accordion-body{display:block;}
@@ -1280,7 +1317,7 @@
     </div>
   </section>
 
-  <footer>ARCHIVE v4.6 — MOBILE-FIRST UX / INLINE CALENDAR / MAP-LIST / BOTTOM SHEET</footer>
+  <footer>ARCHIVE v4.7 — CALENDAR COLLAPSE / CATEGORY ALIGNMENT / MOBILE-FIRST UX</footer>
 </div>
 <div class="drawer-back" id="drawerBack"></div><aside class="drawer" id="drawer"><button class="drawer-close" id="drawerClose">×</button><div id="drawerContent"></div></aside>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -1459,21 +1496,40 @@ function renderCalendar(){
     showDayDetail(el.dataset.date,el.closest('.month-card'));
   });
 }
+function closeMonthDetail(card){
+  if(!card)return;
+  const box=card.querySelector('.month-inline-detail');
+  if(box){
+    box.classList.remove('open');
+    box.innerHTML='';
+  }
+  card.classList.remove('detail-open');
+  card.querySelectorAll('.day.selected').forEach(day=>day.classList.remove('selected'));
+}
 function showDayDetail(iso,card){
   const evs=eventsOnDate(d(iso),filteredEvents());
   document.querySelectorAll('.month-inline-detail.open').forEach(box=>{
     if(box!==card.querySelector('.month-inline-detail')){
-      box.classList.remove('open');
-      box.innerHTML='';
-      box.closest('.month-card')?.classList.remove('detail-open');
+      closeMonthDetail(box.closest('.month-card'));
     }
   });
   const box=card.querySelector('.month-inline-detail');
   box.innerHTML=evs.length
-    ?`<div class="detail-date">${iso} · 현장 기록 ${evs.length}건</div>${evs.map(badgeHTML).join('')}`
-    :'<div class="hint">해당 날짜의 기록이 없습니다.</div>';
+    ?`<div class="detail-head">
+        <div class="detail-date">${iso} · 현장 기록 ${evs.length}건</div>
+        <button type="button" class="month-detail-close" aria-label="현장 기록 접기" title="접기">⌃</button>
+      </div>${evs.map(badgeHTML).join('')}`
+    :`<div class="detail-head">
+        <div class="hint">해당 날짜의 기록이 없습니다.</div>
+        <button type="button" class="month-detail-close" aria-label="현장 기록 접기" title="접기">⌃</button>
+      </div>`;
   box.classList.add('open');
   card.classList.add('detail-open');
+  const closeBtn=box.querySelector('.month-detail-close');
+  if(closeBtn)closeBtn.onclick=(ev)=>{
+    ev.stopPropagation();
+    closeMonthDetail(card);
+  };
   bindEventOpeners();
   if(isMobile())setTimeout(()=>box.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
 }
