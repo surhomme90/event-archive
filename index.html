@@ -51,37 +51,53 @@
     h3{font-size:18px;line-height:1.2;letter-spacing:-.02em}
     .lead{max-width:620px;color:#c5c8cf;font-size:14px;line-height:1.65;margin-bottom:24px}
     .hero{padding:16px 0 8px}
-    /* FOOTPRINT outline: isolate mobile font kerning so stroked glyphs never collide */
-    .hero-title .outline{
-      display:inline-block;
+    /* FOOTPRINT outline: each glyph is an independent box so mobile font kerning/shaping cannot make strokes collide */
+    .hero-title .outline-word{
+      display:inline-flex;
+      align-items:baseline;
       max-width:100%;
+      gap:clamp(2px,.7vw,5px);
       color:#5c6169; /* readable fallback when text-stroke is unavailable */
       font-size:.92em;
       line-height:1.04;
-      letter-spacing:.005em;
+      letter-spacing:0;
       font-kerning:none;
-      font-feature-settings:"kern" 0;
+      font-feature-settings:"kern" 0,"liga" 0,"clig" 0;
+      font-variant-ligatures:none;
       white-space:nowrap;
       text-rendering:geometricPrecision;
     }
+    .hero-title .outline-glyph{
+      display:block;
+      flex:0 0 auto;
+      min-width:0;
+      padding-inline:.006em;
+      color:inherit;
+      line-height:inherit;
+      letter-spacing:0;
+      font:inherit;
+      font-kerning:none;
+      font-feature-settings:"kern" 0,"liga" 0,"clig" 0;
+      font-variant-ligatures:none;
+    }
     @supports (-webkit-text-stroke:.8px #000){
-      .hero-title .outline{
+      .hero-title .outline-glyph{
         color:transparent;
         -webkit-text-stroke:.85px #5c6169;
       }
     }
     @media(max-width:639px){
       .hero-title{letter-spacing:-.045em}
-      .hero-title .outline{
+      .hero-title .outline-word{
         font-size:.90em;
-        letter-spacing:.012em;
+        gap:clamp(2.5px,.85vw,4px);
       }
       @supports (-webkit-text-stroke:.8px #000){
-        .hero-title .outline{-webkit-text-stroke:.8px #5c6169}
+        .hero-title .outline-glyph{-webkit-text-stroke:.8px #5c6169}
       }
     }
     @media(max-width:360px){
-      .hero-title .outline{font-size:.86em;letter-spacing:.015em}
+      .hero-title .outline-word{font-size:.86em;gap:2.5px}
     }
     .metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:24px 0}
     .metric{position:relative;overflow:hidden;min-height:128px;padding:16px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,#15181c,#0f1114)}
@@ -193,7 +209,7 @@
     <section class="view active" id="view-overview">
       <div class="hero">
         <div class="eyebrow">Field Experience · 2025 — Now</div>
-        <h1 class="hero-title">MY EVENT<br><span class="outline">FOOTPRINT.</span></h1>
+        <h1 class="hero-title">MY EVENT<br><span class="outline-word" aria-label="FOOTPRINT."><span class="outline-glyph" aria-hidden="true">F</span><span class="outline-glyph" aria-hidden="true">O</span><span class="outline-glyph" aria-hidden="true">O</span><span class="outline-glyph" aria-hidden="true">T</span><span class="outline-glyph" aria-hidden="true">P</span><span class="outline-glyph" aria-hidden="true">R</span><span class="outline-glyph" aria-hidden="true">I</span><span class="outline-glyph" aria-hidden="true">N</span><span class="outline-glyph" aria-hidden="true">T</span><span class="outline-glyph" aria-hidden="true">.</span></span></h1>
         <p class="lead">다양한 행사 현장에서 쌓아온 경험을 시간 · 업체 · 행사 유형 · 장소로 기록합니다.</p>
       </div>
       <div class="metrics" id="overviewMetrics"></div>
