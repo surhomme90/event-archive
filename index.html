@@ -1,825 +1,453 @@
-<!DOCTYPE html>
+<!doctype html>
+<!-- EVENT CAREER ARCHIVE · FIXED BASELINE + UX ENHANCEMENTS v2 · 2026-09-16 -->
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#111217">
-<title>오현우 · SITE LOG V5 Mobile Field Archive</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0c0e" />
+  <title>Event Career Archive</title>
+  <meta name="description" content="행사 현장 경력을 캘린더, 업체, 카테고리, 지도 관점으로 탐색하는 모바일 인터랙티브 아카이브" />
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <style>
+    :root{
+      --bg:#0b0c0e;
+      --panel:#121418;
+      --panel2:#181b20;
+      --line:#2a2e35;
+      --text:#f5f3ec;
+      --muted:#9ea3ad;
+      --dim:#6e747f;
+      --accent:#d8ff4f;
+      --shadow:0 18px 50px rgba(0,0,0,.38);
+      --radius:22px;
+      --exhibition:#8ab4ff;
+      --popup:#ff86c8;
+      --expo:#ffb35c;
+      --conference:#8de0cf;
+      --festival:#c59cff;
+      --sports:#d8ff4f;
+      --ceremony:#ff7979;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;background:var(--bg)}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Noto Sans KR",Segoe UI,sans-serif;-webkit-font-smoothing:antialiased}
+    button,input{font:inherit}
+    button{color:inherit}
+    a{color:inherit}
+    .app{max-width:860px;margin:0 auto;min-height:100dvh;padding-bottom:calc(94px + env(safe-area-inset-bottom))}
+    .topbar{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(to bottom,rgba(11,12,14,.96),rgba(11,12,14,.76),transparent);backdrop-filter:blur(12px)}
+    .brand{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:800;letter-spacing:.11em}
+    .brand-mark{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 18px rgba(216,255,79,.65)}
+    .snapshot{font-size:10px;color:var(--muted);letter-spacing:.08em}
+    main{padding:0 16px 42px}
+    .view{display:none;animation:fade .28s ease}
+    .view.active{display:block}
+    @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    .eyebrow{margin:18px 0 8px;color:var(--accent);font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}
+    h1,h2,h3,p{margin-top:0}
+    h1{font-size:clamp(38px,10vw,72px);line-height:.92;letter-spacing:-.055em;margin-bottom:20px}
+    h2{font-size:30px;line-height:1;letter-spacing:-.035em;margin-bottom:10px}
+    h3{font-size:18px;line-height:1.2;letter-spacing:-.02em}
+    .lead{max-width:620px;color:#c5c8cf;font-size:14px;line-height:1.65;margin-bottom:24px}
+    .hero{padding:16px 0 8px}
+    .hero-title .outline{color:transparent;-webkit-text-stroke:1px #5c6169}
+    .metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:24px 0}
+    .metric{position:relative;overflow:hidden;min-height:128px;padding:16px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,#15181c,#0f1114)}
+    .metric strong{display:block;font-size:36px;line-height:1;letter-spacing:-.055em}
+    .metric span{display:block;margin-top:8px;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.12em}
+    .metric small{position:absolute;right:14px;bottom:12px;color:#737984;font-size:10px}
+    .section-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:34px 0 14px}
+    .section-head p{margin:4px 0 0;color:var(--muted);font-size:12px}
+    .active-card{position:relative;overflow:hidden;padding:20px;border:1px solid #454b2d;border-radius:24px;background:linear-gradient(135deg,rgba(216,255,79,.12),rgba(216,255,79,.025) 55%,rgba(255,255,255,.02));box-shadow:var(--shadow)}
+    .active-card:after{content:"";position:absolute;width:150px;height:150px;right:-60px;top:-70px;border-radius:50%;background:rgba(216,255,79,.12);filter:blur(10px)}
+    .live{display:inline-flex;align-items:center;gap:7px;color:var(--accent);font-size:10px;font-weight:900;letter-spacing:.13em}
+    .live:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 1.8s infinite}
+    @keyframes pulse{50%{box-shadow:0 0 0 7px rgba(216,255,79,0)}}
+    .active-card h3{font-size:25px;margin:14px 0 8px;max-width:80%}
+    .meta-line{color:#bfc4cc;font-size:12px;line-height:1.7}
+    .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+    .chip{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid #353a42;border-radius:999px;background:#16191d;color:#cfd2d8;font-size:10px;font-weight:800;letter-spacing:.04em}
+    .chip i{display:inline-block;width:6px;height:6px;border-radius:50%}
+    .heatmap-wrap{overflow-x:auto;padding:2px 0 6px;scrollbar-width:none}
+    .heatmap-wrap::-webkit-scrollbar{display:none}
+    .heatmap{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,10px);grid-auto-columns:10px;gap:3px;min-width:max-content}
+    .heatcell{width:10px;height:10px;border-radius:2px;background:#1c2025}
+    .heatcell.on{background:#7e942f}.heatcell.strong{background:var(--accent)}
+    .heat-legend{display:flex;justify-content:space-between;margin-top:10px;color:var(--dim);font-size:9px}
+    .explore-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .explore{min-height:126px;padding:16px;border:1px solid var(--line);border-radius:20px;background:var(--panel);text-align:left;cursor:pointer;transition:.2s ease}
+    .explore:hover{transform:translateY(-2px);border-color:#474c56}.explore:active{transform:scale(.985)}
+    .explore b{display:block;font-size:17px;margin-top:26px}.explore small{color:var(--muted);font-size:10px}.explore .arrow{float:right;color:var(--accent)}
+    .view-title{padding-top:28px;margin-bottom:18px}
+    .view-title h2{font-size:38px}
+    .view-title p{color:var(--muted);font-size:12px;line-height:1.6}
+    .segmented{display:flex;gap:5px;padding:4px;border:1px solid var(--line);border-radius:14px;background:#0e1013;width:max-content;max-width:100%;overflow:auto}
+    .segmented button{border:0;border-radius:10px;background:transparent;color:var(--muted);padding:9px 12px;font-size:10px;font-weight:800;white-space:nowrap;cursor:pointer}
+    .segmented button.active{background:#23272e;color:var(--text)}
+    .month-strip{display:flex;gap:7px;overflow:auto;margin:15px -16px 16px;padding:0 16px 4px;scrollbar-width:none}
+    .month-strip::-webkit-scrollbar{display:none}
+    .month-btn{flex:0 0 auto;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--muted);padding:8px 12px;font-size:10px;font-weight:800;cursor:pointer}
+    .month-btn.active{background:var(--accent);border-color:var(--accent);color:#0c0d0e}
+    .calendar-card{border:1px solid var(--line);border-radius:22px;background:var(--panel);padding:14px;overflow:hidden}
+    .calendar-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+    .calendar-head strong{font-size:16px}.calendar-head span{color:var(--muted);font-size:10px}
+    .weekdays,.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+    .weekdays div{text-align:center;color:#686e78;font-size:8px;font-weight:900;padding:4px 0 8px}
+    .day{position:relative;min-height:56px;border:1px solid #252930;border-radius:11px;background:#101216;padding:5px;overflow:hidden;cursor:default}
+    .day.empty{visibility:hidden}.day.has-event{cursor:pointer;border-color:#383e47}
+    .day-num{font-size:9px;color:#9196a0}.day.today .day-num{color:#0a0b0c;background:var(--accent);border-radius:999px;padding:2px 5px;display:inline-block;font-weight:900}
+    .day-events{display:flex;flex-direction:column;gap:3px;margin-top:5px}
+    .event-dot{height:6px;border-radius:3px;opacity:.95}.event-label{display:none}
+    .month-events{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+    .event-row{display:grid;grid-template-columns:46px 1fr auto;gap:11px;align-items:center;padding:12px;border:1px solid var(--line);background:var(--panel);border-radius:16px;cursor:pointer}
+    .event-date{font-size:10px;color:var(--muted);line-height:1.3}.event-row b{font-size:13px;display:block;line-height:1.35}.event-row small{display:block;margin-top:4px;color:var(--muted);font-size:9px}.badge{padding:5px 7px;border-radius:999px;font-size:8px;font-weight:900;color:#111}
+    .toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:12px 0 15px;flex-wrap:wrap}
+    .summary-inline{font-size:10px;color:var(--muted)}
+    .bars{display:flex;flex-direction:column;gap:10px}
+    .bar-card{padding:14px;border:1px solid var(--line);border-radius:17px;background:var(--panel);cursor:pointer}
+    .bar-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-end}
+    .bar-top b{font-size:13px}.bar-top span{color:var(--muted);font-size:10px}.bar-track{height:6px;margin-top:11px;border-radius:99px;background:#242830;overflow:hidden}.bar-fill{height:100%;width:0;border-radius:inherit;background:var(--accent);transition:width .55s cubic-bezier(.2,.8,.2,1)}
+    .company-mini{margin-top:8px;color:#7c828d;font-size:9px}
+    .map-toolbar{display:flex;gap:7px;overflow:auto;margin-bottom:10px;scrollbar-width:none}.map-toolbar::-webkit-scrollbar{display:none}
+    .filter-btn{flex:0 0 auto;padding:8px 11px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--muted);font-size:9px;font-weight:800;cursor:pointer}.filter-btn.active{background:var(--text);border-color:var(--text);color:#111}
+    .map-wrap{position:relative;height:58vh;min-height:430px;max-height:620px;border:1px solid var(--line);border-radius:24px;overflow:hidden;background:#13161b}
+    #leafletMap{position:absolute;inset:0;z-index:1}.fallback-map{position:absolute;inset:0;z-index:0;background:radial-gradient(circle at 20% 20%,rgba(216,255,79,.06),transparent 38%),linear-gradient(135deg,#15191d,#0c0f12);overflow:hidden}
+    .fallback-map:before{content:"";position:absolute;inset:-40px;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:32px 32px;transform:rotate(-8deg)}
+    .fallback-pin{position:absolute;transform:translate(-50%,-50%);border:0;background:transparent;cursor:pointer;z-index:2}.fallback-pin span{display:grid;place-items:center;min-width:30px;height:30px;padding:0 8px;border-radius:15px;background:var(--accent);color:#101113;font-size:9px;font-weight:950;box-shadow:0 8px 20px rgba(0,0,0,.36);border:2px solid #111}
+    .fallback-pin em{display:block;margin-top:5px;color:#d9dce1;font-size:8px;font-style:normal;white-space:nowrap;text-shadow:0 2px 7px #000}
+    .map-stat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.map-stat div{padding:12px;border:1px solid var(--line);border-radius:15px;background:var(--panel)}.map-stat b{font-size:17px;display:block}.map-stat span{color:var(--muted);font-size:8px;font-weight:800}
+    .leaflet-container{font-family:inherit;background:#121519}.leaflet-control-attribution{font-size:8px!important;background:rgba(10,11,12,.72)!important;color:#a7abb3!important}.leaflet-control-attribution a{color:#d9dce1!important}.leaflet-bar a{background:#16191d!important;color:#fff!important;border-color:#2a2e35!important}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#15181c;color:#fff}.leaflet-popup-content{font-size:11px;line-height:1.45}.leaflet-popup-content b{font-size:12px}
+    .bottom-nav{position:fixed;z-index:70;left:50%;bottom:0;transform:translateX(-50%);width:min(860px,100%);display:grid;grid-template-columns:repeat(5,1fr);padding:7px 8px calc(7px + env(safe-area-inset-bottom));background:rgba(12,13,15,.9);border-top:1px solid #24272d;backdrop-filter:blur(18px)}
+    .nav-btn{border:0;background:transparent;color:#717782;padding:7px 2px 4px;font-size:8px;font-weight:800;cursor:pointer}.nav-btn svg{display:block;margin:0 auto 4px;width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8}.nav-btn.active{color:var(--accent)}
+    .sheet-backdrop{position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.68);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:.25s}.sheet-backdrop.open{opacity:1;pointer-events:auto}
+    .sheet{position:fixed;z-index:100;left:50%;bottom:0;transform:translate(-50%,105%);width:min(860px,100%);max-height:87dvh;background:#111317;border:1px solid #2d3139;border-bottom:0;border-radius:28px 28px 0 0;box-shadow:0 -20px 60px rgba(0,0,0,.55);transition:.36s cubic-bezier(.22,.8,.2,1);overflow:auto;padding:10px 18px calc(28px + env(safe-area-inset-bottom))}.sheet.open{transform:translate(-50%,0)}
+    .sheet-handle{width:42px;height:4px;border-radius:99px;background:#3b4049;margin:2px auto 20px}.sheet-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.sheet-close{border:1px solid var(--line);background:#1a1d22;width:34px;height:34px;border-radius:50%;font-size:18px;cursor:pointer}.sheet h2{font-size:28px;line-height:1.05;margin:7px 0 8px}.sheet-kicker{font-size:9px;font-weight:900;letter-spacing:.12em;color:var(--accent)}.sheet-sub{color:var(--muted);font-size:11px;line-height:1.6}.detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:18px 0}.detail-cell{padding:13px;border:1px solid var(--line);border-radius:14px;background:#16191d}.detail-cell span{display:block;color:var(--muted);font-size:8px;font-weight:900;letter-spacing:.09em}.detail-cell b{display:block;margin-top:6px;font-size:12px;line-height:1.35}.detail-section{padding-top:18px;margin-top:18px;border-top:1px solid var(--line)}.detail-section h4{font-size:9px;letter-spacing:.13em;color:#8b919b;margin:0 0 10px}.detail-section ul{padding-left:18px;margin:0;color:#d9dce0;font-size:12px;line-height:1.75}.map-link{display:flex;justify-content:space-between;align-items:center;text-decoration:none;margin-top:12px;padding:13px 14px;border:1px solid #3b4130;border-radius:14px;background:rgba(216,255,79,.06);font-size:11px}.map-link span:last-child{color:var(--accent)}
+    .timeline{display:flex;flex-direction:column;margin-top:18px}.timeline-item{position:relative;padding:0 0 20px 22px;border-left:1px solid #31353c}.timeline-item:before{content:"";position:absolute;width:8px;height:8px;left:-4.5px;top:2px;border-radius:50%;background:var(--accent)}.timeline-item:last-child{border-left-color:transparent}.timeline-item b{display:block;font-size:12px}.timeline-item span{color:var(--muted);font-size:9px;line-height:1.5}
+    .empty-state{padding:32px 16px;text-align:center;color:var(--muted);font-size:11px;border:1px dashed var(--line);border-radius:18px}
+    .note{margin-top:16px;color:#777e88;font-size:9px;line-height:1.65}
 
-:root{
-  --bg:#111217;--surface:#181a21;--surface2:#20222a;--surface3:#262933;
-  --ink:#f3f2ee;--muted:#9498a7;--line:#30333d;--yellow:#f5c518;
-  --exhibition:#b48cff;--popup:#f5c518;--fair:#5b9eff;--festival:#ff6fa8;
-  --sports:#4ade80;--ceremony:#ff8a3d;--business:#2dd4bf;
-  --pad:16px;--nav-h:68px;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth;background:var(--bg)}
-body{
-  margin:0;color:var(--ink);background:
-  radial-gradient(circle at 75% 0%,rgba(245,197,24,.055),transparent 30rem),
-  repeating-linear-gradient(135deg,rgba(255,255,255,.012) 0 1px,transparent 1px 24px),
-  var(--bg);
-  font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',-apple-system,BlinkMacSystemFont,sans-serif;
-  -webkit-font-smoothing:antialiased;color-scheme:dark;overflow-x:hidden;
-}
-button,input,select{font:inherit}
-button{cursor:pointer}
-.site-shell{min-height:100vh;padding-bottom:calc(var(--nav-h) + 30px + env(safe-area-inset-bottom))}
-.site-header{
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-  padding:18px var(--pad) 10px;max-width:920px;margin:auto;
-  font:700 10px ui-monospace,'SF Mono',Consolas,monospace;letter-spacing:.1em;color:var(--muted);
-}
-.brand-line{display:flex;align-items:center;gap:9px;min-width:0}
-.brand-tag{padding:4px 7px;border:1px solid var(--yellow);color:var(--yellow);letter-spacing:.14em}
-.brand-line strong{color:var(--ink);font-size:10px;white-space:nowrap}
-.archive-range{text-align:right;font-size:9px;white-space:nowrap}
-.cover{
-  max-width:920px;margin:0 auto;padding:26px var(--pad) 22px;
-  min-height:min(620px,78svh);display:flex;flex-direction:column;justify-content:center;
-}
-.cover-kicker{font:800 9.5px ui-monospace,monospace;letter-spacing:.15em;color:var(--muted);margin-bottom:16px}
-.cover h1{font-size:clamp(38px,11.5vw,56px);line-height:1.02;letter-spacing:-.055em;margin:0;max-width:760px;word-break:keep-all}
-.cover h1 span{display:block;color:var(--yellow)}
-.cover>p{font-size:13.5px;line-height:1.72;color:#c4c6ce;margin:20px 0 0;max-width:560px;word-break:keep-all}
-.current-strip{
-  margin-top:25px;border:1px solid var(--line);border-left:3px solid var(--yellow);
-  background:rgba(24,26,33,.86);padding:13px 14px;position:relative;overflow:hidden;
-}
-.current-strip-top{display:flex;align-items:center;gap:7px;font:800 9px ui-monospace,monospace;letter-spacing:.1em;color:var(--yellow)}
-.live-pulse{width:7px;height:7px;border-radius:50%;background:var(--yellow);box-shadow:0 0 0 0 rgba(245,197,24,.4);animation:pulse 1.8s infinite}
-.live-pulse.is-latest{animation:none;opacity:.65}
-@keyframes pulse{70%{box-shadow:0 0 0 7px rgba(245,197,24,0)}100%{box-shadow:0 0 0 0 rgba(245,197,24,0)}}
-.current-arrow{margin-left:auto;font-size:16px}
-.current-strip-main{display:grid;gap:4px;margin-top:9px}
-.current-strip-main strong{font-size:16px;line-height:1.28;word-break:keep-all}
-.current-strip-main span,.current-strip-foot{color:var(--muted);font-size:11.2px;line-height:1.45}
-.current-strip-foot{margin-top:6px;font-family:ui-monospace,monospace}
-.cover-cta{
-  align-self:flex-start;margin-top:18px;text-decoration:none;color:var(--ink);border-bottom:1px solid var(--yellow);
-  padding:8px 0 5px;font:800 10px ui-monospace,monospace;letter-spacing:.1em
-}
-#archiveStart{scroll-margin-top:12px;height:1px}
-.app-nav{
-  position:fixed;z-index:70;left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom));
-  display:grid;grid-template-columns:repeat(5,1fr);height:var(--nav-h);
-  background:rgba(24,26,33,.94);border:1px solid var(--line);backdrop-filter:blur(16px);
-  box-shadow:0 16px 45px rgba(0,0,0,.45);
-}
-.app-nav button{
-  border:0;border-right:1px solid var(--line);background:transparent;color:var(--muted);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;
-}
-.app-nav button:last-child{border-right:0}
-.app-nav button.active{background:var(--yellow);color:var(--bg)}
-.nav-no{font:800 9px ui-monospace,monospace;letter-spacing:.04em}
-.nav-label{font-size:10.5px;font-weight:800;white-space:nowrap}
-.content-shell{max-width:920px;margin:auto;padding:8px var(--pad) 40px}
-.filterbar{margin-bottom:22px}
-.search-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
-.search-row input,.filter-toggle,.filter-options select{
-  width:100%;border:1px solid var(--line);background:var(--surface);color:var(--ink);outline:0
-}
-.search-row input{height:46px;padding:0 13px;font-size:12px;border-radius:0}
-.search-row input:focus,.filter-options select:focus{border-color:var(--yellow)}
-.search-row input::placeholder{color:#737786}
-.filter-toggle{
-  width:auto;min-width:82px;padding:0 12px;color:var(--muted);font:800 10px ui-monospace,monospace;letter-spacing:.07em
-}
-.filter-toggle.has-active{border-color:var(--yellow);color:var(--yellow)}
-.filter-count{display:inline-grid;place-items:center;margin-left:5px;width:18px;height:18px;border-radius:20px;background:var(--surface2);color:var(--ink);font-size:9px}
-.active-filter-chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-top:8px}
-.active-filter-chips:empty{display:none}.active-filter-chips::-webkit-scrollbar{display:none}
-.filter-chip{flex:none;border:1px solid var(--line);background:var(--surface2);color:var(--muted);border-radius:20px;padding:6px 9px;font-size:10px}
-.filter-chip::after{content:" ×";color:var(--yellow)}
-.filter-sheet-back,.drawer-back,.map-selection-back{position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:.2s;z-index:88}
-.filter-sheet-back.open,.drawer-back.open,.map-selection-back.open{opacity:1;pointer-events:auto}
-.filter-sheet{
-  position:fixed;z-index:90;left:0;right:0;bottom:0;transform:translateY(104%);transition:.24s ease;
-  border-top:1px solid var(--line);border-radius:16px 16px 0 0;background:var(--surface);
-  padding:10px var(--pad) calc(18px + env(safe-area-inset-bottom));max-height:82dvh;overflow:auto
-}
-.filter-sheet.open{transform:none}.sheet-grab,.drawer-grab,.map-selection-grab{width:42px;height:4px;border-radius:4px;background:#555966;margin:0 auto 12px}
-.sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font:800 11px ui-monospace,monospace;letter-spacing:.1em}
-.sheet-head button,.drawer-close,.map-selection-head button{width:38px;height:38px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);font-size:18px}
-.filter-options{display:grid;gap:10px}
-.filter-options label{display:grid;gap:6px}.filter-options label>span{font:700 9px ui-monospace,monospace;color:var(--muted);letter-spacing:.1em}
-.filter-options select{height:46px;padding:0 11px;font-size:12px}
-.sheet-actions{display:grid;grid-template-columns:1fr 1.6fr;gap:8px;margin-top:16px}
-.sheet-actions button{height:44px;border:1px solid var(--line);background:var(--surface2);color:var(--muted);font:800 10px ui-monospace,monospace}
-.sheet-actions #filterApply{background:var(--yellow);color:var(--bg);border-color:var(--yellow)}
-.view{display:none;animation:fade .18s ease}.view.active{display:block}
-@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-.view-title{margin:3px 0 16px}
-.view-title>div{display:flex;align-items:center;gap:8px}
-.view-title>div>span{font:800 9px ui-monospace,monospace;border:1px solid var(--line);color:var(--muted);padding:2px 5px}
-.view-title h2{margin:0;font-size:24px;letter-spacing:-.03em}
-.view-title p{margin:7px 0 0;color:var(--muted);font-size:11.5px;line-height:1.5}
-.stat-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);margin-bottom:12px}
-.stat{padding:15px 13px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(24,26,33,.72)}
-.stat:nth-child(2n){border-right:0}.stat:nth-child(n+3){border-bottom:0}
-.stat .num{font:900 29px/1 ui-monospace,monospace;color:var(--yellow)}
-.stat .lbl{margin-top:7px}.stat .lbl span{display:block;font:700 8.5px ui-monospace,monospace;letter-spacing:.08em;color:var(--muted)}
-.stat .lbl small{display:block;margin-top:3px;font-size:10.5px;color:#c4c6ce}
-.profile-card,.archive-block{border:1px solid var(--line);background:rgba(24,26,33,.72);margin-bottom:12px}
-.profile-head,.block-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 13px;border-bottom:1px solid var(--line)}
-.profile-head span,.block-head span{font:800 9px ui-monospace,monospace;color:var(--yellow);letter-spacing:.12em}
-.profile-head strong{font:700 9px ui-monospace,monospace;color:var(--muted);letter-spacing:.05em;text-align:right}
-.block-head small{font:700 8px ui-monospace,monospace;color:var(--muted);letter-spacing:.08em}
-.profile-grid{display:grid;grid-template-columns:1fr 1fr}
-.profile-grid>div{padding:12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:0}
-.profile-grid>div:nth-child(2n){border-right:0}.profile-grid>div:nth-child(n+3){border-bottom:0}
-.profile-grid small{display:block;font:700 8px ui-monospace,monospace;color:var(--muted);letter-spacing:.08em;margin-bottom:6px}
-.profile-grid b{font-size:11.5px;line-height:1.45;word-break:keep-all}
-.log-feed{display:grid}.log-row,.event-line,.mpr{
-  width:100%;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);text-align:left
-}
-.log-row:last-child,.event-line:last-child,.mpr:last-child{border-bottom:0}
-.log-row{display:grid;grid-template-columns:30px minmax(0,1fr) 18px;gap:8px;align-items:center;padding:13px}
-.log-no,.rank-no{font:700 9px ui-monospace,monospace;color:var(--muted)}
-.log-copy{display:grid;gap:4px;min-width:0}.log-copy strong{font-size:12.5px;line-height:1.35;word-break:keep-all}.log-copy small{font-size:10px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.log-arrow{color:var(--yellow);font-size:18px}
-.overview-columns{display:grid;gap:12px}.compact-block{padding-bottom:8px}
-.mix-list,.agency-rank{padding:8px 13px 4px}.mix-row{display:grid;grid-template-columns:92px minmax(0,1fr) 20px;gap:8px;align-items:center;padding:6px 0;font-size:10.5px}
-.mix-bar{height:5px;background:var(--surface3);overflow:hidden}.mix-bar i{display:block;height:100%;background:var(--cat)}
-.mix-row b,.rank-row b{font:800 10px ui-monospace,monospace;text-align:right}
-.rank-row{display:grid;grid-template-columns:24px minmax(0,1fr) 22px;gap:7px;padding:7px 0;border-bottom:1px solid rgba(48,51,61,.65);font-size:10.8px}.rank-row:last-child{border-bottom:0}
-.data-note,.gesture-note,.map-note{color:var(--muted);font-size:9.5px;line-height:1.55;margin:10px 13px}
-.calendar-nav{display:grid;grid-template-columns:46px 1fr 46px;align-items:center;border:1px solid var(--line);background:var(--surface)}
-.calendar-nav button{height:46px;border:0;background:transparent;color:var(--yellow);font-size:17px}.calendar-nav button:disabled{opacity:.25;cursor:default}
-.calendar-nav strong{text-align:center;font:900 17px ui-monospace,monospace;letter-spacing:.04em}
-.calendar-tools{display:flex;justify-content:flex-end;gap:6px;margin:8px 0}
-.calendar-tools button,.month-rail button{border:1px solid var(--line);background:var(--surface);color:var(--muted);font:800 9px ui-monospace,monospace;padding:7px 9px}
-.calendar-tools button.active,.month-rail button.active{border-color:var(--yellow);color:var(--yellow)}
-.month-rail{display:none;gap:6px;overflow-x:auto;scrollbar-width:none;padding:1px 0 10px}.month-rail.open{display:flex}.month-rail::-webkit-scrollbar{display:none}.month-rail button{flex:none}
-.legend{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;margin:0 calc(var(--pad)*-1) 10px;padding:0 var(--pad) 3px}.legend::-webkit-scrollbar{display:none}
-.legend .chip{flex:none;display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:20px;padding:6px 10px;font-size:10.5px;user-select:none}
-.legend .chip.on{color:var(--ink);border-color:currentColor}.legend .dot{width:7px;height:7px;border-radius:50%}
-.month-card{border:1px solid var(--line);background:rgba(24,26,33,.78);padding:12px;touch-action:pan-y}
-.month-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font:800 11px ui-monospace,monospace;color:var(--yellow)}
-.month-head b{font-size:8px;border:1px solid var(--yellow);padding:2px 5px;letter-spacing:.08em}
-.dow,.days{display:grid;grid-template-columns:repeat(7,1fr)}.dow span{text-align:center;color:var(--muted);font:700 8px ui-monospace,monospace;padding:5px 0}
-.day{position:relative;aspect-ratio:1/1;border:0;border-top:1px solid rgba(48,51,61,.52);background:transparent;color:#727684;font:700 10px ui-monospace,monospace;display:grid;place-items:center;padding:0}
-.day:nth-child(7n+1){color:#8d6670}.day.has-event{color:var(--ink);background:rgba(255,255,255,.018)}.day.has-event:disabled{cursor:default}.day.selected{outline:1px solid var(--yellow);outline-offset:-2px;color:var(--yellow)}
-.day .dotsrow{position:absolute;bottom:4px;display:flex;gap:2px}.day .dotsrow i{width:4px;height:4px;border-radius:50%}
-.month-inline-detail{display:none;margin-top:11px;padding-top:11px;border-top:1px dashed var(--line)}.month-inline-detail.open{display:block}
-.detail-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px}.detail-date{font:800 9px ui-monospace,monospace;color:var(--yellow)}
-.month-detail-close{width:32px;height:32px;border:1px solid var(--line);background:var(--surface2);color:var(--yellow);font-size:18px}
-.badge{border:1px solid var(--line);border-left:3px solid var(--cat);background:var(--surface);padding:12px;margin-bottom:8px}
-.badge .top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.badge .name{font-size:13px;font-weight:800;line-height:1.35;word-break:keep-all}.cat-tag{flex:none;font-size:8.5px;border:1px solid var(--cat);color:var(--cat);padding:2px 5px}
-.badge .meta{font-size:11px;line-height:1.55;color:var(--muted);margin-top:6px}.badge .meta b{color:var(--ink)}.workdays{color:var(--yellow)}
-.role-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}.role-tag{border:1px solid var(--line);background:var(--surface2);color:#b9bbc4;padding:3px 6px;font-size:8.8px}
-.badge ul{margin:8px 0 0;padding-left:16px;color:var(--muted);font-size:11px;line-height:1.55}
-.company-grid,.cat-grid{display:grid;gap:8px}
-.archive-list-card{border:1px solid var(--line);background:rgba(24,26,33,.76)}
-.archive-list-card .accordion-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;border:0;background:transparent;color:var(--ink);padding:14px 13px;text-align:left}
-.list-card-copy{display:grid;gap:4px;min-width:0}.list-card-copy strong{font-size:13.5px;display:flex;align-items:center;gap:7px}.list-card-copy small{font-size:10px;color:var(--muted)}
-.cat-dot{width:8px;height:8px;border-radius:50%;background:var(--cat);display:inline-block}
-.acc-arrow{flex:none;color:var(--yellow);font-size:16px;transition:.18s}.accordion-card.expanded .acc-arrow{transform:rotate(180deg)}
-.accordion-body{display:none;border-top:1px solid var(--line)}.accordion-card.expanded .accordion-body{display:block}
-.event-line{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 13px}.event-line>span{display:grid;gap:3px;min-width:0}.event-line strong{font-size:11.7px;line-height:1.35;word-break:keep-all}.event-line small{font-size:9.5px;color:var(--muted)}.event-line i{font-style:normal;color:var(--yellow);font-size:17px}
-.map-mode-toggle{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);margin-bottom:8px}.map-mode-toggle button{height:42px;border:0;background:var(--surface);color:var(--muted);font:800 10px ui-monospace,monospace}.map-mode-toggle button+button{border-left:1px solid var(--line)}.map-mode-toggle button.active{background:var(--yellow);color:var(--bg)}
-.map-wrap{margin-left:calc(var(--pad)*-1);margin-right:calc(var(--pad)*-1)}.map-wrap[data-mode="map"] .map-detail{display:none}.map-wrap[data-mode="list"] .map-box{display:none}
-.map-box{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--surface)}#leafletMap{height:min(62svh,520px);min-height:360px;background:#15171d}
-.map-note{margin:9px var(--pad) 11px}.leaflet-container{font-family:inherit;background:#15171d}.leaflet-control-attribution{font-size:8px!important}
-.event-pin-wrap{background:transparent!important;border:0!important}.event-pin{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--pin);border:3px solid #121318;color:#121318;font:900 10px ui-monospace,monospace;box-shadow:0 3px 12px rgba(0,0,0,.45)}.event-pin.single:after{content:"";width:7px;height:7px;border-radius:50%;background:#121318}
-.map-detail{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.map-list-head{padding:13px var(--pad);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px}.map-list-head strong{font:800 9px ui-monospace,monospace;color:var(--yellow)}.map-list-head span{font:700 8px ui-monospace,monospace;color:var(--muted)}
-.mpr{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px var(--pad)}.mpr>span{display:grid;gap:3px;min-width:0}.mpr strong{font-size:12px}.mpr small{font-size:9.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mpr b{font:900 11px ui-monospace,monospace;color:var(--yellow)}
-.map-selection-sheet{
-  position:fixed;z-index:89;left:8px;right:8px;bottom:calc(var(--nav-h) + 16px + env(safe-area-inset-bottom));
-  background:var(--surface);border:1px solid var(--line);border-radius:14px 14px 0 0;
-  transform:translateY(130%);transition:.22s;max-height:52dvh;overflow:auto;padding:10px 12px 8px
-}.map-selection-sheet.open{transform:none}
-.map-selection-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;padding-bottom:10px}.map-selection-head>div{display:grid;gap:4px;min-width:0}.map-selection-head small{font:800 8px ui-monospace,monospace;color:var(--yellow);letter-spacing:.1em}.map-selection-head strong{font-size:14px}.map-selection-head span{font-size:9.5px;color:var(--muted);line-height:1.4}
-.empty-state{padding:24px 13px;color:var(--muted);font-size:11px;text-align:center;border:1px dashed var(--line)}
-.drawer{
-  position:fixed;z-index:100;left:0;right:0;bottom:0;height:min(88dvh,780px);overflow:auto;
-  background:var(--surface);border-top:1px solid var(--line);border-radius:16px 16px 0 0;
-  transform:translateY(104%);transition:.24s;padding:10px 18px calc(22px + env(safe-area-inset-bottom));overscroll-behavior:contain
-}.drawer.open{transform:none}.drawer-close{position:sticky;z-index:2;top:0;float:right}.drawer .dk{padding-top:44px;font:800 9px ui-monospace,monospace;color:var(--yellow);letter-spacing:.1em}.drawer h2{font-size:24px;line-height:1.14;letter-spacing:-.03em;margin:10px 0;word-break:keep-all}.drawer .dm{font-size:12px;line-height:1.65;color:var(--muted)}.drawer .dm b{color:var(--ink)}.drawer .dm .yellow,.yellow{color:var(--yellow)!important}.drawer section{border-top:1px solid var(--line);margin-top:18px;padding-top:12px}.drawer h4{margin:0 0 9px;font:800 9px ui-monospace,monospace;color:var(--muted);letter-spacing:.09em}.drawer ul{padding-left:18px;color:var(--muted);font-size:12px;line-height:1.65}
-body.modal-open,body.filter-open{overflow:hidden}
-footer{padding:28px 0 10px;text-align:center;color:#666a77;font:700 8px ui-monospace,monospace;letter-spacing:.08em}
-
-@media(min-width:860px){
-  :root{--pad:22px;--nav-h:62px}
-  .site-shell{padding-bottom:50px}
-  .site-header{padding-top:30px}
-  .cover{min-height:540px;padding-top:46px;padding-bottom:46px}
-  .cover h1{font-size:64px;max-width:820px}.cover>p{font-size:14px}
-  .current-strip{max-width:650px}
-  .app-nav{
-    position:sticky;top:16px;bottom:auto;left:auto;right:auto;max-width:920px;margin:0 auto 24px;height:62px;
-    box-shadow:0 14px 35px rgba(0,0,0,.28)
-  }
-  .app-nav button{flex-direction:row;gap:8px}.nav-label{font-size:12px}
-  .content-shell{padding-bottom:70px}
-  .search-row{grid-template-columns:1fr}.filter-toggle{display:none}
-  .filter-sheet-back{display:none}
-  .filter-sheet{
-    position:static;transform:none;max-height:none;overflow:visible;border:1px solid var(--line);border-radius:0;
-    padding:12px;background:rgba(24,26,33,.7);margin:-12px 0 24px
-  }
-  .sheet-grab,.sheet-head,.sheet-actions{display:none}
-  .filter-options{grid-template-columns:repeat(4,1fr);gap:8px}
-  .filter-options label{gap:5px}.filter-options select{height:42px}
-  .view-title{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:18px}.view-title p{margin:0}
-  .stat-grid{grid-template-columns:repeat(4,1fr)}.stat{border-bottom:0}.stat:nth-child(2){border-right:1px solid var(--line)}.stat .num{font-size:32px}
-  .profile-grid{grid-template-columns:.9fr .9fr 1.5fr 1.7fr}.profile-grid>div{border-bottom:0;border-right:1px solid var(--line)}.profile-grid>div:nth-child(2){border-right:1px solid var(--line)}.profile-grid>div:last-child{border-right:0}
-  .overview-columns{grid-template-columns:1fr 1fr}
-  .month-rail{display:flex!important}.calendar-tools #calendarArchiveToggle{display:none}.legend{margin-left:0;margin-right:0;padding-left:0;padding-right:0}
-  .cal-grid{max-width:620px;margin:auto}.month-card{padding:16px}.day{font-size:11px}
-  .company-grid,.cat-grid{grid-template-columns:1fr 1fr;gap:10px}
-  .map-mode-toggle{display:none}
-  .map-wrap{margin:0;display:grid!important;grid-template-columns:1.55fr .85fr;gap:10px}
-  .map-wrap .map-box,.map-wrap .map-detail{display:block!important;border:1px solid var(--line)}
-  #leafletMap{height:590px}.map-detail{max-height:590px;overflow:auto}
-  .map-selection-sheet{left:auto;right:calc((100vw - min(920px,100vw - 44px))/2 + 18px);bottom:30px;width:420px;max-height:420px}
-  .drawer{left:auto;right:0;top:0;bottom:0;width:min(520px,100%);height:100dvh;border-radius:0;border-left:1px solid var(--line);border-top:0;transform:translateX(104%);padding:18px 24px}.drawer.open{transform:none}.drawer-grab{display:none}
-  footer{padding-top:44px}
-}
-@media(max-width:370px){
-  :root{--pad:12px}.cover h1{font-size:35px}.profile-grid{grid-template-columns:1fr}.profile-grid>div{border-right:0!important}.profile-grid>div:nth-child(3){border-bottom:1px solid var(--line)}
-  .archive-range{display:none}.nav-label{font-size:9.5px}
-}
-
-</style>
+    /* ===== archive UX enhancement layer ===== */
+    [hidden]{display:none!important}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+    body.sheet-open{overflow:hidden}
+    .profile-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin:4px 0 24px;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--line)}
+    .profile-mini>div{min-width:0;padding:11px 12px;background:#101216}.profile-mini span{display:block;color:var(--dim);font-size:7px;font-weight:900;letter-spacing:.13em}.profile-mini b{display:block;margin-top:6px;font-size:10px;line-height:1.45;word-break:keep-all}
+    .archive-tools{margin:20px 0 2px;padding:12px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,#111418,#0e1013)}
+    .archive-search-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.archive-search{position:relative;display:flex;align-items:center;min-width:0}.archive-search svg{position:absolute;left:12px;width:16px;height:16px;stroke:#737985;fill:none;stroke-width:1.8;pointer-events:none}.archive-search input{width:100%;height:44px;padding:0 12px 0 38px;border:1px solid var(--line);border-radius:13px;background:#0d0f12;color:var(--text);font-size:11px;outline:0}.archive-search input::placeholder{color:#666c76}.archive-search input:focus{border-color:#626a43}
+    .filter-toggle{min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:13px;background:#171a1f;color:var(--muted);font-size:9px;font-weight:900;letter-spacing:.08em;cursor:pointer}.filter-toggle.has-active{border-color:#59622f;color:var(--accent)}.filter-count{display:inline-grid;place-items:center;min-width:17px;height:17px;margin-left:4px;padding:0 4px;border-radius:999px;background:#292d34;color:var(--text);font-size:8px}
+    .filter-panel{display:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:8px}.filter-panel.open{display:grid}.filter-panel select,.filter-reset{min-width:0;height:42px;padding:0 10px;border:1px solid var(--line);border-radius:12px;background:#13161a;color:#c4c8cf;font-size:10px;outline:0}.filter-panel select:focus{border-color:#626a43}.filter-reset{cursor:pointer;color:var(--accent);font-weight:800}.filter-reset:disabled{color:#5d626b;cursor:default}
+    .active-filter-chips{display:flex;gap:6px;overflow:auto;margin-top:8px;scrollbar-width:none}.active-filter-chips:empty{display:none}.active-filter-chips::-webkit-scrollbar{display:none}.active-filter-chip{flex:0 0 auto;max-width:220px;padding:6px 9px;border:1px solid #343942;border-radius:999px;background:#171a1f;color:#aeb3bc;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}.active-filter-chip::after{content:' ×';color:var(--accent)}
+    .filter-result{margin-top:8px;color:#747a84;font-size:9px}.filter-result b{color:#bfc4cb}
+    .calendar-quick{margin-top:10px;padding:0;border:1px solid transparent;border-radius:18px;background:transparent;overflow:hidden;transition:.2s}.calendar-quick.open{padding:13px;border-color:#353b43;background:#101317}.calendar-quick-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:9px}.calendar-quick-head b{font-size:11px}.calendar-quick-head span{color:var(--accent);font-size:8px;font-weight:900;letter-spacing:.09em}.calendar-quick .event-row{background:#15181d}.day.selected{border-color:var(--accent);box-shadow:inset 0 0 0 1px rgba(216,255,79,.35)}
+    .map-view-toggle{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:0 0 10px;padding:4px;border:1px solid var(--line);border-radius:14px;background:#0e1013}.map-view-toggle button{min-height:38px;border:0;border-radius:10px;background:transparent;color:var(--muted);font-size:9px;font-weight:900;letter-spacing:.1em;cursor:pointer}.map-view-toggle button.active{background:#23272e;color:var(--text)}
+    .places-panel{display:flex;flex-direction:column;gap:8px}.place-row{width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;padding:13px 14px;border:1px solid var(--line);border-radius:16px;background:var(--panel);color:inherit;text-align:left;cursor:pointer}.place-row b{display:block;font-size:12px;line-height:1.35}.place-row small{display:block;margin-top:4px;color:var(--muted);font-size:9px;line-height:1.45}.place-numbers{text-align:right;white-space:nowrap}.place-numbers strong{display:block;color:var(--accent);font-size:12px}.place-numbers span{color:#757b85;font-size:8px}.accuracy-tag{display:inline-flex;margin-top:6px;padding:3px 6px;border:1px solid #414651;border-radius:999px;color:#858b95;font-size:7px;font-weight:900;letter-spacing:.08em}.accuracy-tag.approx{border-color:#695f37;color:#d8bc65}
+    .accuracy-note{margin-top:10px;padding:10px 11px;border:1px dashed #3d4149;border-radius:12px;color:#888e98;font-size:9px;line-height:1.55}
+    .map-wrap[aria-hidden="true"]{display:none}.map-stat[aria-hidden="true"]{display:none}
+    .live:before{box-shadow:0 0 0 0 rgba(216,255,79,.32)}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(216,255,79,.32)}70%{box-shadow:0 0 0 7px rgba(216,255,79,0)}100%{box-shadow:0 0 0 0 rgba(216,255,79,0)}}
+    .sheet-close,.nav-btn,.month-btn,.filter-btn,.segmented button{min-height:42px}.sheet-close{min-width:42px;height:42px}
+    @media(max-width:380px){.profile-mini{grid-template-columns:1fr}.profile-mini>div+div{border-top:1px solid var(--line)}}
+    @media(min-width:640px){main{padding-left:24px;padding-right:24px}.topbar{padding-left:24px;padding-right:24px}.metrics{grid-template-columns:repeat(4,1fr)}.explore-grid{grid-template-columns:repeat(4,1fr)}.calendar-grid{gap:7px}.day{min-height:76px}.event-label{display:block;color:#111;font-size:7px;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 4px;border-radius:3px}.event-dot{display:none}.map-wrap{height:620px}.detail-grid{grid-template-columns:repeat(4,1fr)}}
+    @media(min-width:640px){.filter-toggle{display:none}.filter-panel{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}.archive-search-row{grid-template-columns:1fr}.archive-tools{padding:14px}.profile-mini b{font-size:11px}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+  </style>
 </head>
-
 <body>
-<div class="site-shell">
-  <header class="site-header">
-    <div class="brand-line"><span class="brand-tag">SITE LOG</span><strong>OH HYUNWOO</strong></div>
-    <div class="archive-range">FIELD ARCHIVE · 2025 — PRESENT</div>
+<div class="app">
+  <header class="topbar">
+    <button class="brand" data-go="overview" aria-label="홈으로" style="border:0;background:transparent;padding:0;cursor:pointer"><span class="brand-mark"></span>EVENT CAREER ARCHIVE</button>
+    <div class="snapshot">DATA · 2026.09.16</div>
   </header>
 
-  <section class="cover" aria-labelledby="coverTitle">
-    <div class="cover-kicker">EVENT FIELD OPERATIONS ARCHIVE</div>
-    <h1 id="coverTitle">사람이 모이는 현장에서,<span>흐름을 운영합니다.</span></h1>
-    <p>다양한 행사 현장에서 쌓아온 운영 경험을 시간 · 업체 · 카테고리 · 장소로 기록합니다.</p>
-    <div class="current-strip" id="heroCurrent" aria-label="현재 진행 현장"></div>
-    <a class="cover-cta" href="#archiveStart">VIEW ARCHIVE <span>↓</span></a>
-  </section>
+  <main>
+    <section class="view active" id="view-overview">
+      <div class="hero">
+        <div class="eyebrow">Field Experience · 2025 — Now</div>
+        <h1 class="hero-title">MY EVENT<br><span class="outline">FOOTPRINT.</span></h1>
+        <p class="lead">전시, 팝업, 박람회, 컨퍼런스, 페스티벌과 야외 현장에서 쌓아온 경험을 시간·협업사·행사 유형·장소의 네 가지 관점으로 탐색합니다.</p>
+        <div class="profile-mini" aria-label="프로필 요약"><div><span>FIELD</span><b>행사 · 전시 현장 운영</b></div><div><span>SINCE</span><b>2025.10 — 현재</b></div><div><span>FOCUS</span><b>운영 · 응대 · 동선 · 프로모션</b></div></div>
+      </div>
+      <div class="metrics" id="overviewMetrics"></div>
+      <div class="section-head"><div><div class="eyebrow">Now working</div><h3>현재 진행 중</h3></div></div>
+      <article class="active-card" id="activeProject" aria-live="polite" tabindex="0"></article>
+      <div class="section-head"><div><div class="eyebrow">Activity</div><h3>현장 활동 밀도</h3><p>하루 한 칸 · 실제 근무일 기준</p></div><span id="heatPeriod" class="summary-inline"></span></div>
+      <div class="heatmap-wrap"><div class="heatmap" id="heatmap"></div></div>
+      <div class="heat-legend"><span>2025.10</span><span>실제 근무일</span><span id="heatEnd">NOW</span></div>
+      <div class="section-head"><div><div class="eyebrow">Explore</div><h3>경력을 보는 4가지 방법</h3></div></div>
+      <div class="explore-grid">
+        <button class="explore" data-go="calendar"><span>01 <span class="arrow">↗</span></span><b>WHEN</b><small>Calendar</small></button>
+        <button class="explore" data-go="company"><span>02 <span class="arrow">↗</span></span><b>WITH WHOM</b><small>Companies</small></button>
+        <button class="explore" data-go="category"><span>03 <span class="arrow">↗</span></span><b>WHAT</b><small>Categories & Roles</small></button>
+        <button class="explore" data-go="map"><span>04 <span class="arrow">↗</span></span><b>WHERE</b><small>Map</small></button>
+      </div>
+    </section>
 
-  <div id="archiveStart"></div>
-
-  <nav class="tabs app-nav" aria-label="아카이브 메뉴">
-    <button class="active" data-view="overview"><span class="nav-no">00</span><span class="nav-label">홈</span></button>
-    <button data-view="calendar"><span class="nav-no">01</span><span class="nav-label">캘린더</span></button>
-    <button data-view="company"><span class="nav-no">02</span><span class="nav-label">업체</span></button>
-    <button data-view="category"><span class="nav-no">03</span><span class="nav-label">카테고리</span></button>
-    <button data-view="map"><span class="nav-no">04</span><span class="nav-label">지도</span></button>
-  </nav>
-
-  <main class="content-shell">
-    <div class="filterbar">
-      <div class="search-row">
-        <input id="filterSearch" type="search" placeholder="행사명 · 장소 · 주소 · 업무 검색" aria-label="아카이브 검색">
-        <button type="button" class="filter-toggle" id="filterToggle" aria-expanded="false" aria-controls="filterSheet">
-          FILTER <span class="filter-count" id="filterCount">0</span>
-        </button>
+    <section class="archive-tools" id="archiveTools" aria-label="아카이브 검색 및 필터" hidden>
+      <div class="archive-search-row">
+        <label class="archive-search"><span class="sr-only">아카이브 검색</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><input id="archiveSearch" type="search" autocomplete="off" placeholder="행사명 · 장소 · 업체 · 주소 · 업무 검색" /></label>
+        <button class="filter-toggle" id="filterToggle" type="button" aria-expanded="false" aria-controls="filterPanel">FILTER <span class="filter-count" id="filterCount">0</span></button>
+      </div>
+      <div class="filter-panel" id="filterPanel">
+        <select id="filterYear" aria-label="연도 필터"><option value="all">전체 연도</option></select>
+        <select id="filterAgency" aria-label="업체 필터"><option value="all">전체 업체</option></select>
+        <select id="filterCategory" aria-label="카테고리 필터"><option value="all">전체 카테고리</option></select>
+        <select id="filterRole" aria-label="업무 역할 필터"><option value="all">전체 업무 역할</option></select>
+        <button class="filter-reset" id="filterReset" type="button">RESET FILTERS</button>
       </div>
       <div class="active-filter-chips" id="activeFilterChips" aria-live="polite"></div>
-    </div>
-
-    <div class="filter-sheet-back" id="filterSheetBack"></div>
-    <aside class="filter-sheet" id="filterSheet" aria-label="필터">
-      <div class="sheet-grab"></div>
-      <div class="sheet-head"><strong>FILTERS</strong><button id="filterSheetClose" type="button" aria-label="필터 닫기">×</button></div>
-      <div class="filter-options" id="filterOptions">
-        <label><span>YEAR</span><select id="filterYear"><option value="all">전체 연도</option><option value="2026">2026</option><option value="2025">2025</option></select></label>
-        <label><span>AGENCY</span><select id="filterCompany"><option value="all">전체 업체</option></select></label>
-        <label><span>CATEGORY</span><select id="filterCategory"><option value="all">전체 카테고리</option></select></label>
-        <label><span>ROLE TAG</span><select id="filterRole"><option value="all">전체 업무 태그</option></select></label>
-      </div>
-      <div class="sheet-actions"><button id="filterReset" type="button">RESET</button><button id="filterApply" type="button">APPLY</button></div>
-    </aside>
-
-    <section class="view active" id="view-overview">
-      <div class="view-title"><div><span>00</span><h2>Overview</h2></div><p>현장 기록의 전체 흐름을 빠르게 확인합니다.</p></div>
-      <div class="stat-grid" id="heroStatRow"></div>
-      <section class="profile-card">
-        <div class="profile-head"><span>PROFILE</span><strong>오현우 · EVENT FIELD OPERATOR</strong></div>
-        <div class="profile-grid">
-          <div><small>FIELD</small><b>행사 · 전시 현장 운영</b></div>
-          <div><small>EXPERIENCE</small><b>2025.10 — 현재</b></div>
-          <div><small>MAIN FIELDS</small><b>전시 · 팝업 · 박람회 · 컨퍼런스 · 페스티벌 · 스포츠</b></div>
-          <div><small>ROLE</small><b>현장 운영 · 관람객 응대 · 동선 관리 · 프로모션 · 전시 관리</b></div>
-        </div>
-      </section>
-      <div id="overviewContent"></div>
+      <div class="filter-result" id="filterResult" aria-live="polite"></div>
     </section>
 
     <section class="view" id="view-calendar">
-      <div class="view-title"><div><span>01</span><h2>Calendar</h2></div><p>한 달씩 넘기며 실제 근무일을 확인합니다.</p></div>
-      <div class="calendar-nav">
-        <button id="calPrev" type="button" aria-label="이전 달">←</button>
-        <strong id="calendarMonthLabel"></strong>
-        <button id="calNext" type="button" aria-label="다음 달">→</button>
+      <div class="view-title"><div class="eyebrow">01 · When</div><h2>Calendar</h2><p>행사 기간이 아니라 <b>실제로 근무한 날짜</b>를 캘린더에 표시합니다.</p></div>
+      <div class="month-strip" id="monthStrip"></div>
+      <div class="calendar-card">
+        <div class="calendar-head"><strong id="calendarTitle"></strong><span id="calendarSummary"></span></div>
+        <div class="weekdays"><div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div></div>
+        <div class="calendar-grid" id="calendarGrid"></div>
       </div>
-      <div class="calendar-tools">
-        <button id="calendarLatest" type="button">LATEST</button>
-        <button id="calendarArchiveToggle" type="button">MONTHS</button>
-      </div>
-      <div class="month-rail" id="monthRail"></div>
-      <div class="legend" id="legendCal"></div>
-      <div class="cal-grid" id="calGrid"></div>
-      <p class="gesture-note">날짜를 누르면 기록이 펼쳐집니다 · 달력 좌우 스와이프 가능</p>
+      <div class="calendar-quick" id="calendarQuick" aria-live="polite"></div>
+      <div class="month-events" id="monthEvents"></div>
     </section>
 
     <section class="view" id="view-company">
-      <div class="view-title"><div><span>02</span><h2>Agencies</h2></div><p>협업 업체별 참여 기록과 실근무일을 확인합니다.</p></div>
-      <div class="company-grid" id="companyGrid"></div>
+      <div class="view-title"><div class="eyebrow">02 · With whom</div><h2>Companies</h2><p>함께 일한 횟수와 실제 근무일을 전환해 협업의 깊이를 비교합니다.</p></div>
+      <div class="toolbar">
+        <div class="segmented" id="companyMetric"><button class="active" data-value="events">EVENTS</button><button data-value="days">DAYS</button></div>
+        <div class="summary-inline" id="companySummary"></div>
+      </div>
+      <div class="bars" id="companyBars"></div>
     </section>
 
     <section class="view" id="view-category">
-      <div class="view-title"><div><span>03</span><h2>Categories</h2></div><p>현장 유형별 기록을 접어서 빠르게 탐색합니다.</p></div>
-      <div class="cat-grid" id="catGrid"></div>
+      <div class="view-title"><div class="eyebrow">03 · What</div><h2>Categories</h2><p>행사의 종류와 내가 실제로 수행한 역할을 분리해 봅니다.</p></div>
+      <div class="toolbar">
+        <div class="segmented" id="categoryDimension"><button class="active" data-value="category">EVENT TYPE</button><button data-value="role">MY ROLE</button></div>
+        <div class="segmented" id="categoryMetric"><button class="active" data-value="events">EVENTS</button><button data-value="days">DAYS</button></div>
+      </div>
+      <div class="bars" id="categoryBars"></div>
     </section>
 
     <section class="view" id="view-map">
-      <div class="view-title"><div><span>04</span><h2>Locations</h2></div><p>현장을 지도 또는 장소 목록으로 탐색합니다.</p></div>
-      <div class="map-mode-toggle" id="mapModeToggle" aria-label="지도 보기 방식">
-        <button type="button" class="active" data-map-mode="map">MAP</button>
-        <button type="button" data-map-mode="list">LIST</button>
-      </div>
-      <div class="map-wrap" id="mapWrap" data-mode="map">
-        <div class="map-box"><div id="leafletMap"></div><p class="map-note">정확 주소를 기준으로 기록하며 일부 핀 좌표는 시각화를 위한 근사값입니다.</p></div>
-        <div class="map-detail" id="mapDetail"></div>
-      </div>
-      <div class="map-selection-back" id="mapSelectionBack"></div>
-      <aside class="map-selection-sheet" id="mapSelectionSheet"></aside>
+      <div class="view-title"><div class="eyebrow">04 · Where</div><h2>Map</h2><p>정확한 행사장 주소를 기반으로 현장 경험의 지리적 범위를 탐색합니다.</p></div>
+      <div class="map-toolbar" id="mapFilters"><button class="filter-btn active" data-region="ALL">ALL</button><button class="filter-btn" data-region="서울">SEOUL</button><button class="filter-btn" data-region="경기">GYEONGGI</button><button class="filter-btn" data-region="강원">GANGWON</button></div>
+      <div class="map-view-toggle" id="mapViewToggle" aria-label="지도 보기 방식"><button class="active" type="button" data-map-mode="map">MAP</button><button type="button" data-map-mode="places">PLACES</button></div>
+      <div class="map-wrap" id="mapWrap" aria-hidden="false"><div class="fallback-map" id="fallbackMap"></div><div id="leafletMap"></div></div>
+      <div class="places-panel" id="placesPanel" hidden></div>
+      <div class="map-stat" id="mapStats" aria-hidden="false"></div>
+      <p class="note" id="mapAccuracyNote">주소는 제공된 원문을 보존합니다. 지도 핀은 장소 단위 좌표와 근사 좌표를 구분해 관리하며, 근사 좌표는 상세 화면에 별도로 표시합니다.</p>
     </section>
-
-    <footer>SITE LOG V5 · MOBILE FIELD ARCHIVE · OH HYUNWOO</footer>
   </main>
+
+  <nav class="bottom-nav" aria-label="주요 메뉴">
+    <button class="nav-btn active" data-go="overview" aria-label="Overview"><svg viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>OVERVIEW</button>
+    <button class="nav-btn" data-go="calendar" aria-label="Calendar"><svg viewBox="0 0 24 24"><path d="M5 3v3M19 3v3M4 8h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1z"/></svg>CALENDAR</button>
+    <button class="nav-btn" data-go="company" aria-label="Companies"><svg viewBox="0 0 24 24"><path d="M4 20V8l8-4v16M12 9h8v11M7 11h2M7 15h2M15 12h2M15 16h2"/></svg>COMPANY</button>
+    <button class="nav-btn" data-go="category" aria-label="Categories"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7"/></svg>TYPE</button>
+    <button class="nav-btn" data-go="map" aria-label="Map"><svg viewBox="0 0 24 24"><path d="M9 18l-5 2V6l5-2 6 2 5-2v14l-5 2-6-2zM9 4v14M15 6v14"/></svg>MAP</button>
+  </nav>
 </div>
 
-<div class="drawer-back" id="drawerBack"></div>
-<aside class="drawer" id="drawer" aria-label="행사 상세">
-  <div class="drawer-grab"></div>
-  <button class="drawer-close" id="drawerClose" aria-label="상세 닫기">×</button>
-  <div id="drawerContent"></div>
-</aside>
+<div class="sheet-backdrop" id="sheetBackdrop"></div>
+<aside class="sheet" id="sheet" aria-modal="true" aria-hidden="true" role="dialog" tabindex="-1"><div class="sheet-handle"></div><div id="sheetContent"></div></aside>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script async src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="" onload="if(window.__mapRetry) window.__mapRetry()"></script>
 <script>
-/* 이름을 공개하고 싶을 때 PROFILE_NAME에 입력할 수 있도록 비워 두었습니다. */
-const PROFILE_NAME = '오현우';
-const CAT = {
-  exhibition:{label:'전시', color:'var(--exhibition)'},
-  popup:{label:'팝업·프로모션', color:'var(--popup)'},
-  fair:{label:'박람회·엑스포', color:'var(--fair)'},
-  business:{label:'컨퍼런스·비즈니스', color:'var(--business)'},
-  festival:{label:'페스티벌·문화', color:'var(--festival)'},
-  sports:{label:'스포츠·야외', color:'var(--sports)'},
-  ceremony:{label:'기념식·시상식', color:'var(--ceremony)'},
+const SNAPSHOT_DATE = '2026-09-16';
+const CATEGORY = {
+  exhibition:{label:'EXHIBITION', color:'var(--exhibition)'},
+  popup:{label:'POP-UP', color:'var(--popup)'},
+  expo:{label:'EXPO / TRADE SHOW', color:'var(--expo)'},
+  conference:{label:'CONFERENCE', color:'var(--conference)'},
+  festival:{label:'FESTIVAL / CULTURE', color:'var(--festival)'},
+  sports:{label:'SPORTS / OUTDOOR', color:'var(--sports)'},
+  ceremony:{label:'CEREMONY / AWARDS', color:'var(--ceremony)'}
 };
+const ROLE_LABELS = {
+  operations:'운영', visitor:'관람객 응대', flow:'동선 관리', safety:'안전 관리', artwork:'작품 관리',
+  promotion:'홍보 / 프로모션', setup:'세팅 / 철수', logistics:'물류', program:'프로그램 운영', registration:'등록',
+  booth:'부스 운영', parking:'주차 안내', matching:'바이어 / 브랜드 매칭', monitoring:'전시 관리'
+};
+const EVENTS = [
+{id:'banksy',title:'뱅크시 특별전 BANKSY : Still Here',short:'BANKSY : Still Here',start:'2026-07-22',end:null,status:'ongoing',actualDays:null,schedule:{weekdays:[1,2,3,4,5]},agency:'아튠즈',category:'exhibition',roles:['visitor','flow','safety','artwork','operations'],responsibilities:['관람객 동선 유도 및 내부 관리','전시장 안전 및 작품 관리','전시 운영 관련 제반 현장 업무 일체'],venue:{coordinateAccuracy:'approximate',name:'ALT.1 더현대서울현대백화점',detail:'6층',address:'서울 영등포구 여의도동 여의대로 108, 6층',region:'서울',district:'영등포구',lat:37.5259,lng:126.9284}},
+{id:'japan-study',title:'2026 일본유학박람회',start:'2026-08-23',end:'2026-08-23',actualDays:1,agency:'빅터시스템',category:'expo',roles:['visitor','flow'],responsibilities:['관람객 안내 및 동선 관리'],venue:{coordinateAccuracy:'venue',name:'코엑스 컨퍼런스룸 E',detail:'3층',address:'서울 강남구 영동대로 513, 3층',region:'서울',district:'강남구',lat:37.5117,lng:127.0592}},
+{id:'waterbomb',title:'워터밤 속초 2026',start:'2026-08-22',end:'2026-08-22',actualDays:1,agency:'STN',category:'festival',roles:['logistics','operations'],responsibilities:['물품보관소 운영'],venue:{coordinateAccuracy:'approximate',name:'한화리조트 설악 쏘라노',address:'강원 속초시 미시령로2983번길 111',region:'강원',district:'속초시',lat:38.2088,lng:128.5267}},
+{id:'mosquito-cinema',title:'2026 강변 모기장영화관',start:'2026-08-16',end:'2026-08-16',actualDays:1,agency:'스탭원라인',category:'festival',roles:['setup','operations'],responsibilities:['모기장영화관 세팅 및 운영','행사 종료 후 철수'],venue:{coordinateAccuracy:'venue',name:'노들섬',address:'서울 용산구 양녕로 445',region:'서울',district:'용산구',lat:37.5178,lng:126.9585}},
+{id:'fc-foodpark',title:'FC서울 푸드파크',start:'2026-08-15',end:'2026-08-15',actualDays:1,agency:'아라세이브',category:'sports',roles:['setup','operations'],responsibilities:['푸드파크 세팅 및 운영','행사 종료 후 철수'],venue:{coordinateAccuracy:'approximate',name:'FC서울푸드파크',address:'서울 마포구 성산동 산53-27',region:'서울',district:'마포구',lat:37.5683,lng:126.8972}},
+{id:'morning-gwangjin',title:'쉬엄쉬엄모닝:광진교',start:'2026-08-02',end:'2026-08-02',actualDays:1,agency:'코드나잇',category:'sports',roles:['setup','operations'],responsibilities:['마라톤 세팅 및 운영','행사 종료 후 철수'],venue:{coordinateAccuracy:'approximate',name:'광나루자전거공원',address:'서울 강동구 선사로 83-19',region:'서울',district:'강동구',lat:37.5486,lng:127.1227}},
+{id:'morning-seoul',title:'쉬엄쉬엄모닝:서울광장',start:'2026-07-26',end:'2026-07-26',actualDays:1,agency:'코드나잇',category:'sports',roles:['setup','operations'],responsibilities:['마라톤 세팅 및 운영','행사 종료 후 철수'],venue:{coordinateAccuracy:'venue',name:'서울광장',address:'서울 중구 을지로 12',region:'서울',district:'중구',lat:37.5657,lng:126.9780}},
+{id:'character-fair',title:'캐릭터 라이선싱 페어 2026',start:'2026-07-16',end:'2026-07-19',actualDays:4,agency:'아튠즈',category:'expo',roles:['promotion','program'],responsibilities:['뱅크시 특별전 홍보','현장 이벤트 진행'],venue:{coordinateAccuracy:'venue',name:'코엑스 Hall A&B1',address:'서울 강남구 영동대로 513',region:'서울',district:'강남구',lat:37.5117,lng:127.0592}},
+{id:'morning-yeouido',title:'쉬엄쉬엄모닝:여의도공원',start:'2026-07-12',end:'2026-07-12',actualDays:1,agency:'코드나잇',category:'sports',roles:['setup','operations'],responsibilities:['마라톤 세팅 및 운영','행사 종료 후 철수'],venue:{coordinateAccuracy:'venue',name:'여의도공원 문화의 마당',address:'서울 영등포구 여의공원로 68',region:'서울',district:'영등포구',lat:37.5268,lng:126.9223}},
+{id:'osh-month',title:'2026 산업안전보건의 달',start:'2026-07-07',end:'2026-07-09',actualDays:3,agency:'빅터시스템',category:'conference',roles:['program','operations'],responsibilities:['4층 안전보건세미나 운영 지원','우수사례발표대회 운영 지원'],venue:{coordinateAccuracy:'venue',name:'킨텍스 제2전시장',detail:'1층',address:'경기 고양시 일산서구 킨텍스로 217-59, 1층',region:'경기',district:'고양시',lat:37.6664,lng:126.7430}},
+{id:'theliv',title:'더리브 센트럴 착공식',start:'2026-07-04',end:'2026-07-04',actualDays:1,agency:'세움엔터',category:'ceremony',roles:['parking','flow','operations'],responsibilities:['방문차량 주차 안내','착공식 운영 지원'],venue:{coordinateAccuracy:'approximate',name:'마석역 더리브센트럴',address:'경기 남양주시 화도읍 마석우리 36-2',region:'경기',district:'남양주시',lat:37.6516,lng:127.3112}},
+{id:'urban-architecture',title:'서울도시건축전시관',start:'2026-06-30',end:'2026-07-02',actualDays:3,agency:'빅터시스템',category:'exhibition',roles:['monitoring','visitor','operations'],responsibilities:['전시장 내부 전시관리 및 순찰','관람객 응대'],venue:{coordinateAccuracy:'venue',name:'서울도시건축전시관',address:'서울 중구 세종대로 119',region:'서울',district:'중구',lat:37.5662,lng:126.9768}},
+{id:'pokemon',title:'포켓몬스터 30주년 메가페스타 메타몽 놀이터 팝업',start:'2026-06-01',end:'2026-06-21',actualDays:21,agency:'에이전시더탑',category:'popup',roles:['program','visitor','operations'],responsibilities:['외부놀이터 운영','관람객 안내'],venue:{coordinateAccuracy:'approximate',name:'성수동 팝업',address:'서울 성동구 성수이로7가길 9',region:'서울',district:'성동구',lat:37.5439,lng:127.0551}},
+{id:'mobis-monami',title:'현대모비스 오로르×모나미 팝업',start:'2026-05-01',end:'2026-05-31',actualDays:31,agency:'빅터시스템',category:'popup',roles:['promotion','visitor','operations'],responsibilities:['모객 및 고객 응대','프로모션 안내','현장 관리'],venue:{coordinateAccuracy:'venue',name:'스타필드 수원',address:'경기 수원시 장안구 수성로 175',region:'경기',district:'수원시',lat:37.2978,lng:127.0070}},
+{id:'morning-banpo',title:'쉬엄쉬엄모닝:잠수교',start:'2026-04-26',end:'2026-04-26',actualDays:1,agency:'코드나잇',category:'sports',roles:['setup','operations'],responsibilities:['마라톤 세팅 및 운영','행사 종료 후 철수'],venue:{coordinateAccuracy:'approximate',name:'반포 한강공원',address:'서울 서초구 신반포로11길 40',region:'서울',district:'서초구',lat:37.5107,lng:126.9958}},
+{id:'kpp-expo',title:'코리아 나라장터 엑스포 2026',start:'2026-03-24',end:'2026-03-27',actualDays:4,agency:'빅터시스템',category:'expo',roles:['program','operations'],responsibilities:['2층 동시행사 상담회·세미나 운영','현장 관리'],venue:{coordinateAccuracy:'venue',name:'킨텍스 제1전시장',address:'경기 고양시 일산서구 킨텍스로 217-60',region:'경기',district:'고양시',lat:37.6688,lng:126.7453}},
+{id:'security-expo',title:'제25회 세계 보안 엑스포',start:'2026-03-18',end:'2026-03-20',actualDays:3,agency:'빅터시스템',category:'expo',roles:['booth','visitor','operations'],responsibilities:['전시 부스 운영 지원','참관객 응대'],venue:{coordinateAccuracy:'venue',name:'킨텍스 제1전시장',address:'경기 고양시 일산서구 킨텍스로 217-60',region:'경기',district:'고양시',lat:37.6688,lng:126.7453}},
+{id:'digital-health',title:'K-디지털헬스케어 얼라이언스 출범식',start:'2026-03-17',end:'2026-03-17',actualDays:1,agency:'빅터시스템',category:'conference',roles:['registration','operations'],responsibilities:['참여 기업 등록 확인','출범식 운영 지원'],venue:{coordinateAccuracy:'venue',name:'글래드 여의도',address:'서울 영등포구 의사당대로 16',region:'서울',district:'영등포구',lat:37.5280,lng:126.9173}},
+{id:'crunky',title:'크런키 스트레스 타파 학원 팝업',start:'2026-02-23',end:'2026-03-09',actualDays:15,agency:'빅터시스템',category:'popup',roles:['program','visitor','promotion'],responsibilities:['체험형 프로그램 운영','고객 응대','브랜드 경험형 프로모션 진행'],venue:{coordinateAccuracy:'approximate',name:'대치동 팝업',address:'서울특별시 강남구 역삼로 466',region:'서울',district:'강남구',lat:37.5007,lng:127.0546}},
+{id:'sfw-tradeshow',title:'2026 F/W 서울패션위크 트레이드쇼',start:'2026-02-04',end:'2026-02-07',actualDays:4,agency:'빅터시스템',category:'expo',roles:['matching','operations'],responsibilities:['바이어/브랜드 매칭 현장 운영 지원'],venue:{coordinateAccuracy:'venue',name:'동대문디자인플라자 디자인랩',address:'서울특별시 중구 을지로 281',region:'서울',district:'중구',lat:37.5665,lng:127.0092}},
+{id:'shinhan',title:'신한카드 MY DISCOUNT PLAN 팝업',start:'2026-01-12',end:'2026-01-25',actualDays:14,agency:'빅터시스템',category:'popup',roles:['promotion','visitor'],responsibilities:['모객 및 고객 응대','프로모션 안내'],venue:{coordinateAccuracy:'venue',name:'교보문고 광화문점',detail:'교보생명빌딩 지하1층',address:'서울특별시 종로구 종로 1 교보생명빌딩 지하1층',region:'서울',district:'종로구',lat:37.5704,lng:126.9778}},
+{id:'jk-financial',title:'JK FINANCIAL 시상식',start:'2026-01-09',end:'2026-01-09',actualDays:1,agency:'쏭에이전시',category:'ceremony',roles:['setup','operations'],responsibilities:['시상식 세팅','시상식 운영 지원'],venue:{coordinateAccuracy:'approximate',name:'메이필드호텔',address:'서울 강서구 방화대로 94',region:'서울',district:'강서구',lat:37.5474,lng:126.8177}},
+{id:'seoul-light',title:'서울라이트 광화문',start:'2025-12-23',end:'2026-01-04',actualDays:13,agency:'빅터시스템',category:'festival',roles:['operations','visitor'],responsibilities:['현장 운영','관람객 안내'],venue:{coordinateAccuracy:'venue',name:'광화문광장',address:'서울 종로구 세종대로 175',region:'서울',district:'종로구',lat:37.5716,lng:126.9768}},
+{id:'miniteen',title:'HOLIDAY with MINITEEN 팝업',start:'2025-12-08',end:'2025-12-22',actualDays:15,agency:'빅터시스템',category:'popup',roles:['logistics','visitor'],responsibilities:['캐릭터 IP 기반 굿즈 물류 관리','고객 응대'],venue:{coordinateAccuracy:'approximate',name:'성수동 팝업',address:'서울특별시 성동구 성수이로20길 57',region:'서울',district:'성동구',lat:37.5451,lng:127.0640}},
+{id:'agf',title:'Anime × Game Festival 2025',start:'2025-12-06',end:'2025-12-07',actualDays:2,agency:'빅터시스템',category:'expo',roles:['booth','program','visitor'],responsibilities:['갤럭시 스토어 리프레시존 운영'],venue:{coordinateAccuracy:'venue',name:'킨텍스 제1전시장',address:'경기 고양시 일산서구 킨텍스로 217-60',region:'경기',district:'고양시',lat:37.6688,lng:126.7453}},
+{id:'100years',title:'문화역서울284 기획전시 백년과 하루',start:'2025-10-14',end:'2025-11-30',actualDays:42,schedule:{weekdays:[0,2,3,4,5,6]},agency:'빅터시스템',category:'exhibition',roles:['flow','program','visitor'],responsibilities:['관람객 동선 안내','스탬프 엽서 만들기 안내','간단한 전시 설명 및 관람객 응대'],venue:{coordinateAccuracy:'venue',name:'문화역서울284',address:'서울 중구 통일로 1',region:'서울',district:'중구',lat:37.5559,lng:126.9719}}
+];
 
-const EVENTS = [{"name":"크린랩 릴리프x불꽃야구 팝업","venue":"고척스카이돔","company":"이벤플","cat":"popup","start":"2026-08-29","end":"2026-08-30","actualWorkDays":2,"roleTags":["세팅","팝업운영","철수","굿즈배포","이벤트안내","브랜드프로모션"],"tasks":["팝업 세팅 및 운영, 종료 후 철수","브랜드 인지도 확대를 위한 굿즈 배포 및 이벤트 안내"],"address":"서울 구로구 경인로 430","lat":37.4991592,"lng":126.8668831,"coordAccuracy":"venue","mapLabel":"고척스카이돔"},{"name":"2026 일본유학박람회","venue":"코엑스 컨퍼런스룸 E","company":"빅터시스템","cat":"fair","start":"2026-08-23","end":"2026-08-23","actualWorkDays":1,"roleTags":["관람객응대","동선관리"],"tasks":["관람객 안내 및 동선 관리"],"address":"서울 강남구 영동대로 513, 3층","lat":37.5117,"lng":127.0592,"coordAccuracy":"venue","mapLabel":"코엑스"},{"name":"워터밤 속초 2026","venue":"한화리조트 설악 쏘라노","company":"STN","cat":"festival","start":"2026-08-22","end":"2026-08-22","actualWorkDays":1,"roleTags":["운영","물품보관"],"tasks":["물품보관소 운영"],"address":"강원 속초시 미시령로2983번길 111","lat":38.207,"lng":128.526,"coordAccuracy":"approx","mapLabel":"한화리조트 설악 쏘라노"},{"name":"2026 강변 모기장영화관","venue":"노들섬","company":"스탭원라인","cat":"festival","start":"2026-08-16","end":"2026-08-16","actualWorkDays":1,"roleTags":["세팅","운영","철수"],"tasks":["모기장영화관 세팅 및 운영","종료 후 철수"],"address":"서울 용산구 양녕로 445","lat":37.517,"lng":126.9587,"coordAccuracy":"venue","mapLabel":"노들섬"},{"name":"FC서울 푸드파크","venue":"FC서울푸드파크","company":"아라세이브","cat":"sports","start":"2026-08-15","end":"2026-08-15","actualWorkDays":1,"roleTags":["세팅","운영","철수"],"tasks":["푸드파크 세팅 및 운영","종료 후 철수"],"address":"서울 마포구 성산동 산53-27","lat":37.5683,"lng":126.8973,"coordAccuracy":"approx","mapLabel":"FC서울푸드파크"},{"name":"쉬엄쉬엄모닝 : 광진교","venue":"광나루자전거공원","company":"코드나잇","cat":"sports","start":"2026-08-02","end":"2026-08-02","actualWorkDays":1,"roleTags":["세팅","운영","철수","마라톤"],"tasks":["마라톤 세팅 및 운영","종료 후 철수"],"address":"서울 강동구 선사로 83-19","lat":37.5464,"lng":127.1207,"coordAccuracy":"approx","mapLabel":"광나루자전거공원"},{"name":"쉬엄쉬엄모닝 : 서울광장","venue":"서울광장","company":"코드나잇","cat":"sports","start":"2026-07-26","end":"2026-07-26","actualWorkDays":1,"roleTags":["세팅","운영","철수","마라톤"],"tasks":["마라톤 세팅 및 운영","종료 후 철수"],"address":"서울 중구 을지로 12","lat":37.5656,"lng":126.978,"coordAccuracy":"venue","mapLabel":"서울광장"},{"name":"뱅크시 특별전 BANKSY : Still Here","venue":"ALT.1 더현대서울 현대백화점","company":"아튠즈","cat":"exhibition","start":"2026-07-22","end":null,"schedule":"월·화·수·목·금요일 근무","actualWorkDays":null,"roleTags":["전시운영","관람객응대","동선관리","안전관리","작품관리"],"tasks":["관람객 동선 유도 및 내부 관리","전시장 안전, 작품 관리","전시운영 관련 제반 현장 업무 일체"],"address":"서울 영등포구 여의대로 108, 6층","lat":37.5259,"lng":126.9284,"coordAccuracy":"approx","workWeekdays":[1,2,3,4,5],"mapLabel":"더현대 서울 ALT.1"},{"name":"캐릭터 라이선싱 페어 2026","venue":"코엑스 Hall A&B1","company":"아튠즈","cat":"fair","start":"2026-07-16","end":"2026-07-19","actualWorkDays":4,"roleTags":["프로모션","이벤트진행","관람객응대"],"tasks":["뱅크시 특별전 홍보 및 이벤트 진행"],"address":"서울 강남구 영동대로 513","lat":37.5117,"lng":127.0592,"coordAccuracy":"venue","mapLabel":"코엑스"},{"name":"쉬엄쉬엄모닝 : 여의도공원","venue":"여의도공원 문화의 마당","company":"코드나잇","cat":"sports","start":"2026-07-12","end":"2026-07-12","actualWorkDays":1,"roleTags":["세팅","운영","철수","마라톤"],"tasks":["마라톤 세팅 및 운영","종료 후 철수"],"address":"서울 영등포구 여의공원로 68","lat":37.5263,"lng":126.922,"coordAccuracy":"venue","mapLabel":"여의도공원 문화의 마당"},{"name":"2026 산업안전보건의 달","venue":"킨텍스 제2전시장","company":"빅터시스템","cat":"fair","start":"2026-07-07","end":"2026-07-09","actualWorkDays":3,"roleTags":["세미나운영","발표대회","운영지원"],"tasks":["4층 안전보건세미나·우수사례발표대회 운영 지원"],"address":"경기 고양시 일산서구 킨텍스로 217-59, 1층","lat":37.6678,"lng":126.7455,"coordAccuracy":"venue","mapLabel":"킨텍스 제2전시장"},{"name":"더리브 센트럴 착공식","venue":"마석역 더리브센트럴","company":"세움엔터","cat":"ceremony","start":"2026-07-04","end":"2026-07-04","actualWorkDays":1,"roleTags":["주차안내","운영지원","의전"],"tasks":["방문차량 주차 안내","착공식 운영 지원"],"address":"경기 남양주시 화도읍 마석우리 36-2","lat":37.6527,"lng":127.311,"coordAccuracy":"approx","mapLabel":"마석역 더리브센트럴"},{"name":"서울도시건축전시관","venue":"서울도시건축전시관","company":"빅터시스템","cat":"exhibition","start":"2026-06-30","end":"2026-07-02","actualWorkDays":3,"roleTags":["전시관리","순찰","관람객응대"],"tasks":["전시장 내부 전시관리 및 순찰","관람객 응대"],"address":"서울 중구 세종대로 119","lat":37.5663,"lng":126.9768,"coordAccuracy":"venue","mapLabel":"서울도시건축전시관"},{"name":"포켓몬스터 30주년 메가페스타 메타몽 놀이터 팝업","venue":"성수동","company":"에이전시더탑","cat":"popup","start":"2026-06-01","end":"2026-06-21","actualWorkDays":21,"roleTags":["팝업운영","관람객응대","야외운영"],"tasks":["외부놀이터 운영 및 관람객 안내"],"address":"서울 성동구 성수이로7가길 9","lat":37.5417,"lng":127.056,"coordAccuracy":"approx","mapLabel":"성수동"},{"name":"현대모비스 오로르x모나미 팝업","venue":"스타필드 수원","company":"빅터시스템","cat":"popup","start":"2026-05-01","end":"2026-05-31","actualWorkDays":31,"roleTags":["모객","고객응대","프로모션","현장관리"],"tasks":["모객, 고객 응대, 프로모션 안내 및 현장 관리"],"address":"경기 수원시 장안구 수성로 175","lat":37.2859,"lng":126.9927,"coordAccuracy":"venue","mapLabel":"스타필드 수원"},{"name":"쉬엄쉬엄모닝 : 잠수교","venue":"반포 한강공원","company":"코드나잇","cat":"sports","start":"2026-04-26","end":"2026-04-26","actualWorkDays":1,"roleTags":["세팅","운영","철수","마라톤"],"tasks":["마라톤 세팅 및 운영","종료 후 철수"],"address":"서울 서초구 신반포로11길 40","lat":37.5104,"lng":126.995,"coordAccuracy":"approx","mapLabel":"반포 한강공원"},{"name":"코리아 나라장터 엑스포 2026","venue":"킨텍스 제1전시장","company":"빅터시스템","cat":"fair","start":"2026-03-24","end":"2026-03-27","actualWorkDays":4,"roleTags":["상담회","세미나운영","현장관리"],"tasks":["2층 동시행사(상담회·세미나) 운영 및 현장 관리"],"address":"경기 고양시 일산서구 킨텍스로 217-60","lat":37.6689,"lng":126.745,"coordAccuracy":"venue","mapLabel":"킨텍스 제1전시장"},{"name":"제25회 세계 보안 엑스포","venue":"킨텍스 제1전시장","company":"빅터시스템","cat":"fair","start":"2026-03-18","end":"2026-03-20","actualWorkDays":3,"roleTags":["부스운영","참관객응대","운영지원"],"tasks":["전시 부스 운영 지원 및 참관객 응대"],"address":"경기 고양시 일산서구 킨텍스로 217-60","lat":37.6689,"lng":126.745,"coordAccuracy":"venue","mapLabel":"킨텍스 제1전시장"},{"name":"K-디지털헬스케어 얼라이언스 출범식","venue":"글래드 여의도","company":"빅터시스템","cat":"business","start":"2026-03-17","end":"2026-03-17","actualWorkDays":1,"roleTags":["등록데스크","기업응대","운영지원"],"tasks":["참여 기업 등록 확인 및 출범식 운영 지원"],"address":"서울 영등포구 의사당대로 16","lat":37.5287,"lng":126.9176,"coordAccuracy":"venue","mapLabel":"글래드 여의도"},{"name":"크런키 스트레스 타파 학원 팝업","venue":"대치동","company":"빅터시스템","cat":"popup","start":"2026-02-23","end":"2026-03-09","actualWorkDays":15,"roleTags":["체험프로그램","고객응대","브랜드프로모션"],"tasks":["체험형 프로그램 운영 및 고객 응대를 통해 브랜드 경험형 프로모션 진행"],"address":"서울특별시 강남구 역삼로 466","lat":37.4933,"lng":127.0565,"coordAccuracy":"approx","mapLabel":"대치동"},{"name":"2026 F/W서울패션위크 트레이드쇼","venue":"동대문디자인플라자 디자인랩","company":"빅터시스템","cat":"fair","start":"2026-02-04","end":"2026-02-07","actualWorkDays":4,"roleTags":["바이어응대","브랜드매칭","운영지원"],"tasks":["바이어/브랜드 매칭 현장 운영 지원"],"address":"서울특별시 중구 을지로 281","lat":37.5665,"lng":127.0092,"coordAccuracy":"venue","mapLabel":"동대문디자인플라자 디자인랩"},{"name":"신한카드 MY DISCOUNT PLAN 팝업","venue":"교보문고 광화문점","company":"빅터시스템","cat":"popup","start":"2026-01-12","end":"2026-01-25","actualWorkDays":14,"roleTags":["모객","고객응대","프로모션"],"tasks":["모객, 고객 응대 및 프로모션 안내"],"address":"서울특별시 종로구 종로 1 교보생명빌딩 지하1층","lat":37.5706,"lng":126.9773,"coordAccuracy":"venue","mapLabel":"교보문고 광화문점"},{"name":"JK FINANCIAL 시상식","venue":"메이필드호텔","company":"쏭에이전시","cat":"ceremony","start":"2026-01-09","end":"2026-01-09","actualWorkDays":1,"roleTags":["세팅","시상식운영","운영지원"],"tasks":["시상식 세팅 및 운영 지원"],"address":"서울 강서구 방화대로 94","lat":37.5482,"lng":126.8184,"coordAccuracy":"approx","mapLabel":"메이필드호텔"},{"name":"서울라이트 광화문","venue":"광화문광장","company":"빅터시스템","cat":"festival","start":"2025-12-23","end":"2026-01-04","actualWorkDays":13,"roleTags":["현장운영","관람객응대"],"tasks":["현장 운영 및 관람객 안내"],"address":"서울 종로구 세종대로 175","lat":37.5725,"lng":126.9769,"coordAccuracy":"venue","mapLabel":"광화문광장"},{"name":"HOLIDAY with MINITEEN 팝업","venue":"성수동","company":"빅터시스템","cat":"popup","start":"2025-12-08","end":"2025-12-22","actualWorkDays":15,"roleTags":["굿즈물류","고객응대","IP행사"],"tasks":["캐릭터 IP 기반 굿즈 물류 관리 및 고객 응대"],"address":"서울특별시 성동구 성수이로20길 57","lat":37.543,"lng":127.065,"coordAccuracy":"approx","mapLabel":"성수동"},{"name":"Anime x Game Festival 2025","venue":"킨텍스 제1전시장","company":"빅터시스템","cat":"fair","start":"2025-12-06","end":"2025-12-07","actualWorkDays":2,"roleTags":["리프레시존","부스운영","고객응대"],"tasks":["갤럭시 스토어 리프레시존 운영"],"address":"경기 고양시 일산서구 킨텍스로 217-60","lat":37.6689,"lng":126.745,"coordAccuracy":"venue","mapLabel":"킨텍스 제1전시장"},{"name":"문화역서울284 기획전시 : 백년과 하루","venue":"문화역서울284","company":"빅터시스템","cat":"exhibition","start":"2025-10-14","end":"2025-11-30","actualWorkDays":42,"roleTags":["동선안내","체험안내","전시설명","관람객응대"],"tasks":["관람객 동선 안내","스탬프 엽서 만들기 안내","간단한 전시 설명 및 관람객 응대"],"address":"서울 중구 통일로 1","lat":37.5559,"lng":126.971,"coordAccuracy":"venue","schedule":"화·수·목·금·토·일요일 근무","workWeekdays":[0,2,3,4,5,6],"mapLabel":"문화역서울284"}];
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const iso = d => d.toISOString().slice(0,10);
+const parseDate = s => new Date(s+'T12:00:00');
+const fmtDate = s => { const d=parseDate(s); return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`; };
+const compactDate = s => { const d=parseDate(s); return `${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`; };
+function dateRange(start,end){let out=[],d=parseDate(start),e=parseDate(end);while(d<=e){out.push(new Date(d));d.setDate(d.getDate()+1)}return out}
+function workingDates(e){
+  const end = e.end || SNAPSHOT_DATE;
+  let dates = dateRange(e.start,end);
+  if(e.schedule?.weekdays) dates = dates.filter(d=>e.schedule.weekdays.includes(d.getDay()));
+  // 입력된 actualDays가 있는 경우 원문 값을 신뢰하되, 캘린더는 일정 규칙/기간으로 날짜를 표현
+  return dates;
+}
+function workDays(e){ return e.actualDays ?? workingDates(e).length; }
+function periodText(e){return e.end ? (e.start===e.end?fmtDate(e.start):`${fmtDate(e.start)} — ${fmtDate(e.end)}`) : `${fmtDate(e.start)} — NOW`;}
+function cat(e){return CATEGORY[e.category]}
+function uniq(arr){return [...new Set(arr)]}
+function activeEvents(){return EVENTS.filter(e=>e.status==='ongoing')}
+const totalDays = () => EVENTS.reduce((s,e)=>s+workDays(e),0);
+const agencies = () => uniq(EVENTS.map(e=>e.agency));
+const locationCount = () => uniq(EVENTS.map(e=>e.venue.address)).length;
 
-
-const TODAY = new Date(); TODAY.setHours(0,0,0,0);
-function d(s){ return new Date(s+'T00:00:00'); }
-function daysInclusive(a,b){ return Math.round((b-a)/86400000)+1; }
-function scheduledDaysInclusive(a,b,weekdays){let n=0,cur=new Date(a);while(cur<=b){if(weekdays.includes(cur.getDay()))n++;cur.setDate(cur.getDate()+1);}return n;}
-EVENTS.forEach((e,i)=>{e.id='event-'+i;e.ongoing=!e.end;e._start=d(e.start);e._end=e.end?d(e.end):TODAY;e.dur=daysInclusive(e._start,e._end);e.roleTags=e.roleTags||[];if(e.actualWorkDays==null&&e.ongoing&&e.workWeekdays){e.actualWorkDays=scheduledDaysInclusive(e._start,e._end,e.workWeekdays);e.workDaysCalculated=true;}});
-const companies=[...new Set(EVENTS.map(e=>e.company))].sort((a,b)=>a.localeCompare(b,'ko'));
-const roleTags=[...new Set(EVENTS.flatMap(e=>e.roleTags))].sort((a,b)=>a.localeCompare(b,'ko'));
-const catKeys=Object.keys(CAT);
-const isMobile=()=>window.matchMedia('(max-width: 859px)').matches;
 function escapeHTML(v){return String(v).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));}
-function filterLabel(id,value){
-  if(id==='filterYear')return value;
-  if(id==='filterCompany')return value;
-  if(id==='filterCategory')return CAT[value]?.label||value;
-  if(id==='filterRole')return value;
-  if(id==='filterSearch')return `검색 · ${value}`;
-  return value;
+function filterState(){return {year:$('#filterYear')?.value||'all',agency:$('#filterAgency')?.value||'all',category:$('#filterCategory')?.value||'all',role:$('#filterRole')?.value||'all',query:($('#archiveSearch')?.value||'').trim().toLowerCase()};}
+function filteredEvents(){
+  const f=filterState();
+  return EVENTS.filter(e=>{
+    const end=e.end||SNAPSHOT_DATE;
+    if(f.year!=='all' && !(e.start.slice(0,4)<=f.year && end.slice(0,4)>=f.year)) return false;
+    if(f.agency!=='all' && e.agency!==f.agency) return false;
+    if(f.category!=='all' && e.category!==f.category) return false;
+    if(f.role!=='all' && !e.roles.includes(f.role)) return false;
+    if(f.query){
+      const hay=[e.title,e.short||'',e.agency,e.venue.name,e.venue.address,e.venue.region,e.venue.district,CATEGORY[e.category].label,...e.roles.map(r=>ROLE_LABELS[r]),...e.responsibilities].join(' ').toLowerCase();
+      if(!hay.includes(f.query)) return false;
+    }
+    return true;
+  });
 }
+function hasActiveFilters(){const f=filterState();return f.year!=='all'||f.agency!=='all'||f.category!=='all'||f.role!=='all'||!!f.query;}
+function initArchiveFilters(){
+  const years=uniq(EVENTS.flatMap(e=>{const a=+e.start.slice(0,4),b=+(e.end||SNAPSHOT_DATE).slice(0,4);return Array.from({length:b-a+1},(_,i)=>String(a+i));})).sort().reverse();
+  years.forEach(y=>$('#filterYear').insertAdjacentHTML('beforeend',`<option value="${y}">${y}</option>`));
+  agencies().sort((a,b)=>a.localeCompare(b,'ko')).forEach(x=>$('#filterAgency').insertAdjacentHTML('beforeend',`<option>${x}</option>`));
+  Object.entries(CATEGORY).forEach(([k,v])=>$('#filterCategory').insertAdjacentHTML('beforeend',`<option value="${k}">${v.label}</option>`));
+  Object.entries(ROLE_LABELS).sort((a,b)=>a[1].localeCompare(b[1],'ko')).forEach(([k,v])=>$('#filterRole').insertAdjacentHTML('beforeend',`<option value="${k}">${v}</option>`));
+  ['filterYear','filterAgency','filterCategory','filterRole'].forEach(id=>$('#'+id).addEventListener('change',()=>{updateFilterUI();renderFilteredView();}));
+  $('#archiveSearch').addEventListener('input',()=>{updateFilterUI();renderFilteredView();});
+  $('#filterToggle').onclick=()=>{const p=$('#filterPanel'),open=!p.classList.contains('open');p.classList.toggle('open',open);$('#filterToggle').setAttribute('aria-expanded',String(open));};
+  $('#filterReset').onclick=()=>resetFilters();
+  updateFilterUI();
+}
+function resetFilters(){['filterYear','filterAgency','filterCategory','filterRole'].forEach(id=>$('#'+id).value='all');$('#archiveSearch').value='';updateFilterUI();renderFilteredView();}
 function updateFilterUI(){
-  const defs=[
-    ['filterYear','all'],
-    ['filterCompany','all'],
-    ['filterCategory','all'],
-    ['filterRole','all']
-  ];
-  const active=defs.map(([id,empty])=>{
-    const el=document.getElementById(id),value=el.value.trim();
-    return value!==empty?{id,value}:null;
-  }).filter(Boolean);
-  const count=document.getElementById('filterCount');
-  const toggle=document.getElementById('filterToggle');
-  const chips=document.getElementById('activeFilterChips');
-  if(count)count.textContent=active.length;
-  if(toggle)toggle.classList.toggle('has-active',active.length>0);
-  if(chips){
-    chips.innerHTML=active.map(x=>`<button type="button" class="filter-chip" data-reset-filter="${x.id}" title="필터 해제">${escapeHTML(filterLabel(x.id,x.value))}</button>`).join('');
-    chips.querySelectorAll('[data-reset-filter]').forEach(btn=>btn.onclick=()=>{
-      const id=btn.dataset.resetFilter;
-      document.getElementById(id).value='all';
-      renderAll();
-    });
-  }
+  const f=filterState(),defs=[];
+  if(f.year!=='all')defs.push(['filterYear',f.year]);
+  if(f.agency!=='all')defs.push(['filterAgency',f.agency]);
+  if(f.category!=='all')defs.push(['filterCategory',CATEGORY[f.category].label]);
+  if(f.role!=='all')defs.push(['filterRole',ROLE_LABELS[f.role]]);
+  if(f.query)defs.push(['archiveSearch',`검색 · ${$('#archiveSearch').value.trim()}`]);
+  $('#filterCount').textContent=defs.length;$('#filterToggle').classList.toggle('has-active',defs.length>0);$('#filterReset').disabled=!defs.length;
+  $('#activeFilterChips').innerHTML=defs.map(([id,label])=>`<button type="button" class="active-filter-chip" data-reset="${id}" title="필터 해제">${escapeHTML(label)}</button>`).join('');
+  $$('#activeFilterChips [data-reset]').forEach(btn=>btn.onclick=()=>{const id=btn.dataset.reset;$('#'+id).value=id==='archiveSearch'?'':'all';updateFilterUI();renderFilteredView();});
+  const n=filteredEvents().length;$('#filterResult').innerHTML=`<b>${n}</b> / ${EVENTS.length} EVENT RECORDS${defs.length?' · filtered':''}`;
 }
-function toggleMobileFilters(force){
-  if(!isMobile()&&force!==false)return;
-  const sheet=document.getElementById('filterSheet');
-  const back=document.getElementById('filterSheetBack');
-  const btn=document.getElementById('filterToggle');
-  const open=typeof force==='boolean'?force:!sheet.classList.contains('open');
-  sheet.classList.toggle('open',open);
-  back.classList.toggle('open',open);
-  btn.setAttribute('aria-expanded',String(open));
-  document.body.classList.toggle('filter-open',open);
-}
-function bindAccordions(){
-  document.querySelectorAll('.accordion-toggle').forEach(btn=>{
-    btn.onclick=()=>{
-      const card=btn.closest('.accordion-card');
-      const group=card.parentElement;
-      const open=!card.classList.contains('expanded');
-      if(open){
-        group.querySelectorAll('.accordion-card.expanded').forEach(other=>{
-          if(other!==card){
-            other.classList.remove('expanded');
-            other.querySelector('.accordion-toggle')?.setAttribute('aria-expanded','false');
-          }
-        });
-      }
-      card.classList.toggle('expanded',open);
-      btn.setAttribute('aria-expanded',String(open));
-    };
-  });
-}
-function setMapMode(mode){
-  const wrap=document.getElementById('mapWrap');
-  if(!wrap)return;
-  wrap.dataset.mode=mode;
-  document.querySelectorAll('#mapModeToggle [data-map-mode]').forEach(btn=>{
-    btn.classList.toggle('active',btn.dataset.mapMode===mode);
-  });
-  closeMapSelection();
-  if(mode==='map'&&leafletMap)setTimeout(()=>leafletMap.invalidateSize(),100);
-}
+function renderFilteredView(){if(currentView==='calendar')renderCalendar();if(currentView==='company')renderCompanies();if(currentView==='category')renderCategories();if(currentView==='map')renderMap(currentRegion);}
 
-function cssColor(cat){return getComputedStyle(document.documentElement).getPropertyValue(CAT[cat].color.replace('var(','').replace(')','')).trim()||'#F5C518';}
-function fmtDate(s){return s.replaceAll('-','.');}
-function rangeText(e){const base=e.ongoing?`${fmtDate(e.start)} ~ 현재`:(e.start===e.end?fmtDate(e.start):`${fmtDate(e.start)} ~ ${fmtDate(e.end)}`);return base+(e.schedule?' · '+e.schedule:'');}
-function filteredEvents(){const y=document.getElementById('filterYear').value,c=document.getElementById('filterCompany').value,cat=document.getElementById('filterCategory').value,role=document.getElementById('filterRole').value,q=document.getElementById('filterSearch').value.trim().toLowerCase();return EVENTS.filter(e=>{if(y!=='all' && !(e._start.getFullYear()<=+y && e._end.getFullYear()>=+y))return false;if(c!=='all'&&e.company!==c)return false;if(cat!=='all'&&e.cat!==cat)return false;if(role!=='all'&&!e.roleTags.includes(role))return false;if(q){const hay=[e.name,e.venue,e.address,e.company,CAT[e.cat].label,...e.tasks,...e.roleTags].join(' ').toLowerCase();if(!hay.includes(q))return false;}return true;}).sort((a,b)=>b._start-a._start);}
-function populateFilters(){const fc=document.getElementById('filterCompany'),fcat=document.getElementById('filterCategory'),fr=document.getElementById('filterRole');companies.forEach(x=>fc.insertAdjacentHTML('beforeend',`<option>${x}</option>`));catKeys.forEach(k=>fcat.insertAdjacentHTML('beforeend',`<option value="${k}">${CAT[k].label}</option>`));roleTags.forEach(x=>fr.insertAdjacentHTML('beforeend',`<option>${x}</option>`));}
-function renderHeaderStats(){
-  const list=EVENTS;
-  const workDays=list.filter(e=>e.actualWorkDays!=null).reduce((s,e)=>s+e.actualWorkDays,0);
-  const companies=new Set(list.map(e=>e.company)).size;
-  const locations=new Set(list.map(e=>e.address)).size;
-  document.getElementById('heroStatRow').innerHTML=`
-    <div class="stat"><div class="num">${list.length}</div><div class="lbl"><span>FIELD RECORDS</span><small>현장 기록</small></div></div>
-    <div class="stat"><div class="num">${workDays}</div><div class="lbl"><span>WORK DAYS</span><small>실근무일</small></div></div>
-    <div class="stat"><div class="num">${companies}</div><div class="lbl"><span>AGENCIES</span><small>협업 업체</small></div></div>
-    <div class="stat"><div class="num">${locations}</div><div class="lbl"><span>LOCATIONS</span><small>행사 장소</small></div></div>`;
-}
-function weekdayLabel(e){
-  if(!e.workWeekdays||!e.workWeekdays.length)return e.schedule||'';
-  const en=['SUN','MON','TUE','WED','THU','FRI','SAT'];
-  return e.workWeekdays.map(x=>en[x]).join(' · ');
-}
-function renderHeroCurrent(){
-  const cur=EVENTS.find(e=>e.ongoing);
-  const box=document.getElementById('heroCurrent');
-  const e=cur||[...EVENTS].sort((a,b)=>b._start-a._start)[0];
-  if(!e)return;
-  box.innerHTML=`
-    <div class="current-strip-top">
-      <span class="live-pulse ${cur?'':'is-latest'}"></span>
-      <span>${cur?'CURRENTLY ON SITE':'LATEST FIELD'}</span>
-      <span class="current-arrow">›</span>
-    </div>
-    <div class="current-strip-main">
-      <strong>${e.name}</strong>
-      <span>${e.venue} · ${e.company}</span>
-    </div>
-    <div class="current-strip-foot">${cur?`${fmtDate(e.start)} — PRESENT · 실근무 ${e.actualWorkDays}일`:rangeText(e)}</div>`;
-  box.onclick=()=>openEvent(e.id);
-  box.style.cursor='pointer';
-}
-function badgeHTML(e){const work=e.actualWorkDays!=null?`${e.actualWorkDays}일${e.workDaysCalculated?'*':''}`:'집계 중';return `<div class="badge" style="--cat:${CAT[e.cat].color}" data-event="${e.id}"><div class="top"><div class="name">${e.name}</div><div class="cat-tag">${CAT[e.cat].label}</div></div><div class="meta"><b>${e.company}</b> · ${e.venue}<br><span class="addr">${e.address}</span><br>${rangeText(e)} · 행사기간 ${e.dur}일 <span class="workdays">실근무 ${work}</span></div><div class="role-tags">${e.roleTags.slice(0,5).map(t=>`<span class="role-tag">${t}</span>`).join('')}</div><ul class="tasks">${e.tasks.map(t=>`<li>${t}</li>`).join('')}</ul></div>`;}
 function renderOverview(){
-  const list=filteredEvents();
-  const recent=list.slice(0,5);
-  const cats={};list.forEach(e=>cats[e.cat]=(cats[e.cat]||0)+1);
-  const maxCat=Math.max(1,...Object.values(cats));
-  const ag={};list.forEach(e=>ag[e.company]=(ag[e.company]||0)+1);
-  const topAg=Object.entries(ag).sort((a,b)=>b[1]-a[1]).slice(0,6);
-  document.getElementById('overviewContent').innerHTML=`
-    <section class="archive-block">
-      <div class="block-head"><span>LATEST LOGS</span><small>${list.length} RECORDS</small></div>
-      <div class="log-feed">
-        ${recent.length?recent.map((e,i)=>`
-          <button type="button" class="log-row" data-event="${e.id}">
-            <span class="log-no">${String(i+1).padStart(2,'0')}</span>
-            <span class="log-copy">
-              <strong>${e.name}</strong>
-              <small>${fmtDate(e.start)} · ${e.company} · ${e.venue}</small>
-            </span>
-            <span class="log-arrow">›</span>
-          </button>`).join(''):'<div class="empty-state">현재 필터 조건에 맞는 기록이 없습니다.</div>'}
-      </div>
-    </section>
-    <div class="overview-columns">
-      <section class="archive-block compact-block">
-        <div class="block-head"><span>CATEGORY MIX</span><small>FIELD TYPE</small></div>
-        <div class="mix-list">
-          ${Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,n])=>`
-            <div class="mix-row" style="--cat:${CAT[k].color}">
-              <span>${CAT[k].label}</span><div class="mix-bar"><i style="width:${n/maxCat*100}%"></i></div><b>${n}</b>
-            </div>`).join('')}
-        </div>
-      </section>
-      <section class="archive-block compact-block">
-        <div class="block-head"><span>REPEAT AGENCIES</span><small>TOP ${topAg.length}</small></div>
-        <div class="agency-rank">
-          ${topAg.map(([name,count],i)=>`
-            <div class="rank-row"><span class="rank-no">${String(i+1).padStart(2,'0')}</span><span>${name}</span><b>${count}</b></div>`).join('')}
-        </div>
-        <p class="data-note">진행 중인 BANKSY 전시는 월~금 근무 조건을 기준으로 오늘까지의 실근무일이 자동 집계됩니다.</p>
-      </section>
-    </div>`;
-  bindEventOpeners();
+  const metrics=[[EVENTS.length,'EVENTS','participated'],[totalDays(),'WORK DAYS','confirmed + live'],[agencies().length,'AGENCIES','collaborated'],[locationCount(),'VENUES','unique addresses']];
+  $('#overviewMetrics').innerHTML=metrics.map(m=>`<div class="metric"><strong>${m[0]}</strong><span>${m[1]}</span><small>${m[2]}</small></div>`).join('');
+  const e=activeEvents()[0];
+  $('#activeProject').innerHTML=`<div class="live">LIVE PROJECT</div><h3>${e.short||e.title}</h3><div class="meta-line">${periodText(e)} · ${workDays(e)} DAYS*<br>${e.venue.name} · ${e.agency}</div><div class="chips"><span class="chip"><i style="background:${cat(e).color}"></i>${cat(e).label}</span>${e.roles.slice(0,3).map(r=>`<span class="chip">${ROLE_LABELS[r]}</span>`).join('')}</div>`;
+  $('#activeProject').onclick=()=>openEvent(e.id);$('#activeProject').onkeydown=ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();openEvent(e.id)}};
+  renderHeatmap();
 }
-const MONTHS=[];(function(){let y=2025,m=10;const ty=TODAY.getFullYear(),tm=TODAY.getMonth()+1;while(y<ty||(y===ty&&m<=tm)){MONTHS.push({y,m});m++;if(m>12){m=1;y++;}}})();
-const DOW=['일','월','화','수','목','금','토'];
-let calendarCursor={...MONTHS[MONTHS.length-1]};
-function calendarMonths(){
-  const yf=document.getElementById('filterYear').value;
-  return MONTHS.filter(x=>yf==='all'||x.y===+yf);
+function renderHeatmap(){
+  const start=parseDate('2025-10-01'), end=parseDate(SNAPSHOT_DATE),daysMap={};EVENTS.forEach(e=>workingDates(e).forEach(d=>daysMap[iso(d)]=(daysMap[iso(d)]||0)+1));
+  const startSun=new Date(start);startSun.setDate(startSun.getDate()-startSun.getDay());const endSat=new Date(end);endSat.setDate(endSat.getDate()+(6-endSat.getDay()));
+  let html='';for(let d=new Date(startSun);d<=endSat;d.setDate(d.getDate()+1)){const key=iso(d),v=daysMap[key]||0,inPeriod=d>=start&&d<=end;html+=`<span class="heatcell ${inPeriod&&v?(v>1?'strong':'on'):''}" title="${key}${v?` · ${v} event`:''}" style="${inPeriod?'':'opacity:.18'}"></span>`;}
+  $('#heatmap').innerHTML=html;$('#heatPeriod').textContent=`${totalDays()} work days`;$('#heatEnd').textContent='2026.09';
 }
-function normalizeCalendarCursor(){
-  const months=calendarMonths();
-  if(!months.length)return;
-  if(!months.some(x=>x.y===calendarCursor.y&&x.m===calendarCursor.m))calendarCursor={...months[months.length-1]};
+
+let currentView='overview';
+function go(view){
+  currentView=view;$$('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${view}`));$$('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.go===view));
+  $('#archiveTools').hidden=view==='overview';updateFilterUI();window.scrollTo({top:0,behavior:'smooth'});
+  if(view==='calendar')renderCalendar();if(view==='company')renderCompanies();if(view==='category')renderCategories();if(view==='map')setTimeout(()=>renderMap(currentRegion),50);
 }
-function moveCalendar(delta){
-  const months=calendarMonths();normalizeCalendarCursor();
-  const idx=months.findIndex(x=>x.y===calendarCursor.y&&x.m===calendarCursor.m);
-  const next=months[Math.max(0,Math.min(months.length-1,idx+delta))];
-  if(next){calendarCursor={...next};renderCalendar();}
+$$('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
+
+let selectedMonth=null;
+function workMonths(list){return uniq(list.flatMap(e=>workingDates(e).map(d=>iso(d).slice(0,7)))).sort();}
+function renderMonthStrip(months){
+  $('#monthStrip').innerHTML=months.map(m=>{const[y,mo]=m.split('-');return `<button class="month-btn ${m===selectedMonth?'active':''}" data-month="${m}">${y}.${mo}</button>`}).join('');
+  $$('.month-btn').forEach(b=>b.onclick=()=>{selectedMonth=b.dataset.month;clearCalendarQuick();renderCalendar();setTimeout(()=>b.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'}),10)});
 }
-function setCalendarMonth(y,m){calendarCursor={y:+y,m:+m};renderCalendar();}
-function goLatestCalendar(){const months=calendarMonths();if(months.length){calendarCursor={...months[months.length-1]};renderCalendar();}}
-function toggleMonthRail(){
-  const rail=document.getElementById('monthRail'),btn=document.getElementById('calendarArchiveToggle');
-  const open=!rail.classList.contains('open');
-  rail.classList.toggle('open',open);btn.classList.toggle('active',open);
-}
-function renderLegend(){const box=document.getElementById('legendCal');box.innerHTML='';catKeys.forEach(k=>{const chip=document.createElement('div');chip.className='chip on';chip.dataset.cat=k;chip.style.color=CAT[k].color;chip.innerHTML=`<span class="dot" style="background:${CAT[k].color}"></span>${CAT[k].label}`;chip.onclick=()=>{chip.classList.toggle('on');renderCalendar();};box.appendChild(chip);});}
-function activeCats(){return [...document.querySelectorAll('#legendCal .chip.on')].map(c=>c.dataset.cat);}
-function eventsOnDate(dt,list){return list.filter(e=>dt>=e._start&&dt<=e._end&&(!e.workWeekdays||e.workWeekdays.includes(dt.getDay())));}
+function clearCalendarQuick(){const q=$('#calendarQuick');if(!q)return;q.classList.remove('open');q.innerHTML='';$$('.day.selected').forEach(x=>x.classList.remove('selected'));}
 function renderCalendar(){
-  const list=filteredEvents(),grid=document.getElementById('calGrid'),cats=activeCats();
-  normalizeCalendarCursor();
-  const months=calendarMonths();
-  if(!months.length){grid.innerHTML='<div class="empty-state">선택한 연도의 달력이 없습니다.</div>';return;}
-  const {y,m}=calendarCursor;
-  document.getElementById('calendarMonthLabel').textContent=`${y}.${String(m).padStart(2,'0')}`;
-  const idx=months.findIndex(x=>x.y===y&&x.m===m);
-  document.getElementById('calPrev').disabled=idx<=0;
-  document.getElementById('calNext').disabled=idx>=months.length-1;
-  const rail=document.getElementById('monthRail');
-  rail.innerHTML=[...months].reverse().map(x=>`<button type="button" class="${x.y===y&&x.m===m?'active':''}" data-y="${x.y}" data-m="${x.m}">${String(x.y).slice(2)}.${String(x.m).padStart(2,'0')}</button>`).join('');
-  rail.querySelectorAll('button').forEach(btn=>btn.onclick=()=>setCalendarMonth(btn.dataset.y,btn.dataset.m));
-
-  const first=new Date(y,m-1,1),startDow=first.getDay(),lastDate=new Date(y,m,0).getDate();
-  const latest=idx===months.length-1;
-  let h=`<article class="month-card"><div class="month-head"><span>${y}년 ${m}월</span>${latest?'<b>LATEST</b>':''}</div><div class="dow">${DOW.map(x=>`<span>${x}</span>`).join('')}</div><div class="days">`;
-  for(let i=0;i<startDow;i++)h+='<div class="day empty"></div>';
-  for(let day=1;day<=lastDate;day++){
-    const dt=new Date(y,m-1,day),evs=eventsOnDate(dt,list).filter(e=>cats.includes(e.cat));
-    const iso=`${y}-${String(m).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-    h+=`<button type="button" class="day ${evs.length?'has-event':''}" data-date="${iso}" ${evs.length?'':'disabled'}><span>${day}</span><span class="dotsrow">${evs.slice(0,4).map(e=>`<i style="background:${CAT[e.cat].color}"></i>`).join('')}</span></button>`;
-  }
-  h+='</div><div class="month-inline-detail" aria-live="polite"></div></article>';
-  grid.innerHTML=h;
-  const card=grid.querySelector('.month-card');
-  grid.querySelectorAll('.day.has-event').forEach(el=>el.onclick=()=>{
-    grid.querySelectorAll('.day.selected').forEach(x=>x.classList.remove('selected'));
-    el.classList.add('selected');showDayDetail(el.dataset.date,card);
-  });
-  let sx=0,sy=0;
-  card.addEventListener('touchstart',e=>{const t=e.changedTouches[0];sx=t.clientX;sy=t.clientY;},{passive:true});
-  card.addEventListener('touchend',e=>{const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.25)moveCalendar(dx<0?1:-1);},{passive:true});
+  const list=filteredEvents(),months=workMonths(list);if(!months.length){$('#monthStrip').innerHTML='';$('#calendarTitle').textContent='NO RESULTS';$('#calendarSummary').textContent='';$('#calendarGrid').innerHTML='<div class="empty-state" style="grid-column:1/-1">조건에 맞는 근무 기록이 없습니다.</div>';$('#monthEvents').innerHTML='';clearCalendarQuick();return;}
+  if(!selectedMonth||!months.includes(selectedMonth))selectedMonth=months[months.length-1];renderMonthStrip(months);
+  const[y,m]=selectedMonth.split('-').map(Number),first=new Date(y,m-1,1,12),last=new Date(y,m,0,12);$('#calendarTitle').textContent=`${y} · ${String(m).padStart(2,'0')}`;
+  const eventDates={};list.forEach(e=>workingDates(e).forEach(d=>{const k=iso(d);if(k.startsWith(selectedMonth))(eventDates[k]??=[]).push(e)}));
+  const monthEvents=list.filter(e=>workingDates(e).some(d=>iso(d).startsWith(selectedMonth))).sort((a,b)=>a.start.localeCompare(b.start));const uniqueWork=new Set(Object.keys(eventDates));$('#calendarSummary').textContent=`${monthEvents.length} events · ${uniqueWork.size} work days`;
+  let cells='';for(let i=0;i<first.getDay();i++)cells+='<div class="day empty"></div>';for(let day=1;day<=last.getDate();day++){const d=new Date(y,m-1,day,12),key=iso(d),es=eventDates[key]||[],today=key===SNAPSHOT_DATE;cells+=`<button class="day ${es.length?'has-event':''} ${today?'today':''}" ${es.length?'':'disabled'} data-date="${key}" aria-label="${y}년 ${m}월 ${day}일${es.length?` · ${es.length}개 행사`:''}"><span class="day-num">${day}</span><span class="day-events">${es.slice(0,3).map(e=>`<span class="event-dot" style="background:${cat(e).color}"></span><span class="event-label" style="background:${cat(e).color}">${e.short||e.title}</span>`).join('')}</span></button>`;}
+  $('#calendarGrid').innerHTML=cells;$$('.day.has-event').forEach(d=>d.onclick=()=>showCalendarQuick(d.dataset.date,eventDates[d.dataset.date],d));
+  $('#monthEvents').innerHTML=monthEvents.map(e=>`<div class="event-row" tabindex="0" data-event="${e.id}"><div class="event-date">${e.start===e.end?compactDate(e.start):`${compactDate(e.start)}<br>— ${e.end?compactDate(e.end):'NOW'}`}</div><div><b>${e.title}</b><small>${e.venue.name} · ${e.agency}</small></div><span class="badge" style="background:${cat(e).color}">${workDays(e)}D</span></div>`).join('');
+  $$('#monthEvents .event-row').forEach(r=>{r.onclick=()=>openEvent(r.dataset.event);r.onkeydown=ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();openEvent(r.dataset.event)}}});
 }
-function closeMonthDetail(card){
-  if(!card)return;
-  const box=card.querySelector('.month-inline-detail');
-  if(box){
-    box.classList.remove('open');
-    box.innerHTML='';
-  }
-  card.classList.remove('detail-open');
-  card.querySelectorAll('.day.selected').forEach(day=>day.classList.remove('selected'));
-}
-function showDayDetail(iso,card){
-  const evs=eventsOnDate(d(iso),filteredEvents());
-  const box=card.querySelector('.month-inline-detail');
-  box.innerHTML=`
-    <div class="detail-head">
-      <div class="detail-date">${iso} · ${evs.length} RECORD${evs.length===1?'':'S'}</div>
-      <button type="button" class="month-detail-close" aria-label="현장 기록 접기" title="접기">⌃</button>
-    </div>
-    ${evs.length?evs.map(badgeHTML).join(''):'<div class="empty-state">해당 날짜의 기록이 없습니다.</div>'}`;
-  box.classList.add('open');card.classList.add('detail-open');
-  box.querySelector('.month-detail-close').onclick=()=>closeMonthDetail(card);
-  bindEventOpeners();
-  setTimeout(()=>box.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
-}
-function renderCompany(){
-  const list=filteredEvents(),grid=document.getElementById('companyGrid'),map={};
-  list.forEach(e=>{
-    map[e.company]=map[e.company]||{count:0,knownDays:0,names:[]};
-    map[e.company].count++;
-    if(e.actualWorkDays!=null)map[e.company].knownDays+=e.actualWorkDays;
-    map[e.company].names.push(e);
-  });
-  const entries=Object.entries(map).sort((a,b)=>b[1].count-a[1].count);
-  grid.innerHTML=entries.map(([name,v])=>`
-    <article class="archive-list-card accordion-card">
-      <button type="button" class="accordion-toggle" aria-expanded="false">
-        <span class="list-card-copy"><strong>${name}</strong><small>${v.count}건 · 실근무 ${v.knownDays}일</small></span>
-        <span class="acc-arrow">⌄</span>
-      </button>
-      <div class="accordion-body">
-        ${v.names.sort((a,b)=>b._start-a._start).map(e=>`
-          <button type="button" class="event-line" data-event="${e.id}">
-            <span><strong>${e.name}</strong><small>${fmtDate(e.start)} · ${e.venue}</small></span><i>›</i>
-          </button>`).join('')}
-      </div>
-    </article>`).join('')||'<div class="empty-state">현재 필터 조건에 맞는 업체 기록이 없습니다.</div>';
-  bindAccordions();bindEventOpeners();
-}
-function renderCategory(){
-  const list=filteredEvents(),grid=document.getElementById('catGrid');
-  grid.innerHTML=catKeys.map(k=>{
-    const es=list.filter(e=>e.cat===k).sort((a,b)=>b._start-a._start);
-    if(!es.length)return'';
-    return `<article class="archive-list-card accordion-card" style="--cat:${CAT[k].color}">
-      <button type="button" class="accordion-toggle" aria-expanded="false">
-        <span class="list-card-copy"><strong><i class="cat-dot"></i>${CAT[k].label}</strong><small>${es.length}건의 현장 기록</small></span>
-        <span class="acc-arrow">⌄</span>
-      </button>
-      <div class="accordion-body">
-        ${es.map(e=>`
-          <button type="button" class="event-line" data-event="${e.id}">
-            <span><strong>${e.name}</strong><small>${fmtDate(e.start)} · ${e.company}</small></span><i>›</i>
-          </button>`).join('')}
-      </div>
-    </article>`;
-  }).join('')||'<div class="empty-state">현재 필터 조건에 맞는 카테고리 기록이 없습니다.</div>';
-  bindAccordions();bindEventOpeners();
-}
-let leafletMap=null,markerLayer=null;
-function renderMap(){
-  const list=filteredEvents();
-  if(!leafletMap){
-    leafletMap=L.map('leafletMap',{zoomControl:true,preferCanvas:false}).setView([37.55,126.98],9);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors &copy; CARTO'}).addTo(leafletMap);
-    markerLayer=L.layerGroup().addTo(leafletMap);
-  }
-  markerLayer.clearLayers();
-  const byPoint={};
-  list.forEach(e=>{const key=`${e.lat.toFixed(4)},${e.lng.toFixed(4)}`;(byPoint[key]=byPoint[key]||[]).push(e);});
-  const pts=[];
-  Object.entries(byPoint).forEach(([key,es])=>{
-    const e0=es[0],cats={};
-    es.forEach(e=>cats[e.cat]=(cats[e.cat]||0)+1);
-    const dom=Object.entries(cats).sort((a,b)=>b[1]-a[1])[0][0];
-    const color=cssColor(dom),label=es.length>1?String(es.length):'';
-    const icon=L.divIcon({className:'event-pin-wrap',html:`<div class="event-pin ${es.length===1?'single':''}" style="--pin:${color}">${label}</div>`,iconSize:[32,32],iconAnchor:[16,16]});
-    const mk=L.marker([e0.lat,e0.lng],{icon,keyboard:true,title:e0.mapLabel||e0.venue});
-    mk.on('click',()=>showMapSelection([...es]));
-    mk.addTo(markerLayer);pts.push([e0.lat,e0.lng]);
-  });
-  renderMapSummary(byPoint,list);
-  if(pts.length)leafletMap.fitBounds(pts,{padding:[34,34],maxZoom:13});
-  setTimeout(()=>leafletMap.invalidateSize(),120);
-}
-function renderMapSummary(byPoint,list){
-  const places=Object.entries(byPoint).sort((a,b)=>b[1].length-a[1].length);
-  const detail=document.getElementById('mapDetail');
-  detail.innerHTML=list.length?`
-    <div class="map-list-head"><strong>LOCATION INDEX</strong><span>${places.length} PLACES · ${list.length} RECORDS</span></div>
-    <div class="map-place-list">
-      ${places.map(([key,es])=>`
-        <button type="button" class="mpr" data-map-key="${key}">
-          <span><strong>${es[0].mapLabel||es[0].venue}</strong><small>${es[0].address}</small></span>
-          <b>${es.length}</b>
-        </button>`).join('')}
-    </div>`
-    :'<div class="empty-state">현재 필터 조건에 맞는 지도 기록이 없습니다.</div>';
-  detail.querySelectorAll('[data-map-key]').forEach(btn=>btn.onclick=()=>showMapSelection([...(byPoint[btn.dataset.mapKey]||[])]));
-}
-function showMapDetail(es){showMapSelection(es);}
-
-function showMapSelection(es){
-  if(!es||!es.length)return;
-  const e0=es[0],sheet=document.getElementById('mapSelectionSheet'),back=document.getElementById('mapSelectionBack');
-  sheet.innerHTML=`
-    <div class="map-selection-grab"></div>
-    <div class="map-selection-head">
-      <div><small>SELECTED LOCATION</small><strong>${e0.mapLabel||e0.venue}</strong><span>${e0.address}</span></div>
-      <button type="button" id="mapSelectionClose" aria-label="장소 기록 닫기">×</button>
-    </div>
-    <div class="map-selection-events">
-      ${es.sort((a,b)=>b._start-a._start).map(e=>`
-        <button type="button" class="event-line" data-event="${e.id}">
-          <span><strong>${e.name}</strong><small>${fmtDate(e.start)} · ${e.company}</small></span><i>›</i>
-        </button>`).join('')}
-    </div>`;
-  sheet.classList.add('open');back.classList.add('open');
-  document.getElementById('mapSelectionClose').onclick=closeMapSelection;
-  bindEventOpeners();
-}
-function closeMapSelection(){
-  document.getElementById('mapSelectionSheet')?.classList.remove('open');
-  document.getElementById('mapSelectionBack')?.classList.remove('open');
-}
-function clearFilters(){
-  ['filterYear','filterCompany','filterCategory','filterRole'].forEach(id=>document.getElementById(id).value='all');
-  document.getElementById('filterSearch').value='';
-  renderAll();
-}
-function openEvent(id){
-  const e=EVENTS.find(x=>x.id===id);if(!e)return;
-  closeMapSelection();
-  const work=e.actualWorkDays!=null?e.actualWorkDays+'일'+(e.workDaysCalculated?' · 근무요일 기준 자동집계':''):'집계 중';
-  document.getElementById('drawerContent').innerHTML=`
-    <div class="dk">${CAT[e.cat].label} · ${e.company}</div>
-    <h2>${e.name}</h2>
-    <div class="dm">${rangeText(e)}<br>${e.venue}<br>${e.address}</div>
-    <div class="role-tags">${e.roleTags.map(t=>`<span class="role-tag">${t}</span>`).join('')}</div>
-    <section><h4>ROLE / DUTIES</h4><ul>${e.tasks.map(t=>`<li>${t}</li>`).join('')}</ul></section>
-    <section><h4>WORK PERIOD</h4><div class="dm">행사 기간 <b>${e.dur}일</b><br>실제 근무일 <b class="yellow">${work}</b>${e.schedule?'<br>근무 조건 '+e.schedule:''}</div></section>
-    <section><h4>LOCATION</h4><div class="dm">${e.address}</div>${e.coordAccuracy!=='venue'?'<div class="data-note">상세 주소는 제공된 정확 주소이며 지도 핀 좌표는 시각화를 위한 근사값일 수 있습니다.</div>':''}</section>`;
-  document.getElementById('drawer').classList.add('open');
-  document.getElementById('drawerBack').classList.add('open');
-  document.body.classList.add('modal-open');
-}
-window.openEvent=openEvent;
-function closeDrawer(){
-  document.getElementById('drawer').classList.remove('open');
-  document.getElementById('drawerBack').classList.remove('open');
-  document.body.classList.remove('modal-open');
-}
-function bindEventOpeners(){document.querySelectorAll('[data-event]').forEach(el=>{el.onclick=(ev)=>{ev.stopPropagation();openEvent(el.dataset.event);};});}
-function renderAll(){
-  renderHeaderStats();renderHeroCurrent();renderOverview();renderCalendar();renderCompany();renderCategory();updateFilterUI();
-  if(document.getElementById('view-map').classList.contains('active'))renderMap();
-}
-function switchView(btn){
-  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('section.view').forEach(s=>s.classList.remove('active'));
-  btn.classList.add('active');
-  const view=document.getElementById('view-'+btn.dataset.view);
-  view.classList.add('active');
-  closeMapSelection();
-  if(btn.dataset.view==='map')renderMap();
-  const anchor=document.getElementById('archiveStart');
-  setTimeout(()=>anchor.scrollIntoView({behavior:'smooth',block:'start'}),20);
+function showCalendarQuick(date,es,dayEl){
+  $$('.day.selected').forEach(x=>x.classList.remove('selected'));dayEl.classList.add('selected');const q=$('#calendarQuick');q.innerHTML=`<div class="calendar-quick-head"><b>${fmtDate(date)}</b><span>${es.length} EVENT${es.length>1?'S':''}</span></div>${es.map(e=>`<div class="event-row" tabindex="0" data-quick-event="${e.id}"><div class="event-date">${workDays(e)}D</div><div><b>${e.title}</b><small>${e.venue.name} · ${e.agency}</small></div><span class="badge" style="background:${cat(e).color}">${cat(e).label.split(' ')[0]}</span></div>`).join('')}`;q.classList.add('open');$$('[data-quick-event]').forEach(r=>{r.onclick=()=>openEvent(r.dataset.quickEvent);r.onkeydown=ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();openEvent(r.dataset.quickEvent)}}});setTimeout(()=>q.scrollIntoView({behavior:'smooth',block:'nearest'}),30);
 }
 
-populateFilters();
-renderLegend();
+let companyMetric='events';
+function companyStats(list=filteredEvents()){return uniq(list.map(e=>e.agency)).map(name=>{const es=list.filter(e=>e.agency===name);return{name,events:es.length,days:es.reduce((s,e)=>s+workDays(e),0),items:es}});}
+function renderCompanies(){const list=filteredEvents(),data=companyStats(list).sort((a,b)=>b[companyMetric]-a[companyMetric]);$('#companySummary').textContent=`${data.length} agencies · ${list.length} events · ${list.reduce((s,e)=>s+workDays(e),0)} days`;if(!data.length){$('#companyBars').innerHTML='<div class="empty-state">조건에 맞는 업체 기록이 없습니다.</div>';return;}const max=Math.max(...data.map(d=>d[companyMetric]));$('#companyBars').innerHTML=data.map(d=>`<div class="bar-card" tabindex="0" data-company="${d.name}"><div class="bar-top"><div><b>${d.name}</b><div class="company-mini">${d.events} EVENTS · ${d.days} DAYS</div></div><span>${d[companyMetric]} ${companyMetric==='events'?'events':'days'}</span></div><div class="bar-track"><div class="bar-fill" style="width:${d[companyMetric]/max*100}%"></div></div></div>`).join('');$$('.bar-card[data-company]').forEach(x=>{x.onclick=()=>openCompany(x.dataset.company,list);x.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openCompany(x.dataset.company,list)}}});}
+$('#companyMetric').addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b)return;companyMetric=b.dataset.value;$('#companyMetric').querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderCompanies()});
 
-document.querySelectorAll('nav.tabs button').forEach(btn=>btn.addEventListener('click',()=>switchView(btn)));
-['filterYear','filterCompany','filterCategory','filterRole'].forEach(id=>document.getElementById(id).addEventListener('change',renderAll));
-document.getElementById('filterSearch').addEventListener('input',renderAll);
+let categoryDimension='category',categoryMetric='events';
+function renderCategories(){const list=filteredEvents();let data=[];if(categoryDimension==='category'){data=Object.entries(CATEGORY).map(([key,v])=>{const es=list.filter(e=>e.category===key);return{key,label:v.label,color:v.color,events:es.length,days:es.reduce((s,e)=>s+workDays(e),0)}}).filter(x=>x.events);}else{data=Object.entries(ROLE_LABELS).map(([key,label])=>{const es=list.filter(e=>e.roles.includes(key));return{key,label,color:'var(--accent)',events:es.length,days:es.reduce((s,e)=>s+workDays(e),0)}}).filter(x=>x.events);}if(!data.length){$('#categoryBars').innerHTML='<div class="empty-state">조건에 맞는 카테고리 기록이 없습니다.</div>';return;}data.sort((a,b)=>b[categoryMetric]-a[categoryMetric]);const max=Math.max(...data.map(d=>d[categoryMetric]));$('#categoryBars').innerHTML=data.map(d=>`<div class="bar-card" tabindex="0" data-kind="${categoryDimension}" data-key="${d.key}"><div class="bar-top"><div><b>${d.label}</b><div class="company-mini">${d.events} EVENTS · ${d.days} DAYS</div></div><span>${d[categoryMetric]} ${categoryMetric==='events'?'events':'days'}</span></div><div class="bar-track"><div class="bar-fill" style="width:${d[categoryMetric]/max*100}%;background:${d.color}"></div></div></div>`).join('');$$('.bar-card[data-kind]').forEach(x=>{x.onclick=()=>openGroup(x.dataset.kind,x.dataset.key,list);x.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openGroup(x.dataset.kind,x.dataset.key,list)}}});}
+$('#categoryDimension').addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b)return;categoryDimension=b.dataset.value;$('#categoryDimension').querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderCategories()});
+$('#categoryMetric').addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b)return;categoryMetric=b.dataset.value;$('#categoryMetric').querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderCategories()});
 
-document.getElementById('filterToggle').onclick=()=>toggleMobileFilters();
-document.getElementById('filterSheetClose').onclick=()=>toggleMobileFilters(false);
-document.getElementById('filterSheetBack').onclick=()=>toggleMobileFilters(false);
-document.getElementById('filterApply').onclick=()=>toggleMobileFilters(false);
-document.getElementById('filterReset').onclick=()=>{clearFilters();toggleMobileFilters(false);};
+let map,markerLayer,currentRegion='ALL',mapMode='map';
+function coordinateLabel(x){return x.coordinateAccuracy==='approximate'?'APPROX PIN':'VENUE PIN';}
+function locationGroups(region='ALL',list=filteredEvents()){
+  const filtered=list.filter(e=>region==='ALL'||e.venue.region===region),m=new Map();filtered.forEach(e=>{const key=e.venue.address.replace(/,?\s*(1층|3층|6층)$/,'');if(!m.has(key))m.set(key,{...e.venue,address:key,events:[],coordinateAccuracy:e.venue.coordinateAccuracy});const loc=m.get(key);loc.events.push(e);if(e.venue.coordinateAccuracy==='approximate')loc.coordinateAccuracy='approximate';});return[...m.values()];
+}
+function setMapMode(mode){mapMode=mode;$$('#mapViewToggle button').forEach(b=>b.classList.toggle('active',b.dataset.mapMode===mode));$('#mapWrap').setAttribute('aria-hidden',String(mode!=='map'));$('#placesPanel').hidden=mode!=='places';$('#mapStats').setAttribute('aria-hidden','false');if(mode==='map')setTimeout(()=>renderMap(currentRegion),20);}
+function renderPlaces(locs){const sorted=[...locs].sort((a,b)=>b.events.length-a.events.length||b.events.reduce((s,e)=>s+workDays(e),0)-a.events.reduce((s,e)=>s+workDays(e),0));$('#placesPanel').innerHTML=sorted.length?sorted.map((loc,i)=>{const days=loc.events.reduce((s,e)=>s+workDays(e),0);return`<button type="button" class="place-row" data-place="${i}"><span><b>${loc.name}</b><small>${loc.address}</small><em class="accuracy-tag ${loc.coordinateAccuracy==='approximate'?'approx':''}">${coordinateLabel(loc)}</em></span><span class="place-numbers"><strong>${loc.events.length} EVENTS</strong><span>${days} WORK DAYS</span></span></button>`;}).join(''):'<div class="empty-state">조건에 맞는 장소 기록이 없습니다.</div>';$$('[data-place]').forEach(b=>b.onclick=()=>openLocation(sorted[+b.dataset.place]));}
+function renderMap(region='ALL'){
+  currentRegion=region;const list=filteredEvents(),locs=locationGroups(region,list),eventSet=list.filter(e=>region==='ALL'||e.venue.region===region),days=eventSet.reduce((s,e)=>s+workDays(e),0);renderFallback(locs);renderPlaces(locs);$('#mapStats').innerHTML=`<div><b>${eventSet.length}</b><span>EVENTS</span></div><div><b>${locs.length}</b><span>VENUES</span></div><div><b>${days}</b><span>WORK DAYS</span></div>`;$('#mapWrap').setAttribute('aria-hidden',String(mapMode!=='map'));$('#placesPanel').hidden=mapMode!=='places';if(mapMode!=='map')return;if(!window.L){$('#leafletMap').style.display='none';return;}$('#leafletMap').style.display='block';if(!map){map=L.map('leafletMap',{zoomControl:true,attributionControl:true}).setView([37.55,126.98],10);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);markerLayer=L.layerGroup().addTo(map);}markerLayer.clearLayers();const pts=[];locs.forEach(loc=>{pts.push([loc.lat,loc.lng]);const count=loc.events.length,approx=loc.coordinateAccuracy==='approximate';const icon=L.divIcon({className:'',html:`<div title="${coordinateLabel(loc)}" style="display:grid;place-items:center;min-width:30px;height:30px;padding:0 7px;border-radius:16px;background:#d8ff4f;color:#0b0c0e;border:${approx?'2px dashed':'2px solid'} #111;font:900 10px -apple-system,BlinkMacSystemFont,sans-serif;box-shadow:0 6px 15px rgba(0,0,0,.35)">${count}</div>`,iconSize:[32,32],iconAnchor:[16,16]});const marker=L.marker([loc.lat,loc.lng],{icon,keyboard:true,title:loc.name}).addTo(markerLayer);marker.bindPopup(`<b>${loc.name}</b><br>${loc.events.length} events · ${loc.events.reduce((s,e)=>s+workDays(e),0)} days<br><span style="color:#aeb3bb">${loc.address}</span>${approx?'<br><span style="color:#c9a95a;font-size:10px">approximate pin</span>':''}`);marker.on('click',()=>setTimeout(()=>openLocation(loc),180));});if(pts.length){const bounds=L.latLngBounds(pts);map.fitBounds(bounds.pad(region==='ALL'?.12:.28),{maxZoom:12});setTimeout(()=>map.invalidateSize(),50);}
+}
+function renderFallback(locs){const box=$('#fallbackMap');if(!locs.length){box.innerHTML='';return;}const lats=locs.map(x=>x.lat),lngs=locs.map(x=>x.lng);let minLat=Math.min(...lats),maxLat=Math.max(...lats),minLng=Math.min(...lngs),maxLng=Math.max(...lngs);if(maxLat-minLat<.04){maxLat+=.02;minLat-=.02}if(maxLng-minLng<.04){maxLng+=.02;minLng-=.02}box.innerHTML=locs.map((l,i)=>{const x=8+(l.lng-minLng)/(maxLng-minLng)*84,y=8+(maxLat-l.lat)/(maxLat-minLat)*84;return`<button class="fallback-pin" style="left:${x}%;top:${y}%" data-floc="${i}" aria-label="${escapeHTML(l.name)} · ${l.events.length}개 행사"><span>${l.events.length}</span><em>${l.name}</em></button>`}).join('');$$('.fallback-pin').forEach(b=>b.onclick=()=>openLocation(locs[+b.dataset.floc]));}
+$('#mapFilters').addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b)return;currentRegion=b.dataset.region;$('#mapFilters').querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderMap(currentRegion)});$$('#mapViewToggle button').forEach(b=>b.onclick=()=>setMapMode(b.dataset.mapMode));
 
-document.getElementById('calPrev').onclick=()=>moveCalendar(-1);
-document.getElementById('calNext').onclick=()=>moveCalendar(1);
-document.getElementById('calendarLatest').onclick=goLatestCalendar;
-document.getElementById('calendarArchiveToggle').onclick=toggleMonthRail;
+let lastFocus=null;
+function openSheet(html){lastFocus=document.activeElement;$('#sheetContent').innerHTML=html;$('#sheetBackdrop').classList.add('open');$('#sheet').classList.add('open');$('#sheet').setAttribute('aria-hidden','false');document.body.classList.add('sheet-open');const c=$('.sheet-close');if(c){c.onclick=closeSheet;setTimeout(()=>c.focus(),40);}}
+function closeSheet(){$('#sheetBackdrop').classList.remove('open');$('#sheet').classList.remove('open');$('#sheet').setAttribute('aria-hidden','true');document.body.classList.remove('sheet-open');if(lastFocus&&document.contains(lastFocus))lastFocus.focus();}
+$('#sheetBackdrop').onclick=closeSheet;document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#sheet').classList.contains('open'))closeSheet();});
+function detailHeader(kicker,title,sub=''){return`<div class="sheet-top"><div><div class="sheet-kicker">${kicker}</div><h2>${title}</h2>${sub?`<div class="sheet-sub">${sub}</div>`:''}</div><button class="sheet-close" aria-label="상세 닫기">×</button></div>`;}
+function openEvent(id){const e=EVENTS.find(x=>x.id===id);if(!e)return;const c=cat(e),mapUrl=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.venue.address)}`,sched=e.schedule?.weekdays?` · ${e.schedule.weekdays.map(i=>['일','월','화','수','목','금','토'][i]).join('·')} 근무`:'';const approx=e.venue.coordinateAccuracy==='approximate';openSheet(`${detailHeader(c.label,e.title,`${periodText(e)}${sched}`)}<div class="chips"><span class="chip"><i style="background:${c.color}"></i>${c.label}</span>${e.roles.map(r=>`<span class="chip">${ROLE_LABELS[r]}</span>`).join('')}</div><div class="detail-grid"><div class="detail-cell"><span>WORK DAYS</span><b>${workDays(e)}일${e.status==='ongoing'?'*':''}</b></div><div class="detail-cell"><span>AGENCY</span><b>${e.agency}</b></div><div class="detail-cell"><span>VENUE</span><b>${e.venue.name}</b></div><div class="detail-cell"><span>AREA</span><b>${e.venue.region} · ${e.venue.district}</b></div></div><div class="detail-section"><h4>WHAT I DID</h4><ul>${e.responsibilities.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="detail-section"><h4>ADDRESS</h4><div class="sheet-sub">${e.venue.address}</div><span class="accuracy-tag ${approx?'approx':''}">${coordinateLabel(e.venue)}</span>${approx?'<div class="accuracy-note">주소는 제공된 정확 주소이며, 현재 지도 핀 좌표는 시각화를 위한 근사값입니다.</div>':''}<a class="map-link" href="${mapUrl}" target="_blank" rel="noopener"><span>주소로 지도 검색</span><span>↗</span></a></div>${e.status==='ongoing'?'<p class="note">* 진행 중 프로젝트의 근무일은 2026.09.16 스냅샷 기준, 월–금 근무 규칙으로 자동 계산했습니다.</p>':''}`);}
+function openCompany(name,base=filteredEvents()){const es=base.filter(e=>e.agency===name).sort((a,b)=>b.start.localeCompare(a.start)),days=es.reduce((s,e)=>s+workDays(e),0);openSheet(`${detailHeader('COLLABORATION',name,`${es.length} events · ${days} work days`)}<div class="timeline">${es.map(e=>`<div class="timeline-item" tabindex="0" data-sheet-event="${e.id}"><b>${e.title}</b><span>${periodText(e)} · ${workDays(e)}D<br>${e.venue.name}</span></div>`).join('')}</div>`);bindSheetEvents();}
+function openGroup(kind,key,base=filteredEvents()){const es=base.filter(e=>kind==='category'?e.category===key:e.roles.includes(key)).sort((a,b)=>b.start.localeCompare(a.start)),label=kind==='category'?CATEGORY[key].label:ROLE_LABELS[key];openSheet(`${detailHeader(kind==='category'?'EVENT TYPE':'MY ROLE',label,`${es.length} events · ${es.reduce((s,e)=>s+workDays(e),0)} work days`)}<div class="timeline">${es.map(e=>`<div class="timeline-item" tabindex="0" data-sheet-event="${e.id}"><b>${e.title}</b><span>${periodText(e)} · ${e.agency}<br>${e.venue.name}</span></div>`).join('')}</div>`);bindSheetEvents();}
+function openLocation(loc){const es=[...loc.events].sort((a,b)=>b.start.localeCompare(a.start)),approx=loc.coordinateAccuracy==='approximate';openSheet(`${detailHeader('VENUE',loc.name,`${es.length} events · ${es.reduce((s,e)=>s+workDays(e),0)} work days`)}<div class="sheet-sub" style="margin-top:10px">${loc.address}</div><span class="accuracy-tag ${approx?'approx':''}">${coordinateLabel(loc)}</span>${approx?'<div class="accuracy-note">이 장소의 지도 핀은 현재 근사 좌표입니다. 상세 주소를 기준으로 확인할 수 있습니다.</div>':''}<div class="timeline">${es.map(e=>`<div class="timeline-item" tabindex="0" data-sheet-event="${e.id}"><b>${e.title}</b><span>${periodText(e)} · ${e.agency}</span></div>`).join('')}</div>`);bindSheetEvents();}
+function bindSheetEvents(){$$('[data-sheet-event]').forEach(x=>{x.onclick=()=>openEvent(x.dataset.sheetEvent);x.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openEvent(x.dataset.sheetEvent)}}});}
 
-document.querySelectorAll('#mapModeToggle [data-map-mode]').forEach(btn=>btn.onclick=()=>setMapMode(btn.dataset.mapMode));
-document.getElementById('mapSelectionBack').onclick=closeMapSelection;
-
-document.getElementById('drawerClose').onclick=closeDrawer;
-document.getElementById('drawerBack').onclick=closeDrawer;
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){closeDrawer();closeMapSelection();toggleMobileFilters(false);}
-});
-window.addEventListener('resize',()=>{if(!isMobile())toggleMobileFilters(false);if(leafletMap)setTimeout(()=>leafletMap.invalidateSize(),80);});
-
-renderAll();
-
+window.__mapRetry=()=>{if(currentView==='map') renderMap(currentRegion)};
+initArchiveFilters();renderOverview();renderCalendar();renderCompanies();renderCategories();
 </script>
 </body>
 </html>
