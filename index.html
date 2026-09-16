@@ -393,7 +393,7 @@ function go(view){
 $$('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
 
 let selectedMonth=null;
-function workMonths(list){return uniq(list.flatMap(e=>workingDates(e).map(d=>iso(d).slice(0,7)))).sort();}
+function workMonths(list){return uniq(list.flatMap(e=>workingDates(e).map(d=>iso(d).slice(0,7)))).sort((a,b)=>b.localeCompare(a));}
 function renderMonthStrip(months){
   $('#monthStrip').innerHTML=months.map(m=>{const[y,mo]=m.split('-');return `<button class="month-btn ${m===selectedMonth?'active':''}" data-month="${m}">${y}.${mo}</button>`}).join('');
   $$('.month-btn').forEach(b=>b.onclick=()=>{selectedMonth=b.dataset.month;clearCalendarQuick();renderCalendar();setTimeout(()=>b.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'}),10)});
@@ -401,7 +401,7 @@ function renderMonthStrip(months){
 function clearCalendarQuick(){const q=$('#calendarQuick');if(!q)return;q.classList.remove('open');q.innerHTML='';$$('.day.selected').forEach(x=>x.classList.remove('selected'));}
 function renderCalendar(){
   const list=filteredEvents(),months=workMonths(list);if(!months.length){$('#monthStrip').innerHTML='';$('#calendarTitle').textContent='NO RESULTS';$('#calendarSummary').textContent='';$('#calendarGrid').innerHTML='<div class="empty-state" style="grid-column:1/-1">조건에 맞는 근무 기록이 없습니다.</div>';$('#monthEvents').innerHTML='';clearCalendarQuick();return;}
-  if(!selectedMonth||!months.includes(selectedMonth))selectedMonth=months[months.length-1];renderMonthStrip(months);
+  if(!selectedMonth||!months.includes(selectedMonth))selectedMonth=months[0];renderMonthStrip(months);
   const[y,m]=selectedMonth.split('-').map(Number),first=new Date(y,m-1,1,12),last=new Date(y,m,0,12);$('#calendarTitle').textContent=`${y} · ${String(m).padStart(2,'0')}`;
   const eventDates={};list.forEach(e=>workingDates(e).forEach(d=>{const k=iso(d);if(k.startsWith(selectedMonth))(eventDates[k]??=[]).push(e)}));
   const monthEvents=list.filter(e=>workingDates(e).some(d=>iso(d).startsWith(selectedMonth))).sort((a,b)=>a.start.localeCompare(b.start));const uniqueWork=new Set(Object.keys(eventDates));$('#calendarSummary').textContent=`${monthEvents.length} events · ${uniqueWork.size} work days`;
