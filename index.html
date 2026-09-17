@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- EVENT CAREER ARCHIVE · FIXED BASELINE + UX ENHANCEMENTS v2 · 2026-09-16 -->
+<!-- EVENT CAREER ARCHIVE · FIXED BASELINE + UNIVERSE VISUALIZATION v3 · 2026-09-18 -->
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
@@ -40,6 +40,14 @@
     .brand{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:800;letter-spacing:.11em}
     .brand-mark{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 18px rgba(216,255,79,.65)}
     .snapshot{font-size:10px;color:var(--muted);letter-spacing:.08em}
+    .snapshot-area{display:grid;justify-items:end;gap:5px;flex:0 0 auto}
+    .visual-mode-toggle{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:0 7px 0 8px;border:1px solid #343941;border-radius:999px;background:rgba(17,20,24,.84);color:#8d939c;font-size:7px;font-weight:950;letter-spacing:.09em;cursor:pointer;transition:.22s}
+    .visual-mode-toggle i{position:relative;width:22px;height:12px;border-radius:999px;background:#292e35;box-shadow:inset 0 0 0 1px #3b414a;transition:.22s}
+    .visual-mode-toggle i:after{content:"";position:absolute;width:8px;height:8px;left:2px;top:2px;border-radius:50%;background:#7e858f;transition:.22s}
+    .visual-mode-toggle[aria-pressed="true"]{border-color:#53602e;color:var(--accent);background:rgba(216,255,79,.045)}
+    .visual-mode-toggle[aria-pressed="true"] i{background:#38451f;box-shadow:inset 0 0 0 1px #5c6d2d}
+    .visual-mode-toggle[aria-pressed="true"] i:after{left:12px;background:var(--accent);box-shadow:0 0 8px rgba(216,255,79,.45)}
+
     main{padding:0 16px 42px}
     .view{display:none;animation:fade .28s ease}
     .view.active{display:block}
@@ -146,6 +154,25 @@
     .live:before{box-shadow:0 0 0 0 rgba(216,255,79,.32)}
     @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(216,255,79,.32)}70%{box-shadow:0 0 0 7px rgba(216,255,79,0)}100%{box-shadow:0 0 0 0 rgba(216,255,79,0)}}
     .sheet-close,.nav-btn,.month-btn,.filter-btn,.segmented button{min-height:42px}.sheet-close{min-width:42px;height:42px}
+    /* ===== OVERVIEW · MOTION + CAREER ORBIT ===== */
+    .orbit-card{overflow:hidden;border:1px solid #30353d;border-radius:24px;background:linear-gradient(165deg,#101318,#080a0d 72%);box-shadow:var(--shadow)}
+    .orbit-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:15px 15px 12px;border-bottom:1px solid #22262d}
+    .orbit-head .kicker{color:var(--accent);font-size:8px;font-weight:950;letter-spacing:.14em}
+    .orbit-head h3{margin:5px 0 3px;font-size:17px}.orbit-head p{margin:0;color:#747b86;font-size:9px;line-height:1.45}
+    .motion-toggle{flex:0 0 auto;min-width:66px;min-height:38px;padding:0 10px;border:1px solid #363b44;border-radius:12px;background:#171a1f;color:#aab0b9;font-size:8px;font-weight:950;letter-spacing:.1em;cursor:pointer}.motion-toggle.playing{border-color:#4b5630;color:var(--accent)}
+    .orbit-stage{position:relative;height:min(64vh,580px);min-height:445px;overflow:hidden;background:radial-gradient(circle at 50% 46%,rgba(216,255,79,.07),transparent 22%),radial-gradient(circle at 18% 18%,rgba(138,180,255,.035),transparent 28%),radial-gradient(circle at 78% 24%,rgba(197,156,255,.025),transparent 25%),#080b0f;user-select:none;-webkit-user-select:none}
+    #orbitCanvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}#orbitCanvas:active{cursor:grabbing}
+    .orbit-hud{position:absolute;left:12px;top:11px;pointer-events:none;color:#717984;font-size:8px;font-weight:850;line-height:1.6;letter-spacing:.06em;text-shadow:0 1px 7px #000}
+    .orbit-focus{position:absolute;left:12px;right:12px;bottom:12px;padding:11px 12px;border:1px solid #353b44;border-radius:14px;background:rgba(10,12,16,.89);backdrop-filter:blur(12px);pointer-events:none}.orbit-focus b{display:block;font-size:11px;line-height:1.35}.orbit-focus span{display:block;margin-top:4px;color:#8d939d;font-size:8px;line-height:1.5}
+    .orbit-legend{display:flex;gap:6px;overflow-x:auto;padding:11px 13px 12px;scrollbar-width:none;border-top:1px solid #20242a}.orbit-legend::-webkit-scrollbar{display:none}.orbit-legend button{display:inline-flex;align-items:center;gap:5px;flex:0 0 auto;min-height:30px;padding:0 8px;border:1px solid transparent;border-radius:999px;background:transparent;color:#858b95;font-family:inherit;font-size:8px;font-weight:800;white-space:nowrap;cursor:pointer}.orbit-legend button.active{border-color:#3b414a;background:#171b20;color:#e8ebef}.orbit-legend i{width:6px;height:6px;border-radius:50%;box-shadow:0 0 8px currentColor}
+    .orbit-help{margin:0;padding:0 14px 14px;color:#646b75;font-size:8px;line-height:1.55}
+    .overview-visuals{min-width:0}.motion-dashboard{display:grid;grid-template-columns:1fr;gap:10px}.overview-orbit{min-width:0}
+    .motion-panel{min-width:0;padding:15px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,#13161a,#0e1013)}
+    .motion-panel-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:12px}.motion-panel-head h3{margin:0;font-size:14px}.motion-panel-head span{color:#6f7680;font-size:8px;font-weight:850;letter-spacing:.08em}
+    .activity-wave{display:block;width:100%;height:145px;overflow:visible}.wave-grid{stroke:#252a31;stroke-width:1}.wave-area{fill:url(#waveGradient)}.wave-line{fill:none;stroke:var(--accent);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 6px rgba(216,255,79,.18));stroke-dasharray:900;stroke-dashoffset:900;animation:drawWave 1.15s ease forwards}.wave-dot{fill:#0e1013;stroke:var(--accent);stroke-width:1.5}.wave-label{fill:#69717b;font-size:8px;font-family:inherit}
+    @keyframes drawWave{to{stroke-dashoffset:0}}
+    .mix-layout{display:grid;grid-template-columns:120px minmax(0,1fr);gap:14px;align-items:center}.mix-ring{position:relative;width:116px;height:116px;border-radius:50%;background:#20242a;box-shadow:inset 0 0 0 1px #2a2f37}.mix-ring:after{content:"";position:absolute;inset:19px;border-radius:50%;background:#111419;box-shadow:0 0 0 1px #252a31}.mix-center{position:absolute;inset:0;z-index:2;display:grid;place-content:center;text-align:center;pointer-events:none}.mix-center b{font-size:22px;line-height:1}.mix-center span{margin-top:4px;color:#777e88;font-size:7px;font-weight:900;letter-spacing:.1em}.mix-list{display:flex;flex-direction:column;gap:7px}.mix-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;font-size:8px}.mix-row b{display:flex;align-items:center;gap:6px;min-width:0;font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mix-row i{flex:0 0 auto;width:6px;height:6px;border-radius:50%}.mix-row span{color:#838a94;font-variant-numeric:tabular-nums}
+    @media(min-width:640px){.motion-dashboard{grid-template-columns:1.08fr .92fr}.orbit-stage{height:590px}.mix-layout{grid-template-columns:130px 1fr}}
     @media(min-width:640px){main{padding-left:24px;padding-right:24px}.topbar{padding-left:24px;padding-right:24px}.metrics{grid-template-columns:repeat(4,1fr)}.explore-grid{grid-template-columns:repeat(4,1fr)}.calendar-grid{gap:7px}.day{min-height:76px}.event-label{display:block;color:#111;font-size:7px;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 4px;border-radius:3px}.event-dot{display:none}.map-wrap{height:620px}.detail-grid{grid-template-columns:repeat(4,1fr)}}
     @media(min-width:640px){.filter-toggle{display:none}.filter-panel{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}.archive-search-row{grid-template-columns:1fr}.archive-tools{padding:14px}}
     @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
@@ -155,7 +182,10 @@
 <div class="app">
   <header class="topbar">
     <button class="brand" data-go="overview" aria-label="홈으로" style="border:0;background:transparent;padding:0;cursor:pointer"><span class="brand-mark"></span>EVENT CAREER ARCHIVE</button>
-    <div class="snapshot">DATA · 2026.09.16</div>
+    <div class="snapshot-area">
+      <div class="snapshot">DATA · 2026.09.16</div>
+      <button class="visual-mode-toggle" id="visualModeToggle" type="button" aria-pressed="false" aria-label="3D 시각화 모드 전환"><span>3D VIEW</span><i aria-hidden="true"></i></button>
+    </div>
   </header>
 
   <main>
@@ -166,6 +196,25 @@
         <p class="lead">다양한 행사 현장에서 쌓아온 경험을 시간 · 업체 · 행사 유형 · 장소로 기록합니다.</p>
       </div>
       <div class="metrics" id="overviewMetrics"></div>
+      <div class="section-head overview-visual-head"><div><div class="eyebrow" id="overviewVisualEyebrow">Motion Dashboard</div><h3 id="overviewVisualTitle">경력의 흐름</h3><p id="overviewVisualDesc">월별 활동량과 행사 유형별 경험 비중</p></div><span class="summary-inline" id="overviewVisualMode">LIVE DATA</span></div>
+      <div class="overview-visuals">
+        <div class="motion-dashboard" id="motionDashboard">
+          <article class="motion-panel"><div class="motion-panel-head"><h3>Activity Wave</h3><span>WORK DAYS / MONTH</span></div><svg class="activity-wave" id="activityWave" viewBox="0 0 600 150" preserveAspectRatio="none" aria-label="월별 실제 근무일 추이"></svg></article>
+          <article class="motion-panel"><div class="motion-panel-head"><h3>Experience Mix</h3><span>BY WORK DAYS</span></div><div class="mix-layout"><div class="mix-ring" id="mixRing"><div class="mix-center"><b id="mixTotal">0</b><span>WORK DAYS</span></div></div><div class="mix-list" id="mixList"></div></div></article>
+        </div>
+        <div class="overview-orbit" id="overviewOrbit" hidden>
+          <article class="orbit-card">
+            <div class="orbit-head"><div><div class="kicker">ORBITAL CAREER SYSTEM</div><h3>Career Orbit</h3><p>궤도 = 행사 유형 · 행성 크기 = 근무일 · 밝기 = 최근 경험</p></div><button class="motion-toggle playing" id="orbitMotionToggle" type="button" aria-pressed="true">PAUSE</button></div>
+            <div class="orbit-stage" id="orbitStage">
+              <canvas id="orbitCanvas" aria-label="행사 유형별 경력 행성계 3D 시각화"></canvas>
+              <div class="orbit-hud" id="orbitHud"></div>
+              <div class="orbit-focus" id="orbitFocus" hidden></div>
+            </div>
+            <div class="orbit-legend" id="orbitLegend" aria-label="행사 유형 궤도 선택"></div>
+            <p class="orbit-help">DRAG · 행성계 회전 &nbsp; / &nbsp; TAP PLANET · 행사 상세 &nbsp; / &nbsp; LONG PRESS · 해당 궤도 집중</p>
+          </article>
+        </div>
+      </div>
       <div class="section-head"><div><div class="eyebrow">Now working</div><h3>현재 진행 중</h3></div></div>
       <article class="active-card" id="activeProject" aria-live="polite" tabindex="0"></article>
       <div class="section-head"><div><div class="eyebrow">Activity</div><h3>현장 활동 밀도</h3><p>하루 한 칸 · 실제 근무일 기준</p></div><span id="heatPeriod" class="summary-inline"></span></div>
@@ -235,6 +284,8 @@
       <div class="map-stat" id="mapStats" aria-hidden="false"></div>
       <p class="note" id="mapAccuracyNote">주소는 제공된 원문을 보존합니다. 지도 핀은 장소 단위 좌표와 근사 좌표를 구분해 관리하며, 근사 좌표는 상세 화면에 별도로 표시합니다.</p>
     </section>
+
+
   </main>
 
   <nav class="bottom-nav" aria-label="주요 메뉴">
@@ -376,6 +427,7 @@ function renderOverview(){
   $('#activeProject').innerHTML=`<div class="live">LIVE PROJECT</div><h3>${e.short||e.title}</h3><div class="meta-line">${periodText(e)} · ${workDays(e)} DAYS*<br>${e.venue.name} · ${e.agency}</div><div class="chips"><span class="chip"><i style="background:${cat(e).color}"></i>${cat(e).label}</span>${e.roles.slice(0,3).map(r=>`<span class="chip">${ROLE_LABELS[r]}</span>`).join('')}</div>`;
   $('#activeProject').onclick=()=>openEvent(e.id);$('#activeProject').onkeydown=ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();openEvent(e.id)}};
   renderHeatmap();
+  renderOverviewVisuals();
 }
 function renderHeatmap(){
   const start=parseDate('2025-10-01'), end=parseDate(SNAPSHOT_DATE),daysMap={};EVENTS.forEach(e=>workingDates(e).forEach(d=>daysMap[iso(d)]=(daysMap[iso(d)]||0)+1));
@@ -384,13 +436,27 @@ function renderHeatmap(){
   $('#heatmap').innerHTML=html;$('#heatPeriod').textContent=`${totalDays()} work days`;$('#heatEnd').textContent='2026.09';
 }
 
+let overview3D=false;
+function renderOverviewVisuals(){
+  const motion=$('#motionDashboard'),space=$('#overviewOrbit'),toggle=$('#visualModeToggle');
+  if(!motion||!space||!toggle)return;
+  toggle.setAttribute('aria-pressed',String(overview3D));
+  motion.hidden=overview3D;space.hidden=!overview3D;
+  $('#overviewVisualEyebrow').textContent=overview3D?'3D Visual Mode':'Motion Dashboard';
+  $('#overviewVisualTitle').textContent=overview3D?'Career Orbit':'경력의 흐름';
+  $('#overviewVisualDesc').textContent=overview3D?'행사 유형별 궤도를 따라 움직이는 나의 경력 행성계':'월별 활동량과 행사 유형별 경험 비중';
+  $('#overviewVisualMode').textContent=overview3D?'ORBIT SYSTEM':'LIVE DATA';
+  if(overview3D){setTimeout(()=>renderCareerOrbit([...EVENTS].sort((a,b)=>b.start.localeCompare(a.start))),20);}else{stopOrbitLoop();renderActivityWave(EVENTS);renderExperienceMix(EVENTS);}
+}
+
 let currentView='overview';
 function go(view){
   currentView=view;$$('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${view}`));$$('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.go===view));
-  $('#archiveTools').hidden=view==='overview';updateFilterUI();window.scrollTo({top:0,behavior:'smooth'});
-  if(view==='calendar')renderCalendar();if(view==='company')renderCompanies();if(view==='category')renderCategories();if(view==='map')setTimeout(()=>renderMap(currentRegion),50);
+  $('#archiveTools').hidden=view==='overview';$('#visualModeToggle').hidden=view!=='overview';updateFilterUI();window.scrollTo({top:0,behavior:'smooth'});
+  if(view!=='overview')stopOrbitLoop();if(view==='overview')setTimeout(()=>renderOverviewVisuals(),30);if(view==='calendar')renderCalendar();if(view==='company')renderCompanies();if(view==='category')renderCategories();if(view==='map')setTimeout(()=>renderMap(currentRegion),50);
 }
 $$('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
+$('#visualModeToggle').onclick=()=>{overview3D=!overview3D;renderOverviewVisuals();};
 
 let selectedMonth=null;
 function workMonths(list){return uniq(list.flatMap(e=>workingDates(e).map(d=>iso(d).slice(0,7)))).sort((a,b)=>b.localeCompare(a));}
@@ -425,6 +491,61 @@ let categoryDimension='category',categoryMetric='events';
 function renderCategories(){const list=filteredEvents();let data=[];if(categoryDimension==='category'){data=Object.entries(CATEGORY).map(([key,v])=>{const es=list.filter(e=>e.category===key);return{key,label:v.label,color:v.color,events:es.length,days:es.reduce((s,e)=>s+workDays(e),0)}}).filter(x=>x.events);}else{data=Object.entries(ROLE_LABELS).map(([key,label])=>{const es=list.filter(e=>e.roles.includes(key));return{key,label,color:'var(--accent)',events:es.length,days:es.reduce((s,e)=>s+workDays(e),0)}}).filter(x=>x.events);}if(!data.length){$('#categoryBars').innerHTML='<div class="empty-state">조건에 맞는 카테고리 기록이 없습니다.</div>';return;}data.sort((a,b)=>b[categoryMetric]-a[categoryMetric]);const max=Math.max(...data.map(d=>d[categoryMetric]));$('#categoryBars').innerHTML=data.map(d=>`<div class="bar-card" tabindex="0" data-kind="${categoryDimension}" data-key="${d.key}"><div class="bar-top"><div><b>${d.label}</b><div class="company-mini">${d.events} EVENTS · ${d.days} DAYS</div></div><span>${d[categoryMetric]} ${categoryMetric==='events'?'events':'days'}</span></div><div class="bar-track"><div class="bar-fill" style="width:${d[categoryMetric]/max*100}%;background:${d.color}"></div></div></div>`).join('');$$('.bar-card[data-kind]').forEach(x=>{x.onclick=()=>openGroup(x.dataset.kind,x.dataset.key,list);x.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openGroup(x.dataset.kind,x.dataset.key,list)}}});}
 $('#categoryDimension').addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b)return;categoryDimension=b.dataset.value;$('#categoryDimension').querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderCategories()});
 $('#categoryMetric').addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b)return;categoryMetric=b.dataset.value;$('#categoryMetric').querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderCategories()});
+
+
+/* ===== OVERVIEW · 3D CAREER ORBIT ===== */
+const orbitState={canvas:null,ctx:null,planets:[],orbits:[],stars:[],raf:0,lastTime:0,simTime:0,yaw:-.22,pitch:.56,zoom:1,autoMotion:!window.matchMedia('(prefers-reduced-motion: reduce)').matches,running:false,pointer:null,longTimer:0,longTriggered:false,focusId:null,focusCategory:null,projected:[],signature:''};
+function resolveColor(v){if(!v)return'#d8ff4f';const m=v.match(/^var\((--[^)]+)\)$/);return m?getComputedStyle(document.documentElement).getPropertyValue(m[1]).trim():v;}
+function hexRGBA(hex,a){const h=hex.replace('#','').trim();const v=h.length===3?h.split('').map(x=>x+x).join(''):h;const n=parseInt(v,16);return`rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
+function hashNum(str){let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619);}return(h>>>0)/4294967295;}
+function buildCareerOrbit(list){
+  const keys=Object.keys(CATEGORY),radii=[.34,.47,.60,.73,.86,.99,1.12];
+  orbitState.orbits=keys.map((key,ci)=>{const events=list.filter(e=>e.category===key).sort((a,b)=>a.start.localeCompare(b.start));return{key,index:ci,label:CATEGORY[key].label,color:resolveColor(CATEGORY[key].color),radius:radii[ci]??(.34+ci*.13),tiltX:-.52+ci*.17,tiltZ:(ci-3)*.045,speed:(ci%2?-1:1)*(.000046-ci*.0000022),events,days:events.reduce((sum,e)=>sum+workDays(e),0)};});
+  orbitState.planets=[];
+  orbitState.orbits.forEach(o=>{const n=Math.max(1,o.events.length);o.events.forEach((e,i)=>{const jitter=(hashNum(e.id)-.5)*.23;orbitState.planets.push({id:e.id,event:e,orbit:o,baseAngle:(i/n)*Math.PI*2+jitter+o.index*.31,phase:hashNum(e.id+'phase')*Math.PI*2,baseR:4.1+Math.min(10.8,Math.sqrt(workDays(e))*1.56),recent:Math.max(.5,1-Math.max(0,(parseDate(SNAPSHOT_DATE)-parseDate(e.start))/86400000)/560)});});});
+  orbitState.stars=Array.from({length:68},(_,i)=>{const h=hashNum('orbit-star'+i),h2=hashNum('orbit-star-y'+i),h3=hashNum('orbit-star-z'+i);return{x:(h-.5)*3.9,y:(h2-.5)*3.15,z:(h3-.5)*3.1,r:.35+h*1.05};});
+  orbitState.focusId=null;orbitState.focusCategory=null;const f=$('#orbitFocus');if(f)f.hidden=true;updateOrbitLegendFocus();
+}
+function orbitLocalPoint(o,angle){let x=o.radius*Math.cos(angle),y=0,z=o.radius*Math.sin(angle);const cx=Math.cos(o.tiltX),sx=Math.sin(o.tiltX),cz=Math.cos(o.tiltZ),sz=Math.sin(o.tiltZ),y1=y*cx-z*sx,z1=y*sx+z*cx,x2=x*cz-y1*sz,y2=x*sz+y1*cz;return{x:x2,y:y2,z:z1};}
+function projectOrbitPoint(x,y,z,w,h){const cy=Math.cos(orbitState.yaw),sy=Math.sin(orbitState.yaw),cp=Math.cos(orbitState.pitch),sp=Math.sin(orbitState.pitch);const x1=x*cy-z*sy,z1=x*sy+z*cy,y1=y*cp-z1*sp,z2=y*sp+z1*cp,cam=3.35,p=cam/(cam-z2*.70),base=Math.min(w,h)*.36*orbitState.zoom;return{x:w/2+x1*base*p,y:h/2+y1*base*p,z:z2,p};}
+function resizeOrbitCanvas(){const c=$('#orbitCanvas');if(!c)return;const r=c.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);if(!r.width||!r.height)return;if(c.width!==Math.round(r.width*dpr)||c.height!==Math.round(r.height*dpr)){c.width=Math.round(r.width*dpr);c.height=Math.round(r.height*dpr);}const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);orbitState.canvas=c;orbitState.ctx=ctx;}
+function orbitPlanetPoint(n){const angle=n.baseAngle+orbitState.simTime*n.orbit.speed;const p=orbitLocalPoint(n.orbit,angle);p.y+=Math.sin(angle*2+n.phase)*.008;return{...p,angle};}
+function updateOrbitLegendFocus(){const root=$('#orbitLegend');if(!root)return;$$('#orbitLegend [data-orbit-category]').forEach(b=>b.classList.toggle('active',b.dataset.orbitCategory===orbitState.focusCategory));}
+function focusOrbitPlanet(id){const n=orbitState.planets.find(x=>x.id===id);if(!n)return;orbitState.focusId=id;orbitState.focusCategory=n.event.category;const f=$('#orbitFocus');f.hidden=false;f.innerHTML=`<b>${escapeHTML(n.event.title)}</b><span>${cat(n.event).label} ORBIT · ${workDays(n.event)} WORK DAYS<br>${n.event.agency} · ${n.event.venue.name}</span>`;updateOrbitLegendFocus();}
+function focusOrbitCategory(key){orbitState.focusId=null;orbitState.focusCategory=orbitState.focusCategory===key?null:key;const f=$('#orbitFocus');if(!orbitState.focusCategory){f.hidden=true;}else{const o=orbitState.orbits.find(x=>x.key===key);f.hidden=false;f.innerHTML=`<b>${escapeHTML(o.label)} ORBIT</b><span>${o.events.length} EVENTS · ${o.days} WORK DAYS<br>다른 궤도는 흐리게 표시됩니다.</span>`;}updateOrbitLegendFocus();}
+function clearOrbitFocus(){orbitState.focusId=null;orbitState.focusCategory=null;const f=$('#orbitFocus');if(f)f.hidden=true;updateOrbitLegendFocus();}
+function drawOrbitTrack(ctx,o,w,h,focused){const steps=112,col=o.color;let prev=null;for(let i=0;i<=steps;i++){const a=i/steps*Math.PI*2,q=projectOrbitPoint(...Object.values(orbitLocalPoint(o,a)),w,h);if(prev){const depth=Math.max(.55,Math.min(1.35,(q.p+prev.p)*.5)),alpha=(focused?.16:.055)*depth;ctx.strokeStyle=hexRGBA(col,alpha);ctx.lineWidth=focused?1.15:.72;ctx.beginPath();ctx.moveTo(prev.x,prev.y);ctx.lineTo(q.x,q.y);ctx.stroke();}prev=q;}}
+function drawOrbitCore(ctx,w,h,t){const c=projectOrbitPoint(0,0,0,w,h),pulse=1+.05*Math.sin(t*.0026),halo=ctx.createRadialGradient(c.x,c.y,0,c.x,c.y,44*pulse);halo.addColorStop(0,'rgba(216,255,79,.22)');halo.addColorStop(.36,'rgba(216,255,79,.07)');halo.addColorStop(1,'rgba(216,255,79,0)');ctx.fillStyle=halo;ctx.beginPath();ctx.arc(c.x,c.y,44*pulse,0,Math.PI*2);ctx.fill();ctx.strokeStyle='rgba(216,255,79,.28)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(c.x,c.y,20*pulse,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#d8ff4f';ctx.shadowColor='rgba(216,255,79,.58)';ctx.shadowBlur=18;ctx.beginPath();ctx.arc(c.x,c.y,14,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.fillStyle='#0b0d0f';ctx.beginPath();ctx.arc(c.x,c.y,7.2,0,Math.PI*2);ctx.fill();ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='rgba(242,244,246,.82)';ctx.font='900 7px -apple-system,BlinkMacSystemFont,sans-serif';ctx.fillText('MY EVENT',c.x,c.y-31);ctx.fillStyle='rgba(146,153,163,.78)';ctx.font='800 6px -apple-system,BlinkMacSystemFont,sans-serif';ctx.fillText('FOOTPRINT',c.x,c.y-22);}
+function drawCareerOrbit(t){const c=orbitState.canvas,ctx=orbitState.ctx;if(!c||!ctx)return;const r=c.getBoundingClientRect(),w=r.width,h=r.height,anim=orbitState.simTime;ctx.clearRect(0,0,w,h);const bg=ctx.createRadialGradient(w*.5,h*.47,0,w*.5,h*.47,Math.max(w,h)*.72);bg.addColorStop(0,'rgba(28,35,28,.25)');bg.addColorStop(.36,'rgba(12,16,20,.13)');bg.addColorStop(1,'rgba(5,7,10,.42)');ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
+  ctx.save();orbitState.stars.forEach((s,i)=>{const q=projectOrbitPoint(s.x,s.y,s.z,w,h);if(q.p<=0)return;ctx.globalAlpha=.18+.25*(.5+.5*Math.sin(anim*.001+i*.8));ctx.fillStyle='#e5e9ef';ctx.beginPath();ctx.arc(q.x,q.y,s.r*Math.max(.5,q.p*.68),0,Math.PI*2);ctx.fill();});ctx.restore();
+  const focusCat=orbitState.focusCategory;ctx.save();orbitState.orbits.forEach(o=>drawOrbitTrack(ctx,o,w,h,!focusCat||focusCat===o.key));ctx.restore();
+  drawOrbitCore(ctx,w,h,anim);
+  const projected=orbitState.planets.map(n=>{const p=orbitPlanetPoint(n),q=projectOrbitPoint(p.x,p.y,p.z,w,h);return{...q,node:n,angle:p.angle};});orbitState.projected=projected;const sorted=[...projected].sort((a,b)=>a.z-b.z);
+  sorted.forEach(q=>{const n=q.node,e=n.event,col=n.orbit.color,active=!focusCat||focusCat===e.category,depth=Math.max(.58,Math.min(1.28,q.p)),rr=n.baseR*depth,ongoing=e.status==='ongoing',pulse=ongoing?2.2+2.2*Math.sin(anim*.004):0;ctx.save();ctx.globalAlpha=(active?1:.12)*n.recent;ctx.shadowColor=hexRGBA(col,.64);ctx.shadowBlur=active?12:0;
+    if(workDays(e)>=20){ctx.strokeStyle=hexRGBA(col,.42);ctx.lineWidth=1;ctx.beginPath();ctx.ellipse(q.x,q.y,rr+5,(rr+5)*.34,-.2,0,Math.PI*2);ctx.stroke();}
+    if(ongoing){ctx.strokeStyle=hexRGBA(col,.52);ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(q.x,q.y,rr+6+pulse,0,Math.PI*2);ctx.stroke();const ma=anim*.0012,moonR=rr+10;ctx.fillStyle='#f0f3f7';ctx.shadowBlur=7;ctx.beginPath();ctx.arc(q.x+Math.cos(ma)*moonR,q.y+Math.sin(ma)*moonR*.42,1.6,0,Math.PI*2);ctx.fill();}
+    ctx.fillStyle=col;ctx.beginPath();ctx.arc(q.x,q.y,rr,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.globalAlpha=(active?1:.12)*n.recent*.72;ctx.fillStyle='rgba(255,255,255,.66)';ctx.beginPath();ctx.arc(q.x-rr*.27,q.y-rr*.3,Math.max(1,rr*.15),0,Math.PI*2);ctx.fill();ctx.globalAlpha=(active?1:.12)*n.recent;ctx.fillStyle='rgba(7,9,12,.45)';ctx.beginPath();ctx.arc(q.x+rr*.18,q.y+rr*.2,Math.max(1.4,rr*.24),0,Math.PI*2);ctx.fill();
+    if(orbitState.focusId===n.id||ongoing){ctx.font='800 8px -apple-system,BlinkMacSystemFont,sans-serif';ctx.fillStyle='#eef1f4';ctx.textAlign='center';ctx.textBaseline='top';ctx.globalAlpha=active?1:.2;ctx.fillText((e.short||e.title).slice(0,24),q.x,q.y+rr+7);}ctx.restore();
+  });
+}
+function orbitLoop(t){if(currentView!=='overview'||!overview3D){orbitState.running=false;return;}resizeOrbitCanvas();const dt=orbitState.lastTime?Math.min(40,t-orbitState.lastTime):16.667;orbitState.lastTime=t;if(orbitState.autoMotion){orbitState.simTime+=dt;orbitState.yaw+=dt*.000008;}drawCareerOrbit(t);orbitState.raf=requestAnimationFrame(orbitLoop);}
+function startOrbitLoop(){if(orbitState.running)return;orbitState.running=true;orbitState.lastTime=0;orbitState.raf=requestAnimationFrame(orbitLoop);}
+function stopOrbitLoop(){if(orbitState.raf)cancelAnimationFrame(orbitState.raf);orbitState.raf=0;orbitState.running=false;orbitState.lastTime=0;}
+function orbitHit(x,y){const pts=[...orbitState.projected].sort((a,b)=>b.z-a.z);return pts.find(q=>Math.hypot(q.x-x,q.y-y)<=Math.max(12,q.node.baseR*q.p+7))?.node||null;}
+function bindOrbitCanvas(){const c=$('#orbitCanvas');if(!c||c.dataset.bound)return;c.dataset.bound='1';const pos=ev=>{const r=c.getBoundingClientRect();return{x:ev.clientX-r.left,y:ev.clientY-r.top};};c.addEventListener('pointerdown',ev=>{c.setPointerCapture?.(ev.pointerId);const p=pos(ev),node=orbitHit(p.x,p.y);orbitState.pointer={id:ev.pointerId,startX:p.x,startY:p.y,x:p.x,y:p.y,node,moved:false};orbitState.longTriggered=false;clearTimeout(orbitState.longTimer);if(node)orbitState.longTimer=setTimeout(()=>{orbitState.longTriggered=true;focusOrbitPlanet(node.id);navigator.vibrate?.(16);},520);});c.addEventListener('pointermove',ev=>{const st=orbitState.pointer;if(!st||st.id!==ev.pointerId)return;const p=pos(ev),dx=p.x-st.x,dy=p.y-st.y;if(Math.hypot(p.x-st.startX,p.y-st.startY)>7){st.moved=true;clearTimeout(orbitState.longTimer);orbitState.yaw+=dx*.0065;orbitState.pitch=Math.max(-.82,Math.min(.82,orbitState.pitch+dy*.0055));}st.x=p.x;st.y=p.y;});const end=ev=>{const st=orbitState.pointer;if(!st||st.id!==ev.pointerId)return;clearTimeout(orbitState.longTimer);if(!st.moved&&!orbitState.longTriggered){if(st.node)openEvent(st.node.id);else clearOrbitFocus();}orbitState.pointer=null;};c.addEventListener('pointerup',end);c.addEventListener('pointercancel',end);c.addEventListener('contextmenu',e=>e.preventDefault());c.addEventListener('wheel',ev=>{ev.preventDefault();orbitState.zoom=Math.max(.74,Math.min(1.55,orbitState.zoom*(ev.deltaY>0?.94:1.06)));},{passive:false});}
+function renderActivityWave(list){const monthSet=uniq(list.flatMap(e=>workingDates(e).map(d=>iso(d).slice(0,7)))).sort(),all=monthSet.length?monthSet:[];const vals=all.map(m=>{const days=new Set();list.forEach(e=>workingDates(e).forEach(d=>{const k=iso(d);if(k.startsWith(m))days.add(k);}));return days.size;});const svg=$('#activityWave');if(!svg)return;if(!vals.length){svg.innerHTML='';return;}const W=600,H=150,padX=18,top=18,bottom=28,max=Math.max(1,...vals),step=(W-padX*2)/Math.max(1,vals.length-1),pts=vals.map((v,i)=>({x:padX+i*step,y:top+(H-top-bottom)*(1-v/max),v,m:all[i]})),line=pts.map((p,i)=>`${i?'L':'M'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' '),area=`M${pts[0].x},${H-bottom} ${pts.map(p=>`L${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')} L${pts.at(-1).x},${H-bottom} Z`;svg.innerHTML=`<defs><linearGradient id="waveGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8ff4f" stop-opacity=".22"/><stop offset="1" stop-color="#d8ff4f" stop-opacity="0"/></linearGradient></defs><line class="wave-grid" x1="${padX}" y1="${H-bottom}" x2="${W-padX}" y2="${H-bottom}"/><line class="wave-grid" x1="${padX}" y1="${top+(H-top-bottom)*.5}" x2="${W-padX}" y2="${top+(H-top-bottom)*.5}"/><path class="wave-area" d="${area}"/><path class="wave-line" d="${line}"/>${pts.map(p=>`<circle class="wave-dot" cx="${p.x}" cy="${p.y}" r="3"><title>${p.m} · ${p.v} work days</title></circle>`).join('')}${pts.filter((_,i)=>i===0||i===pts.length-1||i%3===0).map(p=>`<text class="wave-label" x="${p.x}" y="${H-7}" text-anchor="middle">${p.m.slice(2).replace('-','.')}</text>`).join('')}`;}
+function renderExperienceMix(list){const rows=Object.entries(CATEGORY).map(([key,v])=>{const es=list.filter(e=>e.category===key),days=es.reduce((s,e)=>s+workDays(e),0);return{key,label:v.label,color:resolveColor(v.color),days,events:es.length};}).filter(x=>x.days).sort((a,b)=>b.days-a.days),total=rows.reduce((s,x)=>s+x.days,0);let at=0,stops=[];rows.forEach(r=>{const from=total?at/total*100:0;at+=r.days;const to=total?at/total*100:0;stops.push(`${r.color} ${from.toFixed(2)}% ${to.toFixed(2)}%`);});$('#mixRing').style.background=rows.length?`conic-gradient(${stops.join(',')})`:'#20242a';$('#mixTotal').textContent=total;$('#mixList').innerHTML=rows.map(r=>`<div class="mix-row"><b><i style="background:${r.color}"></i>${r.label}</b><span>${r.days}D · ${Math.round(r.days/total*100)}%</span></div>`).join('');}
+function renderCareerOrbit(list=EVENTS){
+  const sig=list.map(e=>e.id).join('|');if(sig!==orbitState.signature){orbitState.signature=sig;buildCareerOrbit(list);}
+  $('#orbitLegend').innerHTML=orbitState.orbits.filter(o=>o.events.length).map(o=>`<button type="button" data-orbit-category="${o.key}" title="${o.events.length} events · ${o.days} work days"><i style="background:${o.color};color:${o.color}"></i>${o.label}</button>`).join('');
+  $$('#orbitLegend [data-orbit-category]').forEach(b=>b.onclick=()=>focusOrbitCategory(b.dataset.orbitCategory));updateOrbitLegendFocus();
+  const live=list.filter(e=>e.status==='ongoing').length;$('#orbitHud').innerHTML=`${list.length} PLANETS · ${orbitState.orbits.filter(o=>o.events.length).length} ORBITS<br>${list.reduce((s,e)=>s+workDays(e),0)} WORK DAYS · ${live} LIVE`;
+  resizeOrbitCanvas();bindOrbitCanvas();
+  const toggle=$('#orbitMotionToggle');if(toggle){toggle.classList.toggle('playing',orbitState.autoMotion);toggle.textContent=orbitState.autoMotion?'PAUSE':'PLAY';toggle.setAttribute('aria-pressed',String(orbitState.autoMotion));}
+  startOrbitLoop();
+}
+$('#orbitMotionToggle').onclick=()=>{orbitState.autoMotion=!orbitState.autoMotion;const b=$('#orbitMotionToggle');b.classList.toggle('playing',orbitState.autoMotion);b.textContent=orbitState.autoMotion?'PAUSE':'PLAY';b.setAttribute('aria-pressed',String(orbitState.autoMotion));};
+window.addEventListener('resize',()=>{if(currentView==='overview'&&overview3D)resizeOrbitCanvas();});
 
 let map,markerLayer,currentRegion='ALL',mapMode='map';
 // VENUE PIN = verified building/facility coordinate; APPROX PIN = unverified or area-level coordinate.
