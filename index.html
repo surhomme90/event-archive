@@ -183,7 +183,7 @@
   <header class="topbar">
     <button class="brand" data-go="overview" aria-label="홈으로" style="border:0;background:transparent;padding:0;cursor:pointer"><span class="brand-mark"></span>EVENT CAREER ARCHIVE</button>
     <div class="snapshot-area">
-      <div class="snapshot">DATA · 2026.09.16</div>
+      <div class="snapshot">DATA · 2026.09.21</div>
       <button class="visual-mode-toggle" id="visualModeToggle" type="button" aria-pressed="false" aria-label="3D 시각화 모드 전환"><span>3D VIEW</span><i aria-hidden="true"></i></button>
     </div>
   </header>
@@ -302,7 +302,7 @@
 
 <script async src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="" onload="if(window.__mapRetry) window.__mapRetry()"></script>
 <script>
-const SNAPSHOT_DATE = '2026-09-16';
+const SNAPSHOT_DATE = '2026-09-21';
 const CATEGORY = {
   exhibition:{label:'EXHIBITION', color:'var(--exhibition)'},
   popup:{label:'POP-UP', color:'var(--popup)'},
@@ -320,6 +320,9 @@ const ROLE_LABELS = {
 };
 const EVENTS = [
 {id:'banksy',title:'뱅크시 특별전 BANKSY : Still Here',short:'BANKSY : Still Here',start:'2026-07-22',end:null,status:'ongoing',actualDays:null,schedule:{weekdays:[1,2,3,4,5]},agency:'아튠즈',category:'exhibition',roles:['visitor','flow','safety','artwork','operations'],responsibilities:['관람객 동선 유도 및 내부 관리','전시장 안전 및 작품 관리','전시 운영 관련 제반 현장 업무 일체'],venue:{coordinateAccuracy:'venue',coordinateVerified:true,coordinateSource:'FINDBY',coordinateVerifiedAt:'2026-09-16',name:'ALT.1 더현대서울현대백화점',detail:'6층',address:'서울 영등포구 여의도동 여의대로 108, 6층',region:'서울',district:'영등포구',lat:37.5266691,lng:126.9271941}},
+{id:'senior-job-week',title:'노인일자리 주간 기념식',start:'2026-09-20',end:'2026-09-20',actualDays:1,agency:'아이엠파트너',category:'ceremony',roles:['setup','operations'],responsibilities:['사전 세팅 업무 지원'],venue:{coordinateAccuracy:'venue',name:'더 플라자호텔 별관 그랜드볼룸',address:'서울 중구 소공로 119',region:'서울',district:'중구',lat:37.56466369,lng:126.97804689}},
+{id:'yangcheon-family-festival',title:'2026 양천 영유아 가족축제',start:'2026-09-20',end:'2026-09-20',actualDays:1,agency:'비마',category:'festival',roles:['booth','safety','operations'],responsibilities:['놀이기구 부스 운영 및 안전관리'],venue:{coordinateAccuracy:'venue',name:'양천공원',address:'서울 양천구 목동동로 111',region:'서울',district:'양천구',lat:37.5183,lng:126.8684}},
+{id:'yangcheon-rock-festival',title:'양천 락 페스티벌 2026',start:'2026-09-19',end:'2026-09-19',actualDays:1,agency:'빅터시스템',category:'festival',roles:['parking','operations'],responsibilities:['출연진 및 VIP 주차장 안내'],venue:{coordinateAccuracy:'venue',name:'신월야구장',address:'서울 양천구 신월동 산68-3',region:'서울',district:'양천구',lat:37.526520693,lng:126.832711652}},
 {id:'morning-botanic',title:'쉬엄쉬엄모닝:서울식물원',start:'2026-09-13',end:'2026-09-13',actualDays:1,agency:'코드나잇',category:'sports',roles:['setup','operations'],responsibilities:['마라톤 세팅 및 운영','행사 종료 후 철수'],venue:{coordinateAccuracy:'venue',coordinateVerified:true,coordinateSource:'VISITKOREA',coordinateVerifiedAt:'2026-09-16',name:'서울식물원',address:'서울 강서구 마곡동로 161',region:'서울',district:'강서구',lat:37.5692236076,lng:126.8360144928}},
 {id:'nano-deliberation-2',title:'나노기술 미래영향평가 시민숙의단 2차',start:'2026-09-12',end:'2026-09-12',actualDays:1,agency:'퓨처오렌지',category:'conference',roles:['facilitation','program','operations'],responsibilities:['2차 토론 진행'],venue:{coordinateAccuracy:'venue',coordinateVerified:true,coordinateSource:'FINDBY',coordinateVerifiedAt:'2026-09-16',name:'아름다운빌딩',address:'서울 강남구 테헤란로22길 9',region:'서울',district:'강남구',lat:37.4993685,lng:127.0352936}},
 {id:'morning-worldcup',title:'쉬엄쉬엄모닝:월드컵공원',start:'2026-09-05',end:'2026-09-06',actualDays:2,agency:'코드나잇',category:'sports',roles:['setup','operations'],responsibilities:['마라톤 세팅 및 운영','행사 종료 후 철수'],venue:{coordinateAccuracy:'venue',coordinateVerified:true,coordinateSource:'USER_MANUAL',coordinateVerifiedAt:'2026-09-17',name:'월드컵공원 평화의공원',address:'서울 마포구 증산로 32',region:'서울',district:'마포구',lat:37.5639,lng:126.8972}},
@@ -333,7 +336,7 @@ const EVENTS = [
 {id:'morning-seoul',title:'쉬엄쉬엄모닝:서울광장',start:'2026-07-26',end:'2026-07-26',actualDays:1,agency:'코드나잇',category:'sports',roles:['setup','operations'],responsibilities:['마라톤 세팅 및 운영','행사 종료 후 철수'],venue:{coordinateAccuracy:'venue',name:'서울광장',address:'서울 중구 을지로 12',region:'서울',district:'중구',lat:37.5657,lng:126.9780}},
 {id:'character-fair',title:'캐릭터 라이선싱 페어 2026',start:'2026-07-16',end:'2026-07-19',actualDays:4,agency:'아튠즈',category:'expo',roles:['promotion','program'],responsibilities:['뱅크시 특별전 홍보','현장 이벤트 진행'],venue:{coordinateAccuracy:'venue',name:'코엑스 Hall A&B1',address:'서울 강남구 영동대로 513',region:'서울',district:'강남구',lat:37.5117,lng:127.0592}},
 {id:'morning-yeouido',title:'쉬엄쉬엄모닝:여의도공원',start:'2026-07-12',end:'2026-07-12',actualDays:1,agency:'코드나잇',category:'sports',roles:['setup','operations'],responsibilities:['마라톤 세팅 및 운영','행사 종료 후 철수'],venue:{coordinateAccuracy:'venue',name:'여의도공원 문화의 마당',address:'서울 영등포구 여의공원로 68',region:'서울',district:'영등포구',lat:37.5268,lng:126.9223}},
-{id:'osh-month',title:'2026 산업안전보건의 달',start:'2026-07-07',end:'2026-07-09',actualDays:3,agency:'빅터시스템',category:'conference',roles:['program','operations'],responsibilities:['4층 안전보건세미나 운영 지원','우수사례발표대회 운영 지원'],venue:{coordinateAccuracy:'venue',name:'킨텍스 제2전시장',detail:'1층',address:'경기 고양시 일산서구 킨텍스로 217-59, 1층',region:'경기',district:'고양시',lat:37.6664,lng:126.7430}},
+{id:'osh-month',title:'2026 산업안전보건의 달',start:'2026-07-07',end:'2026-07-09',actualDays:3,agency:'아이엠파트너',category:'conference',roles:['program','operations'],responsibilities:['4층 안전보건세미나 운영 지원','우수사례발표대회 운영 지원'],venue:{coordinateAccuracy:'venue',name:'킨텍스 제2전시장',detail:'1층',address:'경기 고양시 일산서구 킨텍스로 217-59, 1층',region:'경기',district:'고양시',lat:37.6664,lng:126.7430}},
 {id:'theliv',title:'더리브 센트럴 착공식',start:'2026-07-04',end:'2026-07-04',actualDays:1,agency:'세움엔터',category:'ceremony',roles:['parking','flow','operations'],responsibilities:['방문차량 주차 안내','착공식 운영 지원'],venue:{coordinateAccuracy:'venue',coordinateVerified:true,coordinateSource:'USER_MANUAL',coordinateVerifiedAt:'2026-09-17',name:'마석역 더리브센트럴',address:'경기 남양주시 화도읍 마석우리 36-2',region:'경기',district:'남양주시',lat:37.6516,lng:127.3112}},
 {id:'urban-architecture',title:'서울도시건축전시관',start:'2026-06-30',end:'2026-07-02',actualDays:3,agency:'빅터시스템',category:'exhibition',roles:['monitoring','visitor','operations'],responsibilities:['전시장 내부 전시관리 및 순찰','관람객 응대'],venue:{coordinateAccuracy:'venue',name:'서울도시건축전시관',address:'서울 중구 세종대로 119',region:'서울',district:'중구',lat:37.5662,lng:126.9768}},
 {id:'pokemon',title:'포켓몬스터 30주년 메가페스타 메타몽 놀이터 팝업',start:'2026-06-01',end:'2026-06-21',actualDays:21,agency:'에이전시더탑',category:'popup',roles:['program','visitor','operations'],responsibilities:['외부놀이터 운영','관람객 안내'],venue:{coordinateAccuracy:'venue',coordinateVerified:true,coordinateSource:'JUSOGA',coordinateVerifiedAt:'2026-09-16',name:'성수동 팝업',address:'서울 성동구 성수이로7가길 9',region:'서울',district:'성동구',lat:37.541030742401,lng:127.05495768005}},
@@ -564,8 +567,15 @@ window.addEventListener('resize',()=>{if(currentView==='overview'&&overview3D)re
 let map,markerLayer,currentRegion='ALL',mapMode='map';
 // VENUE PIN = verified building/facility coordinate; APPROX PIN = unverified or area-level coordinate.
 function coordinateLabel(x){return x.coordinateAccuracy==='approximate'?'APPROX PIN':'VENUE PIN';}
+function canonicalPlaceName(venue,address=''){
+  const baseAddress=address.replace(/,?\s*(1층|3층|6층)$/,'');
+  if(baseAddress.includes('강남구 영동대로 513'))return '코엑스';
+  const neighborhood=venue.name.match(/^(.+동)\s+팝업$/);
+  if(neighborhood)return neighborhood[1];
+  return venue.name;
+}
 function locationGroups(region='ALL',list=filteredEvents()){
-  const filtered=list.filter(e=>region==='ALL'||e.venue.region===region),m=new Map();filtered.forEach(e=>{const key=e.venue.address.replace(/,?\s*(1층|3층|6층)$/,'');if(!m.has(key))m.set(key,{...e.venue,address:key,events:[],coordinateAccuracy:e.venue.coordinateAccuracy});const loc=m.get(key);loc.events.push(e);if(e.venue.coordinateAccuracy==='approximate')loc.coordinateAccuracy='approximate';});return[...m.values()];
+  const filtered=list.filter(e=>region==='ALL'||e.venue.region===region),m=new Map();filtered.forEach(e=>{const key=e.venue.address.replace(/,?\s*(1층|3층|6층)$/,'');if(!m.has(key))m.set(key,{...e.venue,name:canonicalPlaceName(e.venue,key),address:key,events:[],coordinateAccuracy:e.venue.coordinateAccuracy});const loc=m.get(key);loc.events.push(e);if(e.venue.coordinateAccuracy==='approximate')loc.coordinateAccuracy='approximate';});return[...m.values()];
 }
 function setMapMode(mode){mapMode=mode;$$('#mapViewToggle button').forEach(b=>b.classList.toggle('active',b.dataset.mapMode===mode));$('#mapWrap').setAttribute('aria-hidden',String(mode!=='map'));$('#placesPanel').hidden=mode!=='places';$('#mapStats').setAttribute('aria-hidden','false');if(mode==='map')setTimeout(()=>renderMap(currentRegion),20);}
 function renderPlaces(locs){const sorted=[...locs].sort((a,b)=>b.events.length-a.events.length||b.events.reduce((s,e)=>s+workDays(e),0)-a.events.reduce((s,e)=>s+workDays(e),0));$('#placesPanel').innerHTML=sorted.length?sorted.map((loc,i)=>{const days=loc.events.reduce((s,e)=>s+workDays(e),0);return`<button type="button" class="place-row" data-place="${i}"><span><b>${loc.name}</b><small>${loc.address}</small><em class="accuracy-tag ${loc.coordinateAccuracy==='approximate'?'approx':''}">${coordinateLabel(loc)}</em></span><span class="place-numbers"><strong>${loc.events.length} EVENTS</strong><span>${days} WORK DAYS</span></span></button>`;}).join(''):'<div class="empty-state">조건에 맞는 장소 기록이 없습니다.</div>';$$('[data-place]').forEach(b=>b.onclick=()=>openLocation(sorted[+b.dataset.place]));}
