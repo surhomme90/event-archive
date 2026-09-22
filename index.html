@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- EVENT CAREER ARCHIVE · FIXED BASELINE + UNIVERSE VISUALIZATION v3 · 2026-09-18 -->
+<!-- EVENT CAREER ARCHIVE · FIXED BASELINE + THREE.JS CAREER ORBIT · 2026-09-23 -->
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
@@ -154,14 +154,14 @@
     .live:before{box-shadow:0 0 0 0 rgba(216,255,79,.32)}
     @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(216,255,79,.32)}70%{box-shadow:0 0 0 7px rgba(216,255,79,0)}100%{box-shadow:0 0 0 0 rgba(216,255,79,0)}}
     .sheet-close,.nav-btn,.month-btn,.filter-btn,.segmented button{min-height:42px}.sheet-close{min-width:42px;height:42px}
-    /* ===== OVERVIEW · MOTION + CAREER ORBIT ===== */
+    /* ===== OVERVIEW · MOTION + THREE.JS CAREER ORBIT ===== */
     .orbit-card{overflow:hidden;border:1px solid #30353d;border-radius:24px;background:linear-gradient(165deg,#101318,#080a0d 72%);box-shadow:var(--shadow)}
     .orbit-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:15px 15px 12px;border-bottom:1px solid #22262d}
     .orbit-head .kicker{color:var(--accent);font-size:8px;font-weight:950;letter-spacing:.14em}
     .orbit-head h3{margin:5px 0 3px;font-size:17px}.orbit-head p{margin:0;color:#747b86;font-size:9px;line-height:1.45}
     .motion-toggle{flex:0 0 auto;min-width:66px;min-height:38px;padding:0 10px;border:1px solid #363b44;border-radius:12px;background:#171a1f;color:#aab0b9;font-size:8px;font-weight:950;letter-spacing:.1em;cursor:pointer}.motion-toggle.playing{border-color:#4b5630;color:var(--accent)}
-    .orbit-stage{position:relative;height:clamp(330px,90vw,365px);min-height:330px;overflow:hidden;background:radial-gradient(circle at 50% 46%,rgba(216,255,79,.07),transparent 22%),radial-gradient(circle at 18% 18%,rgba(138,180,255,.035),transparent 28%),radial-gradient(circle at 78% 24%,rgba(197,156,255,.025),transparent 25%),#080b0f;user-select:none;-webkit-user-select:none}
-    #orbitCanvas{display:block;width:100%;height:100%;touch-action:pan-y;cursor:grab}#orbitCanvas:active{cursor:grabbing}
+    .orbit-stage{position:relative;height:min(62dvh,560px);min-height:460px;overflow:hidden;background:radial-gradient(circle at 50% 46%,rgba(216,255,79,.07),transparent 22%),radial-gradient(circle at 18% 18%,rgba(138,180,255,.035),transparent 28%),radial-gradient(circle at 78% 24%,rgba(197,156,255,.025),transparent 25%),#080b0f;user-select:none;-webkit-user-select:none}
+    #orbitCanvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}#orbitCanvas:active{cursor:grabbing}
     .orbit-hud{position:absolute;left:12px;top:11px;pointer-events:none;color:#717984;font-size:8px;font-weight:850;line-height:1.6;letter-spacing:.06em;text-shadow:0 1px 7px #000}
     .orbit-focus{position:absolute;left:12px;right:12px;bottom:12px;padding:11px 12px;border:1px solid #353b44;border-radius:14px;background:rgba(10,12,16,.89);backdrop-filter:blur(12px);pointer-events:none}.orbit-focus b{display:block;font-size:11px;line-height:1.35}.orbit-focus span{display:block;margin-top:4px;color:#8d939d;font-size:8px;line-height:1.5}
     .orbit-legend{display:flex;gap:6px;overflow-x:auto;padding:11px 13px 12px;scrollbar-width:none;border-top:1px solid #20242a}.orbit-legend::-webkit-scrollbar{display:none}.orbit-legend button{display:inline-flex;align-items:center;gap:5px;flex:0 0 auto;min-height:30px;padding:0 8px;border:1px solid transparent;border-radius:999px;background:transparent;color:#858b95;font-family:inherit;font-size:8px;font-weight:800;white-space:nowrap;cursor:pointer}.orbit-legend button.active{border-color:#3b414a;background:#171b20;color:#e8ebef}.orbit-legend i{width:6px;height:6px;border-radius:50%;box-shadow:0 0 8px currentColor}
@@ -172,7 +172,7 @@
     .activity-wave{display:block;width:100%;height:145px;overflow:visible}.wave-grid{stroke:#252a31;stroke-width:1}.wave-area{fill:url(#waveGradient)}.wave-line{fill:none;stroke:var(--accent);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 6px rgba(216,255,79,.18));stroke-dasharray:900;stroke-dashoffset:900;animation:drawWave 1.15s ease forwards}.wave-dot{fill:#0e1013;stroke:var(--accent);stroke-width:1.5}.wave-label{fill:#69717b;font-size:8px;font-family:inherit}
     @keyframes drawWave{to{stroke-dashoffset:0}}
     .mix-layout{display:grid;grid-template-columns:120px minmax(0,1fr);gap:14px;align-items:center}.mix-ring{position:relative;width:116px;height:116px;border-radius:50%;background:#20242a;box-shadow:inset 0 0 0 1px #2a2f37;will-change:background}.mix-ring:after{content:"";position:absolute;inset:19px;border-radius:50%;background:#111419;box-shadow:0 0 0 1px #252a31}.mix-center{position:absolute;inset:0;z-index:2;display:grid;place-content:center;text-align:center;pointer-events:none}.mix-center b{font-size:22px;line-height:1;font-variant-numeric:tabular-nums}.mix-center span{margin-top:4px;color:#777e88;font-size:7px;font-weight:900;letter-spacing:.1em}.mix-list{display:flex;flex-direction:column;gap:7px}.mix-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;font-size:8px;opacity:0;transform:translateX(7px);animation:mixRowIn .42s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(.36s + var(--mix-i,0)*.07s)}.mix-row b{display:flex;align-items:center;gap:6px;min-width:0;font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mix-row i{flex:0 0 auto;width:6px;height:6px;border-radius:50%}.mix-row span{color:#838a94;font-variant-numeric:tabular-nums}@keyframes mixRowIn{to{opacity:1;transform:none}}
-    @media(min-width:640px){.motion-dashboard{grid-template-columns:1.08fr .92fr}.orbit-stage{height:590px;min-height:445px}.mix-layout{grid-template-columns:130px 1fr}}
+    @media(min-width:640px){.motion-dashboard{grid-template-columns:1.08fr .92fr}.orbit-stage{height:580px}.mix-layout{grid-template-columns:130px 1fr}}
     @media(min-width:640px){main{padding-left:24px;padding-right:24px}.topbar{padding-left:24px;padding-right:24px}.metrics{grid-template-columns:repeat(4,1fr)}.explore-grid{grid-template-columns:repeat(4,1fr)}.calendar-grid{gap:7px}.day{min-height:76px}.event-label{display:block;color:#111;font-size:7px;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 4px;border-radius:3px}.event-dot{display:none}.map-wrap{height:620px}.detail-grid{grid-template-columns:repeat(4,1fr)}}
     @media(min-width:640px){.filter-toggle{display:none}.filter-panel{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}.archive-search-row{grid-template-columns:1fr}.archive-tools{padding:14px}}
     @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}.mix-row{opacity:1!important;transform:none!important}}
@@ -204,14 +204,14 @@
         </div>
         <div class="overview-orbit" id="overviewOrbit" hidden>
           <article class="orbit-card">
-            <div class="orbit-head"><div><div class="kicker">ORBITAL CAREER SYSTEM</div><h3>Career Orbit</h3><p>궤도 = 행사 유형 · 행성 크기 = 근무일 · 밝기 = 최근 경험</p></div><button class="motion-toggle playing" id="orbitMotionToggle" type="button" aria-pressed="true">PAUSE</button></div>
+            <div class="orbit-head"><div><div class="kicker">CAREER ORBIT · CATEGORY SYSTEM</div><h3>Career Orbit</h3><p>7개 궤도 = 행사 유형 · 행성 = 실제 행사 · 크기 = 근무일</p></div><button class="motion-toggle playing" id="orbitMotionToggle" type="button" aria-pressed="true">PAUSE</button></div>
             <div class="orbit-stage" id="orbitStage">
               <canvas id="orbitCanvas" aria-label="행사 유형별 경력 행성계 3D 시각화"></canvas>
               <div class="orbit-hud" id="orbitHud"></div>
               <div class="orbit-focus" id="orbitFocus" hidden></div>
             </div>
             <div class="orbit-legend" id="orbitLegend" aria-label="행사 유형 궤도 선택"></div>
-            <p class="orbit-help">MOBILE · ↑↓ SCROLL / ←→ ROTATE &nbsp; · &nbsp; TAP PLANET · 행사 상세 &nbsp; · &nbsp; LONG PRESS · 해당 궤도 집중</p>
+            <p class="orbit-help">DRAG · 3D 공간 회전 &nbsp; / &nbsp; TAP PLANET · 행사 상세 &nbsp; / &nbsp; LONG PRESS · 해당 궤도 집중</p>
           </article>
         </div>
       </div>
@@ -503,8 +503,7 @@ function hexRGBA(hex,a){const h=hex.replace('#','').trim();const v=h.length===3?
 function hashNum(str){let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619);}return(h>>>0)/4294967295;}
 function buildCareerOrbit(list){
   const keys=Object.keys(CATEGORY),radii=[.34,.47,.60,.73,.86,.99,1.12];
-  const stats=keys.map((key,ci)=>{const events=list.filter(e=>e.category===key).sort((a,b)=>a.start.localeCompare(b.start));return{key,index:ci,events,days:events.reduce((sum,e)=>sum+workDays(e),0)};}),totalDays=stats.reduce((sum,x)=>sum+x.days,0),activeWeights=stats.filter(x=>x.days>0).map(x=>Math.sqrt(x.days/Math.max(1,totalDays))),minWeight=activeWeights.length?Math.min(...activeWeights):0,maxWeight=activeWeights.length?Math.max(...activeWeights):1,baseSpeed=.00004;
-  orbitState.orbits=stats.map(({key,index:ci,events,days})=>{const share=totalDays?days/totalDays:0,weight=share?Math.sqrt(share):0,norm=maxWeight>minWeight?(weight-minWeight)/(maxWeight-minWeight):.5,speedFactor=days?(.65+norm*.85):.65,direction=ci%2?-1:1;return{key,index:ci,label:CATEGORY[key].label,color:resolveColor(CATEGORY[key].color),radius:radii[ci]??(.34+ci*.13),tiltX:-.52+ci*.17,tiltZ:(ci-3)*.045,speed:direction*baseSpeed*speedFactor,speedFactor,share,events,days};});
+  orbitState.orbits=keys.map((key,ci)=>{const events=list.filter(e=>e.category===key).sort((a,b)=>a.start.localeCompare(b.start));return{key,index:ci,label:CATEGORY[key].label,color:resolveColor(CATEGORY[key].color),radius:radii[ci]??(.34+ci*.13),tiltX:-.52+ci*.17,tiltZ:(ci-3)*.045,speed:(ci%2?-1:1)*(.000046-ci*.0000022),events,days:events.reduce((sum,e)=>sum+workDays(e),0)};});
   orbitState.planets=[];
   orbitState.orbits.forEach(o=>{const n=Math.max(1,o.events.length);o.events.forEach((e,i)=>{const jitter=(hashNum(e.id)-.5)*.23;orbitState.planets.push({id:e.id,event:e,orbit:o,baseAngle:(i/n)*Math.PI*2+jitter+o.index*.31,phase:hashNum(e.id+'phase')*Math.PI*2,baseR:4.1+Math.min(10.8,Math.sqrt(workDays(e))*1.56),recent:Math.max(.5,1-Math.max(0,(parseDate(SNAPSHOT_DATE)-parseDate(e.start))/86400000)/560)});});});
   orbitState.stars=Array.from({length:68},(_,i)=>{const h=hashNum('orbit-star'+i),h2=hashNum('orbit-star-y'+i),h3=hashNum('orbit-star-z'+i);return{x:(h-.5)*3.9,y:(h2-.5)*3.15,z:(h3-.5)*3.1,r:.35+h*1.05};});
@@ -536,20 +535,7 @@ function orbitLoop(t){if(currentView!=='overview'||!overview3D){orbitState.runni
 function startOrbitLoop(){if(orbitState.running)return;orbitState.running=true;orbitState.lastTime=0;orbitState.raf=requestAnimationFrame(orbitLoop);}
 function stopOrbitLoop(){if(orbitState.raf)cancelAnimationFrame(orbitState.raf);orbitState.raf=0;orbitState.running=false;orbitState.lastTime=0;}
 function orbitHit(x,y){const pts=[...orbitState.projected].sort((a,b)=>b.z-a.z);return pts.find(q=>Math.hypot(q.x-x,q.y-y)<=Math.max(12,q.node.baseR*q.p+7))?.node||null;}
-function bindOrbitCanvas(){
-  const c=$('#orbitCanvas');if(!c||c.dataset.bound)return;c.dataset.bound='1';
-  const pos=ev=>{const r=c.getBoundingClientRect();return{x:ev.clientX-r.left,y:ev.clientY-r.top};};
-  c.addEventListener('pointerdown',ev=>{const p=pos(ev),node=orbitHit(p.x,p.y),isTouch=ev.pointerType==='touch';orbitState.pointer={id:ev.pointerId,startX:p.x,startY:p.y,x:p.x,y:p.y,node,moved:false,isTouch,gesture:isTouch?'pending':'free'};orbitState.longTriggered=false;clearTimeout(orbitState.longTimer);if(node)orbitState.longTimer=setTimeout(()=>{orbitState.longTriggered=true;focusOrbitPlanet(node.id);navigator.vibrate?.(16);},520);});
-  c.addEventListener('pointermove',ev=>{const st=orbitState.pointer;if(!st||st.id!==ev.pointerId)return;const p=pos(ev),dx=p.x-st.x,dy=p.y-st.y,totalX=p.x-st.startX,totalY=p.y-st.startY,dist=Math.hypot(totalX,totalY);
-    if(st.isTouch){
-      if(st.gesture==='pending'&&dist>8){clearTimeout(orbitState.longTimer);const ax=Math.abs(totalX),ay=Math.abs(totalY);if(ax>ay*1.15){st.gesture='horizontal';st.moved=true;c.setPointerCapture?.(ev.pointerId);}else if(ay>ax*1.08){st.gesture='vertical';st.moved=true;}else{st.x=p.x;st.y=p.y;return;}}
-      if(st.gesture==='horizontal'){st.moved=true;orbitState.yaw+=dx*.0072;}
-    }else if(dist>7){st.moved=true;clearTimeout(orbitState.longTimer);c.setPointerCapture?.(ev.pointerId);orbitState.yaw+=dx*.0065;orbitState.pitch=Math.max(-.82,Math.min(.82,orbitState.pitch+dy*.0055));}
-    st.x=p.x;st.y=p.y;
-  });
-  const end=ev=>{const st=orbitState.pointer;if(!st||st.id!==ev.pointerId)return;clearTimeout(orbitState.longTimer);if(!st.moved&&!orbitState.longTriggered){if(st.node)openEvent(st.node.id);else clearOrbitFocus();}orbitState.pointer=null;};
-  c.addEventListener('pointerup',end);c.addEventListener('pointercancel',end);c.addEventListener('contextmenu',e=>e.preventDefault());c.addEventListener('wheel',ev=>{ev.preventDefault();orbitState.zoom=Math.max(.74,Math.min(1.55,orbitState.zoom*(ev.deltaY>0?.94:1.06)));},{passive:false});
-}
+function bindOrbitCanvas(){const c=$('#orbitCanvas');if(!c||c.dataset.bound)return;c.dataset.bound='1';const pos=ev=>{const r=c.getBoundingClientRect();return{x:ev.clientX-r.left,y:ev.clientY-r.top};};c.addEventListener('pointerdown',ev=>{c.setPointerCapture?.(ev.pointerId);const p=pos(ev),node=orbitHit(p.x,p.y);orbitState.pointer={id:ev.pointerId,startX:p.x,startY:p.y,x:p.x,y:p.y,node,moved:false};orbitState.longTriggered=false;clearTimeout(orbitState.longTimer);if(node)orbitState.longTimer=setTimeout(()=>{orbitState.longTriggered=true;focusOrbitPlanet(node.id);navigator.vibrate?.(16);},520);});c.addEventListener('pointermove',ev=>{const st=orbitState.pointer;if(!st||st.id!==ev.pointerId)return;const p=pos(ev),dx=p.x-st.x,dy=p.y-st.y;if(Math.hypot(p.x-st.startX,p.y-st.startY)>7){st.moved=true;clearTimeout(orbitState.longTimer);orbitState.yaw+=dx*.0065;orbitState.pitch=Math.max(-.82,Math.min(.82,orbitState.pitch+dy*.0055));}st.x=p.x;st.y=p.y;});const end=ev=>{const st=orbitState.pointer;if(!st||st.id!==ev.pointerId)return;clearTimeout(orbitState.longTimer);if(!st.moved&&!orbitState.longTriggered){if(st.node)openEvent(st.node.id);else clearOrbitFocus();}orbitState.pointer=null;};c.addEventListener('pointerup',end);c.addEventListener('pointercancel',end);c.addEventListener('contextmenu',e=>e.preventDefault());c.addEventListener('wheel',ev=>{ev.preventDefault();orbitState.zoom=Math.max(.74,Math.min(1.55,orbitState.zoom*(ev.deltaY>0?.94:1.06)));},{passive:false});}
 function renderActivityWave(list){const monthSet=uniq(list.flatMap(e=>workingDates(e).map(d=>iso(d).slice(0,7)))).sort(),all=monthSet.length?monthSet:[];const vals=all.map(m=>{const days=new Set();list.forEach(e=>workingDates(e).forEach(d=>{const k=iso(d);if(k.startsWith(m))days.add(k);}));return days.size;});const svg=$('#activityWave');if(!svg)return;if(!vals.length){svg.innerHTML='';return;}const W=600,H=150,padX=18,top=18,bottom=28,max=Math.max(1,...vals),step=(W-padX*2)/Math.max(1,vals.length-1),pts=vals.map((v,i)=>({x:padX+i*step,y:top+(H-top-bottom)*(1-v/max),v,m:all[i]})),line=pts.map((p,i)=>`${i?'L':'M'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' '),area=`M${pts[0].x},${H-bottom} ${pts.map(p=>`L${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')} L${pts.at(-1).x},${H-bottom} Z`;svg.innerHTML=`<defs><linearGradient id="waveGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8ff4f" stop-opacity=".22"/><stop offset="1" stop-color="#d8ff4f" stop-opacity="0"/></linearGradient></defs><line class="wave-grid" x1="${padX}" y1="${H-bottom}" x2="${W-padX}" y2="${H-bottom}"/><line class="wave-grid" x1="${padX}" y1="${top+(H-top-bottom)*.5}" x2="${W-padX}" y2="${top+(H-top-bottom)*.5}"/><path class="wave-area" d="${area}"/><path class="wave-line" d="${line}"/>${pts.map(p=>`<circle class="wave-dot" cx="${p.x}" cy="${p.y}" r="3"><title>${p.m} · ${p.v} work days</title></circle>`).join('')}${pts.filter((_,i)=>i===0||i===pts.length-1||i%3===0).map(p=>`<text class="wave-label" x="${p.x}" y="${H-7}" text-anchor="middle">${p.m.slice(2).replace('-','.')}</text>`).join('')}`;}
 let mixAnimationFrame=0;
 function renderExperienceMix(list){
@@ -567,8 +553,8 @@ function renderExperienceMix(list){
   mixAnimationFrame=requestAnimationFrame(frame);
 }
 function renderCareerOrbit(list=EVENTS){
-  const sig=list.map(e=>`${e.id}:${workDays(e)}`).join('|');if(sig!==orbitState.signature){orbitState.signature=sig;buildCareerOrbit(list);}
-  $('#orbitLegend').innerHTML=orbitState.orbits.filter(o=>o.events.length).map(o=>`<button type="button" data-orbit-category="${o.key}" title="${o.events.length} events · ${o.days} work days · ${Math.round(o.share*100)}% · ${o.speedFactor.toFixed(2)}× orbit speed"><i style="background:${o.color};color:${o.color}"></i>${o.label}</button>`).join('');
+  const sig=list.map(e=>e.id).join('|');if(sig!==orbitState.signature){orbitState.signature=sig;buildCareerOrbit(list);}
+  $('#orbitLegend').innerHTML=orbitState.orbits.filter(o=>o.events.length).map(o=>`<button type="button" data-orbit-category="${o.key}" title="${o.events.length} events · ${o.days} work days"><i style="background:${o.color};color:${o.color}"></i>${o.label}</button>`).join('');
   $$('#orbitLegend [data-orbit-category]').forEach(b=>b.onclick=()=>focusOrbitCategory(b.dataset.orbitCategory));updateOrbitLegendFocus();
   const live=list.filter(e=>e.status==='ongoing').length;$('#orbitHud').innerHTML=`${list.length} PLANETS · ${orbitState.orbits.filter(o=>o.events.length).length} ORBITS<br>${list.reduce((s,e)=>s+workDays(e),0)} WORK DAYS · ${live} LIVE`;
   resizeOrbitCanvas();bindOrbitCanvas();
@@ -577,6 +563,90 @@ function renderCareerOrbit(list=EVENTS){
 }
 $('#orbitMotionToggle').onclick=()=>{orbitState.autoMotion=!orbitState.autoMotion;const b=$('#orbitMotionToggle');b.classList.toggle('playing',orbitState.autoMotion);b.textContent=orbitState.autoMotion?'PAUSE':'PLAY';b.setAttribute('aria-pressed',String(orbitState.autoMotion));};
 window.addEventListener('resize',()=>{if(currentView==='overview'&&overview3D)resizeOrbitCanvas();});
+
+/* ===== THREE.JS SIGNATURE CAREER ORBIT ===== */
+const threeOrbit={
+  loadPromise:null,ready:false,failed:false,scene:null,camera:null,renderer:null,controls:null,root:null,core:null,coreShell:null,coreHalo:null,stars:null,
+  orbits:[],planets:[],interactive:[],raycaster:null,pointerVec:null,raf:0,running:false,lastTime:0,autoMotion:!window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  signature:'',focusCategory:null,focusId:null,pointer:null,longTimer:0,longTriggered:false,introStart:0,introDone:false,w:0,h:0,dpr:0
+};
+function loadScriptOnce(src,id){return new Promise((resolve,reject)=>{const found=document.getElementById(id);if(found){if(found.dataset.ready==='1')resolve();else{found.addEventListener('load',resolve,{once:true});found.addEventListener('error',reject,{once:true});}return;}const s=document.createElement('script');s.id=id;s.src=src;s.async=true;s.crossOrigin='anonymous';s.onload=()=>{s.dataset.ready='1';resolve();};s.onerror=reject;document.head.appendChild(s);});}
+async function ensureThreeOrbitLibs(){
+  if(window.THREE&&window.THREE.OrbitControls)return true;
+  if(threeOrbit.failed)return false;
+  if(!threeOrbit.loadPromise)threeOrbit.loadPromise=(async()=>{try{
+    if(!window.THREE)await loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js','threejs-r128');
+    if(!window.THREE.OrbitControls)await loadScriptOnce('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js','threejs-orbit-controls-r128');
+    return !!(window.THREE&&window.THREE.OrbitControls);
+  }catch(err){console.warn('Career Orbit 3D library load failed',err);threeOrbit.failed=true;return false;}})();
+  return threeOrbit.loadPromise;
+}
+function seeded01(seed){let h=2166136261;for(let i=0;i<seed.length;i++){h^=seed.charCodeAt(i);h=Math.imul(h,16777619);}h+=h<<13;h^=h>>>7;h+=h<<3;h^=h>>>17;h+=h<<5;return (h>>>0)/4294967295;}
+function threeColor(css){return new THREE.Color(css);}
+function disposeThreeObject(obj){obj.traverse?.(n=>{n.geometry?.dispose?.();if(n.material){const mats=Array.isArray(n.material)?n.material:[n.material];mats.forEach(m=>m.dispose?.());}});}
+function resetThreeOrbitScene(){
+  if(threeOrbit.root){threeOrbit.scene.remove(threeOrbit.root);disposeThreeObject(threeOrbit.root);}threeOrbit.root=null;threeOrbit.orbits=[];threeOrbit.planets=[];threeOrbit.interactive=[];threeOrbit.focusCategory=null;threeOrbit.focusId=null;
+}
+function initThreeOrbitScene(){
+  if(threeOrbit.ready)return true;const canvas=$('#orbitCanvas');if(!canvas||!window.THREE||!THREE.OrbitControls)return false;
+  const rect=canvas.getBoundingClientRect();if(!rect.width||!rect.height)return false;
+  const scene=new THREE.Scene();scene.fog=new THREE.FogExp2(0x030406,.0105);
+  const camera=new THREE.PerspectiveCamera(44,rect.width/rect.height,.1,420);camera.position.set(0,43,105);
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'});renderer.setClearColor(0x030406,1);renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));renderer.setSize(rect.width,rect.height,false);renderer.outputEncoding=THREE.sRGBEncoding;
+  const controls=new THREE.OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=.055;controls.enablePan=false;controls.rotateSpeed=.62;controls.zoomSpeed=.72;controls.minDistance=48;controls.maxDistance=138;controls.minPolarAngle=.28;controls.maxPolarAngle=Math.PI*.72;controls.target.set(0,0,0);
+  scene.add(new THREE.AmbientLight(0xffffff,.5));const coreLight=new THREE.PointLight(0xd8ff4f,2.2,115,2);coreLight.position.set(0,0,0);scene.add(coreLight);const fill=new THREE.PointLight(0x8ab4ff,.62,130,2);fill.position.set(-32,20,28);scene.add(fill);
+  const starGeo=new THREE.BufferGeometry(),starCount=340,pos=new Float32Array(starCount*3),sizes=new Float32Array(starCount);for(let i=0;i<starCount;i++){const a=seeded01('star-a'+i),b=seeded01('star-b'+i),c=seeded01('star-c'+i),rr=75+seeded01('star-r'+i)*95,theta=a*Math.PI*2,phi=Math.acos(2*b-1);pos[i*3]=rr*Math.sin(phi)*Math.cos(theta);pos[i*3+1]=rr*Math.cos(phi)*.72;pos[i*3+2]=rr*Math.sin(phi)*Math.sin(theta);sizes[i]=.7+c*1.3;}starGeo.setAttribute('position',new THREE.BufferAttribute(pos,3));const starMat=new THREE.PointsMaterial({color:0x8f98a7,size:.58,transparent:true,opacity:.55,sizeAttenuation:true,depthWrite:false});const stars=new THREE.Points(starGeo,starMat);scene.add(stars);
+  threeOrbit.scene=scene;threeOrbit.camera=camera;threeOrbit.renderer=renderer;threeOrbit.controls=controls;threeOrbit.stars=stars;threeOrbit.raycaster=new THREE.Raycaster();threeOrbit.pointerVec=new THREE.Vector2();threeOrbit.ready=true;bindThreeOrbitPointer();return true;
+}
+function orbitTiltFor(i){return{x:-.28+(i%3)*.15,z:(i-3)*.075,y:(i%2?1:-1)*.05*i};}
+function makeOrbitLine(radius,color,index){const points=[];for(let i=0;i<180;i++){const a=i/180*Math.PI*2;points.push(new THREE.Vector3(Math.cos(a)*radius,0,Math.sin(a)*radius));}const geo=new THREE.BufferGeometry().setFromPoints(points),mat=new THREE.LineBasicMaterial({color,transparent:true,opacity:0,depthWrite:false});const line=new THREE.LineLoop(geo,mat);line.userData={targetOpacity:.18,index};return line;}
+function makePlanet(event,orbit,eventIndex){
+  const days=workDays(event),size=.52+Math.min(1.65,Math.sqrt(days)*.19),segments=days>=20?24:16,geo=new THREE.SphereGeometry(size,segments,segments),col=threeColor(orbit.color),recent=Math.max(.45,1-Math.max(0,(parseDate(SNAPSHOT_DATE)-parseDate(event.start))/86400000)/620),mat=new THREE.MeshStandardMaterial({color:col,roughness:.32,metalness:.08,emissive:col,emissiveIntensity:.14+.16*recent,transparent:true,opacity:0});const mesh=new THREE.Mesh(geo,mat);mesh.scale.setScalar(.001);mesh.userData={eventId:event.id,category:event.category,targetScale:1,recent,days,revealDelay:720+orbit.index*105+eventIndex*34};
+  if(days>=20){const ringGeo=new THREE.TorusGeometry(size*1.42,.035,6,48),ringMat=new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.42,depthWrite:false}),ring=new THREE.Mesh(ringGeo,ringMat);ring.rotation.x=Math.PI/2.5;mesh.add(ring);}
+  if(event.status==='ongoing'){
+    const shellGeo=new THREE.SphereGeometry(size*1.55,16,12),shellMat=new THREE.MeshBasicMaterial({color:col,wireframe:true,transparent:true,opacity:.32,depthWrite:false}),shell=new THREE.Mesh(shellGeo,shellMat);shell.userData.pulseShell=true;mesh.add(shell);
+    const moonPivot=new THREE.Group(),moonGeo=new THREE.SphereGeometry(Math.max(.11,size*.12),10,8),moonMat=new THREE.MeshBasicMaterial({color:0xf2f4f7}),moon=new THREE.Mesh(moonGeo,moonMat);moon.position.x=size*2.18;moonPivot.add(moon);moonPivot.rotation.x=.48;moonPivot.userData.liveMoon=true;mesh.add(moonPivot);
+  }
+  return mesh;
+}
+function buildThreeCareerOrbit(list){
+  if(!threeOrbit.ready)return;resetThreeOrbitScene();const root=new THREE.Group();threeOrbit.scene.add(root);threeOrbit.root=root;
+  const accent=threeColor('#d8ff4f'),coreGroup=new THREE.Group(),inner=new THREE.Mesh(new THREE.SphereGeometry(2.15,28,22),new THREE.MeshBasicMaterial({color:accent,transparent:true,opacity:0})),shell=new THREE.Mesh(new THREE.SphereGeometry(3.05,18,12),new THREE.MeshBasicMaterial({color:accent,wireframe:true,transparent:true,opacity:0,depthWrite:false})),halo=new THREE.Mesh(new THREE.TorusGeometry(4.05,.045,6,96),new THREE.MeshBasicMaterial({color:accent,transparent:true,opacity:0,depthWrite:false}));halo.rotation.x=Math.PI/2.45;coreGroup.add(inner,shell,halo);root.add(coreGroup);threeOrbit.core=inner;threeOrbit.coreShell=shell;threeOrbit.coreHalo=halo;
+  const keys=Object.keys(CATEGORY).filter(k=>list.some(e=>e.category===k));const radii=keys.map((_,i)=>9.5+i*4.0);
+  threeOrbit.orbits=keys.map((key,index)=>{const events=list.filter(e=>e.category===key).sort((a,b)=>a.start.localeCompare(b.start)),color=resolveColor(CATEGORY[key].color),group=new THREE.Group(),tilt=orbitTiltFor(index);group.rotation.set(tilt.x,tilt.y,tilt.z);const line=makeOrbitLine(radii[index],color,index);group.add(line);root.add(group);const orbit={key,index,label:CATEGORY[key].label,color,radius:radii[index],group,line,events,days:events.reduce((s,e)=>s+workDays(e),0),speed:(index%2?-1:1)*(.000045+index*.000003)};const count=Math.max(1,events.length);events.forEach((event,i)=>{const mesh=makePlanet(event,orbit,i),angle=(i/count)*Math.PI*2+seeded01(event.id)*.42+index*.27;mesh.userData.angle=angle;mesh.position.set(Math.cos(angle)*orbit.radius,0,Math.sin(angle)*orbit.radius);group.add(mesh);threeOrbit.planets.push({event,orbit,mesh});threeOrbit.interactive.push(mesh);});return orbit;});
+  threeOrbit.signature=list.map(e=>e.id).join('|');threeOrbit.introStart=performance.now();threeOrbit.introDone=window.matchMedia('(prefers-reduced-motion: reduce)').matches;if(threeOrbit.introDone){threeOrbit.core.material.opacity=.88;threeOrbit.coreShell.material.opacity=.42;threeOrbit.coreHalo.material.opacity=.38;threeOrbit.orbits.forEach(o=>o.line.material.opacity=o.line.userData.targetOpacity);threeOrbit.planets.forEach(p=>{p.mesh.scale.setScalar(1);p.mesh.material.opacity=1;});}
+  updateOrbitLegendFocus();
+}
+function easeOutBack(t){const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(t-1,3)+c1*Math.pow(t-1,2);}
+function clamp01(v){return Math.max(0,Math.min(1,v));}
+function animateThreeIntro(now){if(threeOrbit.introDone)return;const elapsed=now-threeOrbit.introStart,coreP=clamp01(elapsed/420);threeOrbit.core.material.opacity=.88*coreP;threeOrbit.coreShell.material.opacity=.42*coreP;threeOrbit.coreHalo.material.opacity=.38*coreP;threeOrbit.core.scale.setScalar(.65+.35*easeOutBack(coreP));threeOrbit.orbits.forEach(o=>{const p=clamp01((elapsed-(260+o.index*100))/360);o.line.material.opacity=o.line.userData.targetOpacity*p;});let done=elapsed>1900;threeOrbit.planets.forEach(p=>{const q=clamp01((elapsed-p.mesh.userData.revealDelay)/360),s=q<=0?.001:easeOutBack(q);p.mesh.scale.setScalar(Math.max(.001,s));p.mesh.material.opacity=q;done=done&&q>=1;});if(done)threeOrbit.introDone=true;}
+function applyThreeOrbitFocus(){
+  const fc=threeOrbit.focusCategory,fid=threeOrbit.focusId;threeOrbit.orbits.forEach(o=>{const active=!fc||fc===o.key;o.line.material.opacity=(active?o.line.userData.targetOpacity:.025)*(threeOrbit.introDone?1:Math.min(1,o.line.material.opacity/Math.max(.001,o.line.userData.targetOpacity)));});threeOrbit.planets.forEach(p=>{const active=!fc||p.event.category===fc,selected=!fid||p.event.id===fid||!fc;p.mesh.material.opacity=(active?1:.11)*(p.mesh.userData.recent*.38+.62);p.mesh.material.emissiveIntensity=active?(fid===p.event.id?.5:.16):.025;p.mesh.traverse(n=>{if(n.material&&n!==p.mesh&&n.material.transparent)n.material.opacity*=1;});});
+}
+function updateThreePlanetPositions(dt){if(!threeOrbit.autoMotion)return;threeOrbit.planets.forEach(p=>{p.mesh.userData.angle+=dt*p.orbit.speed;const a=p.mesh.userData.angle;p.mesh.position.set(Math.cos(a)*p.orbit.radius,Math.sin(a*2+seeded01(p.event.id+'y')*6)*.13,Math.sin(a)*p.orbit.radius);});}
+function updateThreeLiveEffects(now,dt){if(threeOrbit.coreShell){threeOrbit.coreShell.rotation.y+=dt*.00017;threeOrbit.coreShell.rotation.x-=dt*.00008;}if(threeOrbit.coreHalo)threeOrbit.coreHalo.rotation.z-=dt*.00012;if(threeOrbit.stars)threeOrbit.stars.rotation.y+=dt*.000006;threeOrbit.planets.forEach(p=>{p.mesh.children.forEach(ch=>{if(ch.userData.pulseShell){const k=1+.12*(.5+.5*Math.sin(now*.0032));ch.scale.setScalar(k);ch.material.opacity=.2+.18*(.5+.5*Math.sin(now*.0032));}if(ch.userData.liveMoon)ch.rotation.y+=dt*.00115;});});}
+function resizeThreeOrbit(){if(!threeOrbit.ready)return;const canvas=$('#orbitCanvas'),r=canvas?.getBoundingClientRect();if(!r?.width||!r.height)return;const w=Math.round(r.width),h=Math.round(r.height),dpr=Math.min(window.devicePixelRatio||1,1.5);if(threeOrbit.w===w&&threeOrbit.h===h&&threeOrbit.dpr===dpr)return;threeOrbit.w=w;threeOrbit.h=h;threeOrbit.dpr=dpr;threeOrbit.renderer.setPixelRatio(dpr);threeOrbit.renderer.setSize(w,h,false);threeOrbit.camera.aspect=w/h;threeOrbit.camera.updateProjectionMatrix();}
+function resizeOrbitCanvas(){resizeThreeOrbit();}
+function threeOrbitLoop(now){if(currentView!=='overview'||!overview3D){threeOrbit.running=false;return;}const dt=threeOrbit.lastTime?Math.min(42,now-threeOrbit.lastTime):16.67;threeOrbit.lastTime=now;resizeThreeOrbit();animateThreeIntro(now);updateThreePlanetPositions(dt);updateThreeLiveEffects(now,dt);if(threeOrbit.controls){threeOrbit.controls.autoRotate=threeOrbit.autoMotion&&threeOrbit.introDone;threeOrbit.controls.autoRotateSpeed=.16;threeOrbit.controls.update();}applyThreeOrbitFocus();threeOrbit.renderer.render(threeOrbit.scene,threeOrbit.camera);threeOrbit.raf=requestAnimationFrame(threeOrbitLoop);}
+function startOrbitLoop(){if(!threeOrbit.ready||threeOrbit.running)return;threeOrbit.running=true;threeOrbit.lastTime=0;threeOrbit.raf=requestAnimationFrame(threeOrbitLoop);}
+function stopOrbitLoop(){if(threeOrbit.raf)cancelAnimationFrame(threeOrbit.raf);threeOrbit.raf=0;threeOrbit.running=false;threeOrbit.lastTime=0;}
+function updateOrbitLegendFocus(){const root=$('#orbitLegend');if(!root)return;$$('#orbitLegend [data-orbit-category]').forEach(b=>b.classList.toggle('active',b.dataset.orbitCategory===threeOrbit.focusCategory));}
+function focusOrbitPlanet(id){const p=threeOrbit.planets.find(x=>x.event.id===id);if(!p)return;threeOrbit.focusId=id;threeOrbit.focusCategory=p.event.category;const f=$('#orbitFocus');f.hidden=false;f.innerHTML=`<b>${escapeHTML(p.event.title)}</b><span>${cat(p.event).label} ORBIT · ${workDays(p.event)} WORK DAYS<br>${p.event.agency} · ${p.event.venue.name}</span>`;updateOrbitLegendFocus();}
+function focusOrbitCategory(key){threeOrbit.focusId=null;threeOrbit.focusCategory=threeOrbit.focusCategory===key?null:key;const f=$('#orbitFocus');if(!threeOrbit.focusCategory){f.hidden=true;}else{const o=threeOrbit.orbits.find(x=>x.key===key);f.hidden=false;f.innerHTML=`<b>${escapeHTML(o.label)} ORBIT</b><span>${o.events.length} EVENTS · ${o.days} WORK DAYS<br>다른 궤도는 흐리게 표시됩니다.</span>`;}updateOrbitLegendFocus();}
+function clearOrbitFocus(){threeOrbit.focusId=null;threeOrbit.focusCategory=null;const f=$('#orbitFocus');if(f)f.hidden=true;updateOrbitLegendFocus();}
+function pickThreePlanet(clientX,clientY){if(!threeOrbit.ready)return null;const rect=threeOrbit.renderer.domElement.getBoundingClientRect();threeOrbit.pointerVec.x=((clientX-rect.left)/rect.width)*2-1;threeOrbit.pointerVec.y=-((clientY-rect.top)/rect.height)*2+1;threeOrbit.raycaster.setFromCamera(threeOrbit.pointerVec,threeOrbit.camera);const hits=threeOrbit.raycaster.intersectObjects(threeOrbit.interactive,false);if(!hits.length)return null;const id=hits[0].object.userData.eventId;return threeOrbit.planets.find(p=>p.event.id===id)||null;}
+function bindThreeOrbitPointer(){const canvas=$('#orbitCanvas');if(!canvas||canvas.dataset.threeBound)return;canvas.dataset.threeBound='1';canvas.addEventListener('pointerdown',ev=>{const hit=pickThreePlanet(ev.clientX,ev.clientY);threeOrbit.pointer={id:ev.pointerId,x:ev.clientX,y:ev.clientY,hit,moved:false};threeOrbit.longTriggered=false;clearTimeout(threeOrbit.longTimer);if(hit)threeOrbit.longTimer=setTimeout(()=>{threeOrbit.longTriggered=true;focusOrbitPlanet(hit.event.id);navigator.vibrate?.(16);},540);});canvas.addEventListener('pointermove',ev=>{const st=threeOrbit.pointer;if(!st||st.id!==ev.pointerId)return;if(Math.hypot(ev.clientX-st.x,ev.clientY-st.y)>7){st.moved=true;clearTimeout(threeOrbit.longTimer);}});const end=ev=>{const st=threeOrbit.pointer;if(!st||st.id!==ev.pointerId)return;clearTimeout(threeOrbit.longTimer);if(!st.moved&&!threeOrbit.longTriggered){const hit=pickThreePlanet(ev.clientX,ev.clientY);if(hit&&st.hit&&hit.event.id===st.hit.event.id)openEvent(hit.event.id);else if(!hit)clearOrbitFocus();}threeOrbit.pointer=null;};canvas.addEventListener('pointerup',end);canvas.addEventListener('pointercancel',end);canvas.addEventListener('contextmenu',e=>e.preventDefault());}
+function restartThreeOrbitIntro(){
+  if(!threeOrbit.ready||!threeOrbit.root)return;const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;threeOrbit.introStart=performance.now();threeOrbit.introDone=reduced;if(reduced)return;threeOrbit.core.material.opacity=0;threeOrbit.coreShell.material.opacity=0;threeOrbit.coreHalo.material.opacity=0;threeOrbit.core.scale.setScalar(.65);threeOrbit.orbits.forEach(o=>o.line.material.opacity=0);threeOrbit.planets.forEach(p=>{p.mesh.scale.setScalar(.001);p.mesh.material.opacity=0;});
+}
+async function renderCareerOrbit(list=EVENTS){
+  const hud=$('#orbitHud');hud.innerHTML='LOADING 3D ENGINE…';const ok=await ensureThreeOrbitLibs();if(!ok){hud.innerHTML='3D ENGINE UNAVAILABLE<br>네트워크 연결 후 다시 시도해주세요.';return;}if(!initThreeOrbitScene()){hud.innerHTML='3D VIEW INITIALIZING…';setTimeout(()=>renderCareerOrbit(list),80);return;}
+  const sig=list.map(e=>e.id).join('|');if(sig!==threeOrbit.signature)buildThreeCareerOrbit(list);restartThreeOrbitIntro();
+  $('#orbitLegend').innerHTML=threeOrbit.orbits.filter(o=>o.events.length).map(o=>`<button type="button" data-orbit-category="${o.key}" title="${o.events.length} events · ${o.days} work days"><i style="background:${o.color};color:${o.color}"></i>${o.label}</button>`).join('');$$('#orbitLegend [data-orbit-category]').forEach(b=>b.onclick=()=>focusOrbitCategory(b.dataset.orbitCategory));updateOrbitLegendFocus();const live=list.filter(e=>e.status==='ongoing').length;hud.innerHTML=`CAREER ORBIT · CATEGORY SYSTEM<br>${list.length} PLANETS · ${threeOrbit.orbits.length} ORBITS · ${live} LIVE`;
+  const toggle=$('#orbitMotionToggle');toggle.classList.toggle('playing',threeOrbit.autoMotion);toggle.textContent=threeOrbit.autoMotion?'PAUSE':'PLAY';toggle.setAttribute('aria-pressed',String(threeOrbit.autoMotion));resizeThreeOrbit();startOrbitLoop();
+}
+$('#orbitMotionToggle').onclick=()=>{threeOrbit.autoMotion=!threeOrbit.autoMotion;const b=$('#orbitMotionToggle');b.classList.toggle('playing',threeOrbit.autoMotion);b.textContent=threeOrbit.autoMotion?'PAUSE':'PLAY';b.setAttribute('aria-pressed',String(threeOrbit.autoMotion));};
+window.addEventListener('resize',()=>{if(currentView==='overview'&&overview3D)resizeThreeOrbit();});document.addEventListener('visibilitychange',()=>{if(document.hidden)stopOrbitLoop();else if(currentView==='overview'&&overview3D&&threeOrbit.ready)startOrbitLoop();});
 
 let map,markerLayer,currentRegion='ALL',mapMode='map';
 // VENUE PIN = verified building/facility coordinate; APPROX PIN = unverified or area-level coordinate.
