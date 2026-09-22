@@ -610,13 +610,47 @@ function makePlanet(event,orbit,eventIndex){
   return mesh;
 }
 function makeFourPointStarTexture(){
-  const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');x.clearRect(0,0,128,128);x.translate(64,64);
-  const rg=x.createRadialGradient(0,0,0,0,0,60);rg.addColorStop(0,'rgba(255,255,255,1)');rg.addColorStop(.28,'rgba(255,255,255,.96)');rg.addColorStop(.55,'rgba(255,255,255,.34)');rg.addColorStop(1,'rgba(255,255,255,0)');
-  x.fillStyle=rg;x.beginPath();x.arc(0,0,10,0,Math.PI*2);x.fill();
-  x.globalCompositeOperation='lighter';
-  [['v',0,54,10],['h',54,0,10]].forEach(v=>{x.beginPath();if(v[0]==='v'){x.moveTo(-v[3],0);x.lineTo(0,-v[1]);x.lineTo(v[3],0);x.lineTo(0,v[2]);}else{x.moveTo(0,-v[3]);x.lineTo(v[1],0);x.lineTo(0,v[3]);x.lineTo(-v[2],0);}x.closePath();x.fillStyle='rgba(255,255,255,.92)';x.fill();});
-  x.rotate(Math.PI/4);x.beginPath();x.moveTo(-6,0);x.lineTo(0,-28);x.lineTo(6,0);x.lineTo(0,28);x.closePath();x.fillStyle='rgba(255,255,255,.38)';x.fill();
-  x.beginPath();x.moveTo(0,-6);x.lineTo(28,0);x.lineTo(0,6);x.lineTo(-28,0);x.closePath();x.fillStyle='rgba(255,255,255,.38)';x.fill();
+  const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');
+  x.clearRect(0,0,128,128);x.translate(64,64);
+
+  // subtle crisp halo
+  const halo=x.createRadialGradient(0,0,0,0,0,26);
+  halo.addColorStop(0,'rgba(255,255,255,.28)');
+  halo.addColorStop(.45,'rgba(255,255,255,.10)');
+  halo.addColorStop(1,'rgba(255,255,255,0)');
+  x.fillStyle=halo;x.beginPath();x.arc(0,0,26,0,Math.PI*2);x.fill();
+
+  // clean 4-point sparkle shape, matching sharp star reference
+  x.beginPath();
+  x.moveTo(0,-40);
+  x.quadraticCurveTo(5,-12,12,0);
+  x.quadraticCurveTo(5,12,0,40);
+  x.quadraticCurveTo(-5,12,-12,0);
+  x.quadraticCurveTo(-5,-12,0,-40);
+  x.closePath();
+  x.fillStyle='rgba(255,255,255,.98)';
+  x.fill();
+
+  x.beginPath();
+  x.moveTo(-40,0);
+  x.quadraticCurveTo(-12,-5,0,-12);
+  x.quadraticCurveTo(12,-5,40,0);
+  x.quadraticCurveTo(12,5,0,12);
+  x.quadraticCurveTo(-12,5,-40,0);
+  x.closePath();
+  x.fillStyle='rgba(255,255,255,.98)';
+  x.fill();
+
+  // center diamond for a neat crisp core
+  x.beginPath();
+  x.moveTo(0,-10);
+  x.lineTo(10,0);
+  x.lineTo(0,10);
+  x.lineTo(-10,0);
+  x.closePath();
+  x.fillStyle='rgba(255,255,255,1)';
+  x.fill();
+
   const tex=new THREE.CanvasTexture(c);tex.needsUpdate=true;return tex;
 }
 function makeSolarStormTexture(){
