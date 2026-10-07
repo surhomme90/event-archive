@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0b0c0e" />
-  <title>오현우 · Event Career Archive</title>
+  <title>Event Career Archive</title>
   <meta name="description" content="행사 현장 경력을 캘린더, 업체, 카테고리, 지도 관점으로 탐색하는 모바일 인터랙티브 아카이브" />
   <link rel="preconnect" href="https://unpkg.com" crossorigin>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
@@ -162,7 +162,7 @@
     .motion-toggle{flex:0 0 auto;min-width:66px;min-height:38px;padding:0 10px;border:1px solid #363b44;border-radius:12px;background:#171a1f;color:#aab0b9;font-size:8px;font-weight:950;letter-spacing:.1em;cursor:pointer}.motion-toggle.playing{border-color:#4b5630;color:var(--accent)}
     .orbit-stage{position:relative;height:min(62dvh,560px);min-height:460px;overflow:hidden;background:radial-gradient(circle at 50% 46%,rgba(216,255,79,.07),transparent 22%),radial-gradient(circle at 18% 18%,rgba(138,180,255,.035),transparent 28%),radial-gradient(circle at 78% 24%,rgba(197,156,255,.025),transparent 25%),#080b0f;user-select:none;-webkit-user-select:none}
     #orbitCanvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}#orbitCanvas:active{cursor:grabbing}
-    .orbit-hud{position:absolute;left:12px;top:11px;pointer-events:none;color:#717984;font-size:8px;font-weight:850;line-height:1.45;letter-spacing:.06em;text-shadow:0 1px 7px #000}
+    .orbit-hud{position:absolute;left:12px;top:11px;pointer-events:none;color:#717984;font-size:8px;font-weight:850;line-height:1.6;letter-spacing:.06em;text-shadow:0 1px 7px #000}
     .orbit-focus{position:absolute;left:12px;right:12px;bottom:12px;padding:11px 12px;border:1px solid #353b44;border-radius:14px;background:rgba(10,12,16,.89);backdrop-filter:blur(12px);pointer-events:none}.orbit-focus b{display:block;font-size:11px;line-height:1.35}.orbit-focus span{display:block;margin-top:4px;color:#8d939d;font-size:8px;line-height:1.5}
     .orbit-legend{display:flex;gap:6px;overflow-x:auto;padding:11px 13px 12px;scrollbar-width:none;border-top:1px solid #20242a}.orbit-legend::-webkit-scrollbar{display:none}.orbit-legend button{display:inline-flex;align-items:center;gap:5px;flex:0 0 auto;min-height:30px;padding:0 8px;border:1px solid transparent;border-radius:999px;background:transparent;color:#858b95;font-family:inherit;font-size:8px;font-weight:800;white-space:nowrap;cursor:pointer}.orbit-legend button.active{border-color:#3b414a;background:#171b20;color:#e8ebef}.orbit-legend i{width:6px;height:6px;border-radius:50%;box-shadow:0 0 8px currentColor}
     .orbit-help{margin:0;padding:0 14px 14px;color:#646b75;font-size:8px;line-height:1.55}
@@ -172,7 +172,6 @@
     .activity-wave{display:block;width:100%;height:145px;overflow:visible}.wave-grid{stroke:#252a31;stroke-width:1}.wave-area{fill:url(#waveGradient)}.wave-line{fill:none;stroke:var(--accent);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 6px rgba(216,255,79,.18));stroke-dasharray:900;stroke-dashoffset:900;animation:drawWave 1.15s ease forwards}.wave-dot{fill:#0e1013;stroke:var(--accent);stroke-width:1.5}.wave-label{fill:#69717b;font-size:8px;font-family:inherit}
     @keyframes drawWave{to{stroke-dashoffset:0}}
     .mix-layout{display:grid;grid-template-columns:120px minmax(0,1fr);gap:14px;align-items:center}.mix-ring{position:relative;width:116px;height:116px;border-radius:50%;background:#20242a;box-shadow:inset 0 0 0 1px #2a2f37;will-change:background}.mix-ring:after{content:"";position:absolute;inset:19px;border-radius:50%;background:#111419;box-shadow:0 0 0 1px #252a31}.mix-center{position:absolute;inset:0;z-index:2;display:grid;place-content:center;text-align:center;pointer-events:none}.mix-center b{font-size:22px;line-height:1;font-variant-numeric:tabular-nums}.mix-center span{margin-top:4px;color:#777e88;font-size:7px;font-weight:900;letter-spacing:.1em}.mix-list{display:flex;flex-direction:column;gap:7px}.mix-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;font-size:8px;opacity:0;transform:translateX(7px);animation:mixRowIn .42s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(.36s + var(--mix-i,0)*.07s)}.mix-row b{display:flex;align-items:center;gap:6px;min-width:0;font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mix-row i{flex:0 0 auto;width:6px;height:6px;border-radius:50%}.mix-row span{color:#838a94;font-variant-numeric:tabular-nums}@keyframes mixRowIn{to{opacity:1;transform:none}}
-    @media(max-width:639px){.orbit-head{padding:10px 12px 8px;gap:10px}.orbit-head .kicker{font-size:7px;line-height:1.15}.orbit-head h3{margin:3px 0 2px;font-size:16px}.orbit-head p{font-size:8px;line-height:1.32}.motion-toggle{min-height:34px;min-width:60px;font-size:7px;padding:0 9px}.orbit-hud{top:8px;left:10px;font-size:7px;line-height:1.28}}
     @media(min-width:640px){.motion-dashboard{grid-template-columns:1.08fr .92fr}.orbit-stage{height:580px}.mix-layout{grid-template-columns:130px 1fr}}
     @media(min-width:640px){main{padding-left:24px;padding-right:24px}.topbar{padding-left:24px;padding-right:24px}.metrics{grid-template-columns:repeat(4,1fr)}.explore-grid{grid-template-columns:repeat(4,1fr)}.calendar-grid{gap:7px}.day{min-height:76px}.event-label{display:block;color:#111;font-size:7px;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 4px;border-radius:3px}.event-dot{display:none}.map-wrap{height:620px}.detail-grid{grid-template-columns:repeat(4,1fr)}}
     @media(min-width:640px){.filter-toggle{display:none}.filter-panel{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}.archive-search-row{grid-template-columns:1fr}.archive-tools{padding:14px}}
@@ -184,7 +183,7 @@
   <header class="topbar">
     <button class="brand" data-go="overview" aria-label="홈으로" style="border:0;background:transparent;padding:0;cursor:pointer"><span class="brand-mark"></span>EVENT CAREER ARCHIVE</button>
     <div class="snapshot-area">
-      <div class="snapshot">DATA · 2026.09.21</div>
+      <div class="snapshot">DATA · 2026.10.08</div>
       <button class="visual-mode-toggle" id="visualModeToggle" type="button" aria-pressed="false" aria-label="3D 시각화 모드 전환"><span>3D VIEW</span><i aria-hidden="true"></i></button>
     </div>
   </header>
@@ -303,7 +302,7 @@
 
 <script async src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="" onload="if(window.__mapRetry) window.__mapRetry()"></script>
 <script>
-const SNAPSHOT_DATE = '2026-09-21';
+const SNAPSHOT_DATE = '2026-10-08';
 const CATEGORY = {
   exhibition:{label:'EXHIBITION', color:'var(--exhibition)'},
   popup:{label:'POP-UP', color:'var(--popup)'},
@@ -320,7 +319,10 @@ const ROLE_LABELS = {
   facilitation:'토론 진행'
 };
 const EVENTS = [
-{id:'banksy',title:'뱅크시 특별전 BANKSY : Still Here',short:'BANKSY : Still Here',start:'2026-07-22',end:null,status:'ongoing',actualDays:null,schedule:{weekdays:[1,2,3,4,5]},agency:'아튠즈',category:'exhibition',roles:['visitor','flow','safety','artwork','operations'],responsibilities:['관람객 동선 유도 및 내부 관리','전시장 안전 및 작품 관리','전시 운영 관련 제반 현장 업무 일체'],venue:{coordinateAccuracy:'venue',coordinateVerified:true,coordinateSource:'FINDBY',coordinateVerifiedAt:'2026-09-16',name:'ALT.1 더현대서울현대백화점',detail:'6층',address:'서울 영등포구 여의도동 여의대로 108, 6층',region:'서울',district:'영등포구',lat:37.5266691,lng:126.9271941}},
+{id:'banksy',title:'뱅크시 특별전 BANKSY : Still Here',short:'BANKSY : Still Here',start:'2026-07-22',end:null,status:'ongoing',actualDays:null,schedule:{weekdays:[1,2,3,4,5],excludedDates:['2026-08-10','2026-09-24','2026-09-25','2026-10-19']},agency:'아튠즈',category:'exhibition',roles:['visitor','flow','safety','artwork','operations'],responsibilities:['관람객 동선 유도 및 내부 관리','전시장 안전 및 작품 관리','전시 운영 관련 제반 현장 업무 일체'],venue:{coordinateAccuracy:'venue',coordinateVerified:true,coordinateSource:'FINDBY',coordinateVerifiedAt:'2026-09-16',name:'ALT.1 더현대서울현대백화점',detail:'6층',address:'서울 영등포구 여의도동 여의대로 108, 6층',region:'서울',district:'영등포구',lat:37.5266691,lng:126.9271941}},
+
+{id:'geumcheon-si-heung-palace-festival',title:'2026 금천시흥행궁문화제',start:'2026-10-04',end:'2026-10-04',actualDays:1,agency:'아이엠파트너',category:'festival',roles:['parking','safety','flow','operations'],responsibilities:['입구 차량 통제','주차장 안내 및 안전관리'],venue:{coordinateAccuracy:'venue',coordinateVerified:true,coordinateSource:'USER_MANUAL',coordinateVerifiedAt:'2026-10-08',name:'시흥5동주민센터',address:'서울 금천구 금하로24길 6',region:'서울',district:'금천구',lat:37.4507,lng:126.9060}},
+{id:'dongdaemun-festival',title:'2026 동대문페스티벌',start:'2026-10-03',end:'2026-10-03',actualDays:1,agency:'빅터시스템',category:'festival',roles:['booth','flow','operations'],responsibilities:['자원순환 부스 운영','동선 안내'],venue:{coordinateAccuracy:'venue',coordinateVerified:true,coordinateSource:'USER_MANUAL',coordinateVerifiedAt:'2026-10-08',name:'장안동사거리',address:'서울특별시 동대문구 장안동 469-5',region:'서울',district:'동대문구',lat:37.5687,lng:127.0694}},
 {id:'senior-job-week',title:'노인일자리 주간 기념식',start:'2026-09-20',end:'2026-09-20',actualDays:1,agency:'아이엠파트너',category:'ceremony',roles:['setup','operations'],responsibilities:['사전 세팅 업무 지원'],venue:{coordinateAccuracy:'venue',name:'더 플라자호텔 별관 그랜드볼룸',address:'서울 중구 소공로 119',region:'서울',district:'중구',lat:37.56466369,lng:126.97804689}},
 {id:'yangcheon-family-festival',title:'2026 양천 영유아 가족축제',start:'2026-09-20',end:'2026-09-20',actualDays:1,agency:'비마',category:'festival',roles:['booth','safety','operations'],responsibilities:['놀이기구 부스 운영 및 안전관리'],venue:{coordinateAccuracy:'venue',name:'양천공원',address:'서울 양천구 목동동로 111',region:'서울',district:'양천구',lat:37.5183,lng:126.8684}},
 {id:'yangcheon-rock-festival',title:'양천 락 페스티벌 2026',start:'2026-09-19',end:'2026-09-19',actualDays:1,agency:'빅터시스템',category:'festival',roles:['parking','operations'],responsibilities:['출연진 및 VIP 주차장 안내'],venue:{coordinateAccuracy:'venue',name:'신월야구장',address:'서울 양천구 신월동 산68-3',region:'서울',district:'양천구',lat:37.526520693,lng:126.832711652}},
@@ -367,7 +369,8 @@ function workingDates(e){
   const end = e.end || SNAPSHOT_DATE;
   let dates = dateRange(e.start,end);
   if(e.schedule?.weekdays) dates = dates.filter(d=>e.schedule.weekdays.includes(d.getDay()));
-  // 입력된 actualDays가 있는 경우 원문 값을 신뢰하되, 캘린더는 일정 규칙/기간으로 날짜를 표현
+  if(e.schedule?.excludedDates?.length){const excluded=new Set(e.schedule.excludedDates);dates=dates.filter(d=>!excluded.has(iso(d)));}
+  // 입력된 actualDays가 있는 경우 원문 값을 신뢰하되, 캘린더는 일정 규칙/기간과 휴무 제외일을 반영
   return dates;
 }
 function workDays(e){ return e.actualDays ?? workingDates(e).length; }
@@ -376,7 +379,7 @@ function cat(e){return CATEGORY[e.category]}
 function uniq(arr){return [...new Set(arr)]}
 function activeEvents(){return EVENTS.filter(e=>e.status==='ongoing')}
 const totalDays = () => EVENTS.reduce((s,e)=>s+workDays(e),0);
-const agencies = () => uniq(EVENTS.map(e=>e.agency));
+const agencies = () => uniq(EVENTS.filter(e=>!e.agencyPending).map(e=>e.agency));
 const locationCount = () => uniq(EVENTS.map(e=>e.venue.address)).length;
 
 function escapeHTML(v){return String(v).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));}
@@ -437,7 +440,7 @@ function renderHeatmap(){
   const start=parseDate('2025-10-01'), end=parseDate(SNAPSHOT_DATE),daysMap={};EVENTS.forEach(e=>workingDates(e).forEach(d=>daysMap[iso(d)]=(daysMap[iso(d)]||0)+1));
   const startSun=new Date(start);startSun.setDate(startSun.getDate()-startSun.getDay());const endSat=new Date(end);endSat.setDate(endSat.getDate()+(6-endSat.getDay()));
   let html='';for(let d=new Date(startSun);d<=endSat;d.setDate(d.getDate()+1)){const key=iso(d),v=daysMap[key]||0,inPeriod=d>=start&&d<=end;html+=`<span class="heatcell ${inPeriod&&v?(v>1?'strong':'on'):''}" title="${key}${v?` · ${v} event`:''}" style="${inPeriod?'':'opacity:.18'}"></span>`;}
-  $('#heatmap').innerHTML=html;$('#heatPeriod').textContent=`${totalDays()} work days`;$('#heatEnd').textContent='2026.09';
+  $('#heatmap').innerHTML=html;$('#heatPeriod').textContent=`${totalDays()} work days`;$('#heatEnd').textContent=SNAPSHOT_DATE.slice(0,7).replace('-', '.');
 }
 
 let overview3D=false;
@@ -487,7 +490,7 @@ function showCalendarQuick(date,es,dayEl){
 }
 
 let companyMetric='events';
-function companyStats(list=filteredEvents()){return uniq(list.map(e=>e.agency)).map(name=>{const es=list.filter(e=>e.agency===name);return{name,events:es.length,days:es.reduce((s,e)=>s+workDays(e),0),items:es}});}
+function companyStats(list=filteredEvents()){const known=list.filter(e=>!e.agencyPending);return uniq(known.map(e=>e.agency)).map(name=>{const es=known.filter(e=>e.agency===name);return{name,events:es.length,days:es.reduce((s,e)=>s+workDays(e),0),items:es}});}
 function renderCompanies(){const list=filteredEvents(),data=companyStats(list).sort((a,b)=>b[companyMetric]-a[companyMetric]);$('#companySummary').textContent=`${data.length} agencies · ${list.length} events · ${list.reduce((s,e)=>s+workDays(e),0)} days`;if(!data.length){$('#companyBars').innerHTML='<div class="empty-state">조건에 맞는 업체 기록이 없습니다.</div>';return;}const max=Math.max(...data.map(d=>d[companyMetric]));$('#companyBars').innerHTML=data.map(d=>`<div class="bar-card" tabindex="0" data-company="${d.name}"><div class="bar-top"><div><b>${d.name}</b><div class="company-mini">${d.events} EVENTS · ${d.days} DAYS</div></div><span>${d[companyMetric]} ${companyMetric==='events'?'events':'days'}</span></div><div class="bar-track"><div class="bar-fill" style="width:${d[companyMetric]/max*100}%"></div></div></div>`).join('');$$('.bar-card[data-company]').forEach(x=>{x.onclick=()=>openCompany(x.dataset.company,list);x.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openCompany(x.dataset.company,list)}}});}
 $('#companyMetric').addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b)return;companyMetric=b.dataset.value;$('#companyMetric').querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));renderCompanies()});
 
@@ -612,45 +615,10 @@ function makePlanet(event,orbit,eventIndex){
 function makeFourPointStarTexture(){
   const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');
   x.clearRect(0,0,128,128);x.translate(64,64);
-
-  // subtle crisp halo
-  const halo=x.createRadialGradient(0,0,0,0,0,26);
-  halo.addColorStop(0,'rgba(255,255,255,.28)');
-  halo.addColorStop(.45,'rgba(255,255,255,.10)');
-  halo.addColorStop(1,'rgba(255,255,255,0)');
-  x.fillStyle=halo;x.beginPath();x.arc(0,0,26,0,Math.PI*2);x.fill();
-
-  // clean 4-point sparkle shape, matching sharp star reference
-  x.beginPath();
-  x.moveTo(0,-40);
-  x.quadraticCurveTo(5,-12,12,0);
-  x.quadraticCurveTo(5,12,0,40);
-  x.quadraticCurveTo(-5,12,-12,0);
-  x.quadraticCurveTo(-5,-12,0,-40);
-  x.closePath();
-  x.fillStyle='rgba(255,255,255,.98)';
-  x.fill();
-
-  x.beginPath();
-  x.moveTo(-40,0);
-  x.quadraticCurveTo(-12,-5,0,-12);
-  x.quadraticCurveTo(12,-5,40,0);
-  x.quadraticCurveTo(12,5,0,12);
-  x.quadraticCurveTo(-12,5,-40,0);
-  x.closePath();
-  x.fillStyle='rgba(255,255,255,.98)';
-  x.fill();
-
-  // center diamond for a neat crisp core
-  x.beginPath();
-  x.moveTo(0,-10);
-  x.lineTo(10,0);
-  x.lineTo(0,10);
-  x.lineTo(-10,0);
-  x.closePath();
-  x.fillStyle='rgba(255,255,255,1)';
-  x.fill();
-
+  const halo=x.createRadialGradient(0,0,0,0,0,26);halo.addColorStop(0,'rgba(255,255,255,.28)');halo.addColorStop(.45,'rgba(255,255,255,.10)');halo.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=halo;x.beginPath();x.arc(0,0,26,0,Math.PI*2);x.fill();
+  x.beginPath();x.moveTo(0,-40);x.quadraticCurveTo(5,-12,12,0);x.quadraticCurveTo(5,12,0,40);x.quadraticCurveTo(-5,12,-12,0);x.quadraticCurveTo(-5,-12,0,-40);x.closePath();x.fillStyle='rgba(255,255,255,.98)';x.fill();
+  x.beginPath();x.moveTo(-40,0);x.quadraticCurveTo(-12,-5,0,-12);x.quadraticCurveTo(12,-5,40,0);x.quadraticCurveTo(12,5,0,12);x.quadraticCurveTo(-12,5,-40,0);x.closePath();x.fillStyle='rgba(255,255,255,.98)';x.fill();
+  x.beginPath();x.moveTo(0,-10);x.lineTo(10,0);x.lineTo(0,10);x.lineTo(-10,0);x.closePath();x.fillStyle='rgba(255,255,255,1)';x.fill();
   const tex=new THREE.CanvasTexture(c);tex.needsUpdate=true;return tex;
 }
 function makeSolarStormTexture(){
@@ -736,7 +704,7 @@ function openSheet(html){lastFocus=document.activeElement;$('#sheetContent').inn
 function closeSheet(){$('#sheetBackdrop').classList.remove('open');$('#sheet').classList.remove('open');$('#sheet').setAttribute('aria-hidden','true');document.body.classList.remove('sheet-open');if(lastFocus&&document.contains(lastFocus))lastFocus.focus();}
 $('#sheetBackdrop').onclick=closeSheet;document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#sheet').classList.contains('open'))closeSheet();});
 function detailHeader(kicker,title,sub=''){return`<div class="sheet-top"><div><div class="sheet-kicker">${kicker}</div><h2>${title}</h2>${sub?`<div class="sheet-sub">${sub}</div>`:''}</div><button class="sheet-close" aria-label="상세 닫기">×</button></div>`;}
-function openEvent(id){const e=EVENTS.find(x=>x.id===id);if(!e)return;const c=cat(e),mapUrl=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.venue.address)}`,sched=e.schedule?.weekdays?` · ${e.schedule.weekdays.map(i=>['일','월','화','수','목','금','토'][i]).join('·')} 근무`:'';const approx=e.venue.coordinateAccuracy==='approximate';openSheet(`${detailHeader(c.label,e.title,`${periodText(e)}${sched}`)}<div class="chips"><span class="chip"><i style="background:${c.color}"></i>${c.label}</span>${e.roles.map(r=>`<span class="chip">${ROLE_LABELS[r]}</span>`).join('')}</div><div class="detail-grid"><div class="detail-cell"><span>WORK DAYS</span><b>${workDays(e)}일${e.status==='ongoing'?'*':''}</b></div><div class="detail-cell"><span>AGENCY</span><b>${e.agency}</b></div><div class="detail-cell"><span>VENUE</span><b>${e.venue.name}</b></div><div class="detail-cell"><span>AREA</span><b>${e.venue.region} · ${e.venue.district}</b></div></div><div class="detail-section"><h4>WHAT I DID</h4><ul>${e.responsibilities.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="detail-section"><h4>ADDRESS</h4><div class="sheet-sub">${e.venue.address}</div><span class="accuracy-tag ${approx?'approx':''}">${coordinateLabel(e.venue)}</span>${approx?'<div class="accuracy-note">주소는 제공된 정확 주소이며, 현재 지도 핀 좌표는 시각화를 위한 근사값입니다.</div>':''}<a class="map-link" href="${mapUrl}" target="_blank" rel="noopener"><span>주소로 지도 검색</span><span>↗</span></a></div>${e.status==='ongoing'?'<p class="note">* 진행 중 프로젝트의 근무일은 2026.09.16 스냅샷 기준, 월–금 근무 규칙으로 자동 계산했습니다.</p>':''}`);}
+function openEvent(id){const e=EVENTS.find(x=>x.id===id);if(!e)return;const c=cat(e),mapUrl=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.venue.address)}`,sched=e.schedule?.weekdays?` · ${e.schedule.weekdays.map(i=>['일','월','화','수','목','금','토'][i]).join('·')} 근무`:'';const approx=e.venue.coordinateAccuracy==='approximate';openSheet(`${detailHeader(c.label,e.title,`${periodText(e)}${sched}`)}<div class="chips"><span class="chip"><i style="background:${c.color}"></i>${c.label}</span>${e.roles.map(r=>`<span class="chip">${ROLE_LABELS[r]}</span>`).join('')}</div><div class="detail-grid"><div class="detail-cell"><span>WORK DAYS</span><b>${workDays(e)}일${e.status==='ongoing'?'*':''}</b></div><div class="detail-cell"><span>AGENCY</span><b>${e.agency}</b></div><div class="detail-cell"><span>VENUE</span><b>${e.venue.name}</b></div><div class="detail-cell"><span>AREA</span><b>${e.venue.region} · ${e.venue.district}</b></div></div><div class="detail-section"><h4>WHAT I DID</h4><ul>${e.responsibilities.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="detail-section"><h4>ADDRESS</h4><div class="sheet-sub">${e.venue.address}</div><span class="accuracy-tag ${approx?'approx':''}">${coordinateLabel(e.venue)}</span>${approx?'<div class="accuracy-note">주소는 제공된 정확 주소이며, 현재 지도 핀 좌표는 시각화를 위한 근사값입니다.</div>':''}<a class="map-link" href="${mapUrl}" target="_blank" rel="noopener"><span>주소로 지도 검색</span><span>↗</span></a></div>${e.status==='ongoing'?'<p class="note">* 진행 중 프로젝트의 근무일은 ${fmtDate(SNAPSHOT_DATE)} 스냅샷 기준, 월–금 근무 규칙에서 백화점 휴무일(08.10 · 09.24 · 09.25 · 10.19)을 제외해 자동 계산했습니다.</p>':''}`);}
 function openCompany(name,base=filteredEvents()){const es=base.filter(e=>e.agency===name).sort((a,b)=>b.start.localeCompare(a.start)),days=es.reduce((s,e)=>s+workDays(e),0);openSheet(`${detailHeader('COLLABORATION',name,`${es.length} events · ${days} work days`)}<div class="timeline">${es.map(e=>`<div class="timeline-item" tabindex="0" data-sheet-event="${e.id}"><b>${e.title}</b><span>${periodText(e)} · ${workDays(e)}D<br>${e.venue.name}</span></div>`).join('')}</div>`);bindSheetEvents();}
 function openGroup(kind,key,base=filteredEvents()){const es=base.filter(e=>kind==='category'?e.category===key:e.roles.includes(key)).sort((a,b)=>b.start.localeCompare(a.start)),label=kind==='category'?CATEGORY[key].label:ROLE_LABELS[key];openSheet(`${detailHeader(kind==='category'?'EVENT TYPE':'MY ROLE',label,`${es.length} events · ${es.reduce((s,e)=>s+workDays(e),0)} work days`)}<div class="timeline">${es.map(e=>`<div class="timeline-item" tabindex="0" data-sheet-event="${e.id}"><b>${e.title}</b><span>${periodText(e)} · ${e.agency}<br>${e.venue.name}</span></div>`).join('')}</div>`);bindSheetEvents();}
 function openLocation(loc){const es=[...loc.events].sort((a,b)=>b.start.localeCompare(a.start)),approx=loc.coordinateAccuracy==='approximate';openSheet(`${detailHeader('VENUE',loc.name,`${es.length} events · ${es.reduce((s,e)=>s+workDays(e),0)} work days`)}<div class="sheet-sub" style="margin-top:10px">${loc.address}</div><span class="accuracy-tag ${approx?'approx':''}">${coordinateLabel(loc)}</span>${approx?'<div class="accuracy-note">이 장소의 지도 핀은 현재 근사 좌표입니다. 상세 주소를 기준으로 확인할 수 있습니다.</div>':''}<div class="timeline">${es.map(e=>`<div class="timeline-item" tabindex="0" data-sheet-event="${e.id}"><b>${e.title}</b><span>${periodText(e)} · ${e.agency}</span></div>`).join('')}</div>`);bindSheetEvents();}
