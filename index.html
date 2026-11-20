@@ -183,7 +183,7 @@
   <header class="topbar">
     <button class="brand" data-go="overview" aria-label="홈으로" style="border:0;background:transparent;padding:0;cursor:pointer"><span class="brand-mark"></span>EVENT CAREER ARCHIVE</button>
     <div class="snapshot-area">
-      <div class="snapshot">DATA · 2026.11.07</div>
+      <div class="snapshot">DATA · 2026.11.20</div>
       <button class="visual-mode-toggle" id="visualModeToggle" type="button" aria-pressed="false" aria-label="3D 시각화 모드 전환"><span>3D VIEW</span><i aria-hidden="true"></i></button>
     </div>
   </header>
@@ -302,7 +302,7 @@
 
 <script async src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="" onload="if(window.__mapRetry) window.__mapRetry()"></script>
 <script>
-const SNAPSHOT_DATE = '2026-11-07';
+const SNAPSHOT_DATE = '2026-11-20';
 const CATEGORY = {
   exhibition:{label:'EXHIBITION', color:'var(--exhibition)'},
   popup:{label:'POP-UP', color:'var(--popup)'},
@@ -319,6 +319,10 @@ const ROLE_LABELS = {
   facilitation:'토론 진행'
 };
 const EVENTS = [
+{id:'mid-sized-enterprise-day-12',title:'제12회 중견기업인의 날 기념식',start:'2026-11-20',end:'2026-11-20',actualDays:1,agency:'어트랙티보',category:'ceremony',roles:['setup','operations'],responsibilities:['무대 세팅','기념식 운영 지원'],venue:{coordinateAccuracy:'venue',coordinateVerified:true,coordinateSource:'USER_MANUAL',coordinateVerifiedAt:'2026-11-20',name:'웨스틴 조선 서울',address:'서울 중구 소공로 106',region:'서울',district:'중구',lat:37.564373,lng:126.980059}},
+{id:'sme-innovation-week-2026',title:'중소기업 혁신주간',start:'2026-11-18',end:'2026-11-19',actualDays:2,agency:'QRF',category:'conference',roles:['setup','program','operations'],responsibilities:['무대 세팅','컨퍼런스 운영 지원'],venue:{coordinateAccuracy:'venue',coordinateVerified:true,coordinateSource:'USER_MANUAL',coordinateVerifiedAt:'2026-11-20',name:'청주 오스코',address:'충북 청주시 흥덕구 오송읍 오송생명로 250',region:'충북',district:'청주시',lat:36.6266865,lng:127.3355364}},
+{id:'travel-show-2026-season2',title:'트래블쇼 2026 시즌2',start:'2026-11-12',end:'2026-11-15',actualDays:4,agency:'단지컴퍼니',category:'expo',roles:['booth','program','visitor','promotion'],responsibilities:['전남관광재단 부스 내 이벤트 진행','기념품 배포 및 관람객 안내'],venue:{coordinateAccuracy:'venue',coordinateVerified:true,coordinateSource:'USER_MANUAL',coordinateVerifiedAt:'2026-11-20',name:'킨텍스 제1전시장',address:'경기 고양시 일산서구 킨텍스로 217-60',region:'경기',district:'고양시',lat:37.6688,lng:126.7453}},
+{id:'next-generation-media-festival-2026',title:'2026 차세대 미디어 페스티벌',start:'2026-11-10',end:'2026-11-11',actualDays:2,agency:'코드나잇',category:'conference',roles:['setup','program','operations'],responsibilities:['무대 세팅','컨퍼런스 운영 지원'],venue:{coordinateAccuracy:'venue',coordinateVerified:true,coordinateSource:'USER_MANUAL',coordinateVerifiedAt:'2026-11-20',name:'서울드래곤시티',address:'서울 용산구 청파로20길 95',region:'서울',district:'용산구',lat:37.53199,lng:126.96216}},
 {id:'bluearchive-5th-festival',title:'블루아카이브 5주년 페스티벌',start:'2026-11-07',end:'2026-11-08',actualDays:2,agency:'맨투맨컴',category:'festival',roles:['safety','flow','visitor','operations'],responsibilities:['보안검색대 운영','관람객 동선 안내'],venue:{coordinateAccuracy:'venue',coordinateVerified:true,coordinateSource:'USER_MANUAL',coordinateVerifiedAt:'2026-11-07',name:'킨텍스 제2전시장',address:'경기 고양시 일산서구 킨텍스로 217-59',region:'경기',district:'고양시',lat:37.6664,lng:126.7430}},
 {id:'world-hydrogen-expo-2026',title:'World Hydrogen EXPO 2026',start:'2026-11-04',end:'2026-11-06',actualDays:3,agency:'아이엠파트너',category:'expo',roles:['program','operations'],responsibilities:['4층 컨퍼런스 운영 지원'],venue:{coordinateAccuracy:'venue',coordinateVerified:true,coordinateSource:'USER_MANUAL',coordinateVerifiedAt:'2026-11-07',name:'킨텍스 제2전시장',detail:'4층',address:'경기 고양시 일산서구 킨텍스로 217-59',region:'경기',district:'고양시',lat:37.6664,lng:126.7430}},
 {id:'overseas-korean-children-diary-2026',title:'2026 재외동포어린이 한국어 그림일기대회',start:'2026-10-31',end:'2026-11-01',actualDays:2,agency:'빅터시스템',category:'exhibition',roles:['visitor','monitoring','operations'],responsibilities:['방문객 안내','전시 운영 관리'],venue:{coordinateAccuracy:'venue',coordinateVerified:true,coordinateSource:'USER_MANUAL',coordinateVerifiedAt:'2026-11-07',name:'인천국제공항 제2여객터미널',address:'인천 영종구 운서동 2868',region:'인천',district:'영종구',lat:37.46847,lng:126.43474}},
